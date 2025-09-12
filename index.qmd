@@ -1,0 +1,89 @@
+---
+format:
+  html:
+    toc: true
+    page-layout: custom
+execute:
+  echo: false
+  eval: true
+  freeze: auto
+  cache: false
+  warning: false
+  message: false
+  include: true
+  # ENABLE inline R code evaluation
+  inline: true
+resources:
+  - figures/
+---
+
+
+
+<style>
+  .floating-logos {
+    position: fixed;
+    top: 60px;
+    right: 450px;
+    width: 165px;
+    opacity: 0.85;
+    z-index: 1;
+  }
+
+  .floating-logos img {
+    display: block;
+    width: 100%;
+    margin-bottom: 12px;
+    border-radius: 4px;
+  }
+</style>
+
+<div class="floating-logos">
+  <img src='/figures/forplotR_hex_sticker.png' alt='forplotR hex sticker'>
+</div>
+
+::: whitebox
+::: {style="padding-left: 100px; padding-right: 50px; display: inline-block;"}
+
+::: {layout-ncol="2"}
+
+::: {style="text-align: left;"}
+
+\
+`forplotR` is An R package for processing forest plot data, generating herbarium-ready spreadsheets, organizing voucher folders, creating spatial overviews of plot individuals, and visualizing plot maps interactively.\
+\
+
+## The ForestPlot.net
+
+ForestPlot.net is a shared database and collaboration hub that links tropical forest plot networks and researchers, curating standardized long-term tree and carbon data to monitoring tropical forests.\
+\
+
+## History
+
+#### Version 1.0
+
+:::
+::: {style="display: flex; gap: 16px; justify-content: center; align-items: center;"}
+:::
+:::
+:::
+:::
+
+::: mainbox
+::: {style="padding-left: 100px; padding-right: 100px; display: inline-block;"}
+::: {layout-ncol="2"}
+::: {style="text-align: center;"}
+### [Get Started](/get-started/index.qmd)
+
+Welcome new users! Start learning how to install `forplotR`
+:::
+
+::: {style="text-align: center;"}
+### [Articles](/articles/index.qmd)
+
+"How-to" articles to help you learn how to use `forplotR`
+:::
+:::
+:::
+:::
+
+:::

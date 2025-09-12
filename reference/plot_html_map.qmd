@@ -1,0 +1,58 @@
+---
+title: 'plot_html_map'
+description: 'Plot and save vouchered forest plot map as HTML'
+toc: true
+toc-depth: 3
+---
+
+
+```{r}
+#| eval: false
+forplotR::plot_html_map()
+```
+
+### Description
+
+Generates an interactive and self-contained HTML map following the
+[ForestPlots plot protocol](https://forestplots.net/), using Leaflet
+and based on vouchered tree data and the geographical coordinates of the
+plot corners. The function:(i) Converts local subplot coordinates (X, Y) to
+geographic coordinates using geospatial interpolation from four corner vertices;
+(ii) automatically extracts metadata like team name, plot name, and plot code
+from the input xlsx file; (iii) draws the plot boundary polygon with angular
+ordering to prevent self-intersection, over a selectable basemap ("satellite"
+or "street"); (iv) colors tree points based on collection status and palms:
+palms (yellow), collected (gray), and missing (red); (v) embeds image
+carousels in the popups for vouchers when corresponding images are available
+in the specified folder; (vi) adds an interactive filter sidebar with
+checkboxes, multi-select inputs, and search box for filtering by family,
+species, collection status, and presence of photos; (vii) displays informative
+popups for each tree,showing tag number, subplot,family, species, DBH,
+voucher code, and photos; (viii) saves the resulting map as a date-stamped
+standalone HTML file with multiple interactive leaflet map options to the
+specified directory for easy sharing, archiving, or field consultation.
+
+### Arguments
+
+| Argument | Description |
+|---|---|
+| fp_file_path | Character. Path to the Excel file containing tree data. |
+| vertex_coords | Data frame or path to Excel file with columns `Latitude` and `Longitude` for the four plot corners. |
+| plot_size | Numeric. Total plot size in hectares (default is 1). |
+| subplot_size | Numeric. Subplot size in meters (default is 10). |
+| voucher_imgs | Character. Directory path where voucher images are stored. |
+| filename | Character. Name of the output HTML file (default is "plot_map.html").. |
+
+### Examples
+
+```r
+vertex_df <- data.frame(
+  Latitude = c(-3.123, -3.123, -3.125, -3.125),
+  Longitude = c(-60.012, -60.010, -60.012, -60.010)
+)
+plot_html_map("data/tree_data.xlsx",
+               vertex_coords = vertex_df,
+               voucher_imgs = "voucher_imgs")
+```
+
+

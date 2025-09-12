@@ -1,0 +1,35 @@
+---
+title: "Function Reference"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+---
+
+<style>
+  body {
+    position: relative;
+  }
+  .watermark {
+    position: fixed;
+    bottom: 50px;
+    right: 50px;
+    opacity: 0.15;
+    z-index: -1;
+    width: 400px;
+  }
+</style>
+
+<img src="/figures/forplotR_hex_sticker.png" class="watermark" alt="forplotR logo watermark">
+
+## forplotR
+
+- [`fp_herb_converter()`](/reference/fp_herb_converter.qmd)
+
+- [`mk_voucher_dirs()`](/reference/mk_voucher_dirs.qmd)
+
+- [`plot_for_balance()`](/reference/plot_for_balance.qmd)
+
+- [`plot_html_map()`](/reference/plot_html_map.qmd)
+
+

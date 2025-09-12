@@ -1,0 +1,86 @@
+---
+title: "About forplotR"
+subtitle: "Open source tools to manage plant specimen data and collections from long term monitoring forest plot"
+format:
+  html:
+    toc: true
+---
+
+```{=html}
+<style>
+  body {
+    position: relative;
+  }
+
+  .watermark {
+    position: fixed;
+    bottom: 50px;
+    right: 50px;
+    opacity: 0.15;
+    z-index: -1;
+    width: 400px;
+  }
+
+  .background-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.8);
+    z-index: -1;
+  }
+</style>
+```
+
+<img src="/figures/forplotR_original_logo.png" alt="forplotR logo watermark" class="watermark"/>
+
+## Overview
+
+`forplotR` is an R package designed to integrate and streamline the processing of data from long-term forest monitoring plots. By linking the physical voucher (specimen) to its associated spatial, taxonomic, and metadata information, it supports the concept of the extended specimen. The package responds to the growing need to systematize complex datasets in ways that not only ensure scientific rigor and reproducibility, but also simplify fieldwork logistics and post-field data processing — a major challenge in large-scale biodiversity monitoring.
+
+The package interacts with the [ForestPlots.net standard plot inventory protocol](https://forestplots.net/) by reading standardized field templates and converting specimen records into herbarium-ready outputs, including the JABOT format, BRAHMS format, or any other user-defined structure.
+
+It also provides tools for organizing voucher image directories based on preliminary taxonomic identification and individual voucher codes. These directories are dynamically updated to reflect changes in taxonomic determination, maintaining a coherent and traceable folder structure.
+
+In addition, `forplotR` generates comprehensive PDF reports with overview maps of the plot, maps filtered by collection status (e.g., collected vs. uncollected), and subplot-specific maps. Optionally, it also produces an `.xlsx` spreadsheet summarizing the percentage of collected individuals per subplot.
+
+The package includes functionality for producing interactive HTML maps for specimen visualization, with filtering options based on taxonomic groups, collection status, or the presence of voucher images.
+
+## The ForestPlots.net
+
+ForestPlots.net is a global collaborative network that standardizes and integrates forest monitoring efforts across the tropical regions. It provides tools and protocols for establishing long-term permanent plots, where researchers can collect consistent data on tree species, diameters, locations, and dynamics over time.The platform enables scientists to monitor forest composition, structure, and changes in carbon stocks, biodiversity, and ecosystem processes. By adhering to a shared methodology, ForestPlots.net allows for comparisons across different regions and time periods, supporting large-scale analyses of forest ecology and climate change impacts.
+
+## Package Description
+
+Package: `forplotR`\
+Type: R Package\
+Version: 1.0.0
+
+Authors: Domingos Cardoso ([\@DBOSlab](https://github.com/DBOSlab) [ORCID](https://orcid.org/0000-0001-7072-2656)), Giulia Cavalcanti Ottino ([\@DBOSlab](https://github.com/DBOSlab) [ORCID](https://orcid.org/0009-0001-4352-1733))
+
+Maintainer: Giulia Ottino ([botgiuc\@gmail.com](mailto:botgiuc@gmail.com){.email})
+
+### Features
+
+-   Convert field data into JABOT, BRAHMS, or custom herbarium label formats
+-   Create, organize and dynamically update voucher image directories
+-   Generate PDF map reports with subplot-level collection summaries
+-   Export `.xlsx` files summarizing collection status by subplot
+-   Produce interactive HTML map for spatial visualization of the plot, specimen locations and images
+
+## Contribute
+
+You can contribute to `forplotR` by:
+
+-   Opening issues for feedback or bug reports
+-   Submitting pull requests for fixes or enhancements
+-   Suggesting or developing new features (please open an issue for discussion first)
+
+## License
+
+`forplotR` is [open source software](/LICENSE.md). Open tools empower science through reproducibility, accessibility, and equitable knowledge sharing.
+
+## Acknowledgements
+
+We gratefully acknowledge the financial support provided by [CNPq - Conselho Nacional de Desenvolvimento Científico e Tecnológico](https://www.gov.br/cnpq/pt-br) and [CAPES - Coordenação de Aperfeiçoamento de Pessoal de Nível Superior - Brasil](https://www.gov.br/capes/pt-br) and the institutional supports by the [Rio de Janeiro Botanical Garden](https://www.gov.br/jbrj/pt-br) and [National School of Tropical Botany](https://www.gov.br/jbrj/pt-br/assuntos/educacao/escola-nacional-de-botanica-tropical).

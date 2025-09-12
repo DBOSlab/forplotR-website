@@ -1,0 +1,102 @@
+project:
+  output-dir: docs
+  type: website
+  resources:
+    - figures/**
+
+website:
+  title: "forplotR"
+  site-url: https://dboslab.github.io/jabotR-website/
+  page-navigation: true
+  reader-mode: true
+  favicon: "figures/forplotR_hex_sticker.png"
+
+  page-footer:
+    center:
+      - text: "About"
+        href: about.qmd
+      - text: "FAQ"
+        href: faq/index.qmd
+      - text: "License"
+        href: LICENSE.md
+    right:
+      - icon: github
+        href: https://github.com/DBOSlab/forplotR
+        aria-label: forplotR GitHub
+
+  navbar:
+    search: true
+    background: light
+    collapse-below: lg
+    type: light
+    logo: "figures/forplotR_hex_sticker.png"
+    href: index.qmd
+    left:
+      - text: "Overview"
+        href: index.qmd
+      - text: "Get Started"
+        href: get-started/index.qmd
+      - text: "Articles"
+        href: articles/index.qmd
+      - text: "News"
+        href: news/index.qmd
+      - text: "Reference"
+        href: reference/index.qmd
+      - text: "Authors"
+        href: authors/index.qmd
+      - text: "Help"
+        menu:
+          - text: "Report a Bug"
+            icon: "bug"
+            href: "https://github.com/DBOSlab/forplotR/issues"
+          - text: "Ask a Question"
+            icon: "chat-right-text"
+            href: "https://github.com/DBOSlab/forplotR/discussions"
+          - text: "FAQ"
+            icon: "question-circle"
+            href: faq/index.qmd
+
+    tools:
+      - icon: github
+        href: https://github.com/DBOSlab/forplotR
+        text: jabotR GitHub
+
+  sidebar:
+    - id: articles
+      title: Articles
+      collapse-level: 3
+      align: left
+      contents:
+        - text: Overview
+          href: articles/index.qmd
+        - section: Summarize JABOT collections
+          contents:
+          - text: Summarize herbarium collections
+            href: articles/summarize_jabot_collections.qmd
+        - section: Download and parse JABOT records
+          contents:
+          - text: Download specimen records
+            href: articles/download_jabot_collections.qmd
+          - text: Parse JABOT Darwin Core Archives
+            href: articles/parse_jabot_dwca.qmd
+        - section: Filter JABOT records
+          contents:
+          - text: Retrieve taxon-specific specimens
+            href: articles/filter_jabot_records.qmd
+          - text: Filter indeterminate specimens
+            href: articles/filter_indeterminate_jabot_specimens.qmd
+
+format:
+  html:
+    toc: true
+    embed-resources: true
+    code-copy: true
+    code-overflow: wrap
+    code-tools: true
+    css: styles.css
+    eval: false
+    theme:
+      light: [spacelab, theme.scss]
+      dark: [spacelab, theme-dark.scss]
+    include-in-header: gtm-head.html
+    include-before-body: gtm-body.html

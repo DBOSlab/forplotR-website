@@ -1,0 +1,51 @@
+---
+title: "News"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+---
+
+<style>
+  body {
+    position: relative;
+  }
+
+  .watermark {
+    position: fixed;
+    bottom: 50px;
+    right: 50px;
+    opacity: 0.15;
+    z-index: -1;
+    width: 400px;
+  }
+</style>
+
+<img src="/figures/forplotR_original_logo.png" class="watermark" alt="forplotR logo watermark">
+
+
+# forplotR 1.0.0
+
+## Initial Release
+
+The first official release of the `forplotR` R package, designed to streamline access to plant specimen data from the from the [Forestplots.net standardized plot measurement protocol](https://forestplots.net/en/using-forestplots/in-the-field).
+
+### Features
+
+- `fp_herb_converter()`: Convert field-collected plot data into ready herbarium standard templates
+- `mk_voucher_dirs()`: Create organized structured directories to archive voucher pictures based on taxonomic criteria of plot specimens. 
+- `plot_html_map()`:  Generate an interactive html spatial visualisation of the plot and specimens. 
+- `plot_for_balance()`: Generate a forestplot  inventory full report to helps assess the sampling management
+- Supports integration with tidyverse workflows for downstream analyses.
+- Test coverage >95%, continuous integration via GitHub Actions.
+
+### Infrastructure
+
+- MIT license.
+- GitHub Actions: R-CMD-check and test coverage.
+- Hosted documentation: [forplotR-website](https://dboslab.github.io/forplotR-website/)
+
+### Feedback
+
+Please report bugs or issues at:  
+<https://github.com/DBOSlab/forplotR/issues>
