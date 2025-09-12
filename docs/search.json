@@ -1,0 +1,405 @@
+[
+  {
+    "objectID": "get-started/index.html#install-the-package",
+    "href": "get-started/index.html#install-the-package",
+    "title": "Install",
+    "section": "Install the package",
+    "text": "Install the package\nYou can install the latest development version of forplotR package from GitHub as follows:\n\n#install.packages(\"devtools\")\ndevtools::install_github(\"DBOSlab/forplotR\")\n\n\n\n\n\n\n\nCaution\n\n\n\nThe steps in this section are only needed if you need to run […]. If you already have a running […], then skip this section."
+  },
+  {
+    "objectID": "reference/mk_voucher_dirs.html",
+    "href": "reference/mk_voucher_dirs.html",
+    "title": "mk_voucher_dirs",
+    "section": "",
+    "text": "forplotR::mk_voucher_dirs()\n\n\nDescription\nOrganizes image folders of voucher specimens based on their updated taxonomic identification provided in Forestplots format template. It is designed to be safely rerun multiple times, adapting its behavior depending on the existing directory structure.On the first execution, the function will read the voucher information from the Forestplots standardized file, (i) create a main folder (default: \"voucher_imgs\"), if it does not already exist.(ii) For each voucher marked as “Collected”, it will create a directory structure following the format Family/Genus/Voucher to receive the corresponding images. On subsequent executions, the function performs a reorganization: identifies and compares existing folders that may have outdated or incorrect genus assignments. If it finds that a voucher is in the wrong genus folder (e.g., due to taxonomic reidentification),it moves the images to the correct folder. In case the correct folder already contains images, the function avoids overwriting and keeps the content intact.Once images are moved (or verified), the function deletes any empty,outdated voucher directories.This ensures that the directory structure always reflects the most up-to-date taxonomic information, making image organization robust, repeatable, and easy to maintain.\n\n\nArguments\n\n\n\n\n\n\n\nArgument\nDescription\n\n\n\n\nfp_file_path\nCharacter. Path to the Excel file containing voucher data.\n\n\noutput_dir\nCharacter. Directory to organize the voucher image folders. Default is “voucher_imgs”.\n\n\n\n\n\nExamples\nmk_voucher_dirs(fp_file_path = \"data/RUS_plot.xlsx\",\n                         output_dir = \"voucher_imgs\")"
+  },
+  {
+    "objectID": "reference/plot_html_map.html",
+    "href": "reference/plot_html_map.html",
+    "title": "plot_html_map",
+    "section": "",
+    "text": "forplotR::plot_html_map()\n\n\nDescription\nGenerates an interactive and self-contained HTML map following the ForestPlots plot protocol, using Leaflet and based on vouchered tree data and the geographical coordinates of the plot corners. The function:(i) Converts local subplot coordinates (X, Y) to geographic coordinates using geospatial interpolation from four corner vertices; (ii) automatically extracts metadata like team name, plot name, and plot code from the input xlsx file; (iii) draws the plot boundary polygon with angular ordering to prevent self-intersection, over a selectable basemap (“satellite” or “street”); (iv) colors tree points based on collection status and palms: palms (yellow), collected (gray), and missing (red); (v) embeds image carousels in the popups for vouchers when corresponding images are available in the specified folder; (vi) adds an interactive filter sidebar with checkboxes, multi-select inputs, and search box for filtering by family, species, collection status, and presence of photos; (vii) displays informative popups for each tree,showing tag number, subplot,family, species, DBH, voucher code, and photos; (viii) saves the resulting map as a date-stamped standalone HTML file with multiple interactive leaflet map options to the specified directory for easy sharing, archiving, or field consultation.\n\n\nArguments\n\n\n\n\n\n\n\nArgument\nDescription\n\n\n\n\nfp_file_path\nCharacter. Path to the Excel file containing tree data.\n\n\nvertex_coords\nData frame or path to Excel file with columns Latitude and Longitude for the four plot corners.\n\n\nplot_size\nNumeric. Total plot size in hectares (default is 1).\n\n\nsubplot_size\nNumeric. Subplot size in meters (default is 10).\n\n\nvoucher_imgs\nCharacter. Directory path where voucher images are stored.\n\n\nfilename\nCharacter. Name of the output HTML file (default is “plot_map.html”)..\n\n\n\n\n\nExamples\nvertex_df &lt;- data.frame(\n  Latitude = c(-3.123, -3.123, -3.125, -3.125),\n  Longitude = c(-60.012, -60.010, -60.012, -60.010)\n)\nplot_html_map(\"data/tree_data.xlsx\",\n               vertex_coords = vertex_df,\n               voucher_imgs = \"voucher_imgs\")"
+  },
+  {
+    "objectID": "news/index.html#initial-release",
+    "href": "news/index.html#initial-release",
+    "title": "News",
+    "section": "Initial Release",
+    "text": "Initial Release\nThe first official release of the forplotR R package, designed to streamline access to plant specimen data from the from the Forestplots.net standardized plot measurement protocol.\n\nFeatures\n\nfp_herb_converter(): Convert field-collected plot data into ready herbarium standard templates\nmk_voucher_dirs(): Create organized structured directories to archive voucher pictures based on taxonomic criteria of plot specimens.\nplot_html_map(): Generate an interactive html spatial visualisation of the plot and specimens.\nplot_for_balance(): Generate a forestplot inventory full report to helps assess the sampling management\nSupports integration with tidyverse workflows for downstream analyses.\nTest coverage &gt;95%, continuous integration via GitHub Actions.\n\n\n\nInfrastructure\n\nMIT license.\nGitHub Actions: R-CMD-check and test coverage.\nHosted documentation: forplotR-website\n\n\n\nFeedback\nPlease report bugs or issues at:\nhttps://github.com/DBOSlab/forplotR/issues"
+  },
+  {
+    "objectID": "index.html#the-forestplot.net",
+    "href": "index.html#the-forestplot.net",
+    "title": "forplotR",
+    "section": "The ForestPlot.net",
+    "text": "The ForestPlot.net\nForestPlot.net is a shared database and collaboration hub that links tropical forest plot networks and researchers, curating standardized long-term tree and carbon data to monitoring tropical forests."
+  },
+  {
+    "objectID": "index.html#history",
+    "href": "index.html#history",
+    "title": "forplotR",
+    "section": "History",
+    "text": "History\n\nVersion 1.0"
+  },
+  {
+    "objectID": "articles/mk_voucher_dirs.html",
+    "href": "articles/mk_voucher_dirs.html",
+    "title": "Organize voucher directories",
+    "section": "",
+    "text": "This guide demonstrates how to use the mk_voucher_dirs function in the forplotR package to create and organize image directories of vouchers recorded in plot censuses based on their updated taxonomic identification."
+  },
+  {
+    "objectID": "articles/mk_voucher_dirs.html#function-overview",
+    "href": "articles/mk_voucher_dirs.html#function-overview",
+    "title": "Organize voucher directories",
+    "section": "Function Overview",
+    "text": "Function Overview\nThe mk_voucher_dirs() function organizes voucher image folders according to the most up-to-date taxonomic identification found in a ForestPlots-style Excel file.\nIt is safe to run multiple times:\n\nFirst run: creates the main output folder (default: \"voucher_imgs\") and, for each voucher marked as Collected, creates the directory structure Family/Genus/Voucher.\nSubsequent runs (reorganization): detects vouchers placed under outdated genera and moves images to the correct folder without overwriting existing files; then removes empty, outdated directories."
+  },
+  {
+    "objectID": "articles/mk_voucher_dirs.html#arguments",
+    "href": "articles/mk_voucher_dirs.html#arguments",
+    "title": "Organize voucher directories",
+    "section": "Arguments",
+    "text": "Arguments\n\n\n\n\n\n\n\nArgument\nDescription\n\n\n\n\nfp_file_path\nPath to the Excel file (ForestPlots template) containing voucher data. Required.\n\n\noutput_dir\nDirectory where the voucher folder structure will be created/updated. Default: \"voucher_imgs\"."
+  },
+  {
+    "objectID": "articles/mk_voucher_dirs.html#basic-use-case",
+    "href": "articles/mk_voucher_dirs.html#basic-use-case",
+    "title": "Organize voucher directories",
+    "section": "Basic Use Case",
+    "text": "Basic Use Case\nmk_voucher_dirs(\n  fp_file_path = \"data/RUS_plot.xlsx\",\n  output_dir   = \"voucher_imgs\"\n)"
+  },
+  {
+    "objectID": "articles/mk_voucher_dirs.html#reorganizing-after-taxonomic-updates",
+    "href": "articles/mk_voucher_dirs.html#reorganizing-after-taxonomic-updates",
+    "title": "Organize voucher directories",
+    "section": "Reorganizing After Taxonomic Updates",
+    "text": "Reorganizing After Taxonomic Updates\nIf some vouchers were reidentified (e.g., genus changed), just run the function again:\nmk_voucher_dirs(\n  fp_file_path = \"data/RUS_plot.xlsx\",\n  output_dir   = \"voucher_imgs\"\n)\n\nImages found under an outdated genus folder are moved to the correct genus folder.\nThe function does not overwrite existing files in the correct destination.\nAny empty old voucher folders are removed."
+  },
+  {
+    "objectID": "articles/mk_voucher_dirs.html#using-a-custom-output-directory",
+    "href": "articles/mk_voucher_dirs.html#using-a-custom-output-directory",
+    "title": "Organize voucher directories",
+    "section": "Using a Custom Output Directory",
+    "text": "Using a Custom Output Directory\nmk_voucher_dirs(\n  fp_file_path = \"data/Inventory_A.xlsx\",\n  output_dir   = \"parcelA_voucher_imgs\"\n)"
+  },
+  {
+    "objectID": "articles/mk_voucher_dirs.html#inspecting-the-resulting-structure",
+    "href": "articles/mk_voucher_dirs.html#inspecting-the-resulting-structure",
+    "title": "Organize voucher directories",
+    "section": "Inspecting the Resulting Structure",
+    "text": "Inspecting the Resulting Structure\n# List created directories (first levels)\nlist.dirs(\"voucher_imgs\", recursive = FALSE)\n\n# Inspect all voucher-level directories\ndirs &lt;- list.dirs(\"voucher_imgs\", recursive = TRUE, full.names = TRUE)\nhead(dirs, 20)\n\n\nRun mk_voucher_dirs() first to create voucher_imgs"
+  },
+  {
+    "objectID": "articles/mk_voucher_dirs.html#tips",
+    "href": "articles/mk_voucher_dirs.html#tips",
+    "title": "Organize voucher directories",
+    "section": "Tips",
+    "text": "Tips\n\nEnsure your Excel file includes columns like Family, Original determination, Voucher, and Collected.\nThe genus is derived from the first token in Original determination (text before the first space).\nRe-run the function whenever identifications change; it is designed to be idempotent.\nConsider keeping a backup before large reorganizations when working with many images.\nIf a destination folder already has images, the function skips moving to avoid overwriting—review manually if you want to merge."
+  },
+  {
+    "objectID": "articles/mk_voucher_dirs.html#see-also",
+    "href": "articles/mk_voucher_dirs.html#see-also",
+    "title": "Organize voucher directories",
+    "section": "See Also",
+    "text": "See Also\n\nplot_for_balance(): Parcel report with maps, checklist, navigation, and optional AGB.\nplot_html_map(): Interactive HTML maps for plots.\nfp_herb_converter(): Convert ForestPlots sheets to herbarium formats."
+  },
+  {
+    "objectID": "articles/plot_html_map.html",
+    "href": "articles/plot_html_map.html",
+    "title": "Generate interactive plot HTML map",
+    "section": "",
+    "text": "This guide demonstrates how to use the plot_html_map() function from the forplotR package. The function creates a self-contained interactive HTML map (Leaflet) for ForestPlots data, converting subplot (X, Y) to geographic coordinates using the four plot corners, styling points by collection status (palms / collected / missing), and embedding voucher photo carousels when images are available."
+  },
+  {
+    "objectID": "articles/plot_html_map.html#function-overview",
+    "href": "articles/plot_html_map.html#function-overview",
+    "title": "Generate interactive plot HTML map",
+    "section": "Function Overview",
+    "text": "Function Overview\nThe plot_html_map() function:\n\nReads a ForestPlots-style Excel with vouchered trees and extracts metadata (team, plot name, plot code).\nConverts local subplot coordinates to latitude/longitude using the 4 corner vertices.\nDraws the plot polygon and a subplot grid (toggleable).\nColors points by status: Palms = yellow, Collected = gray, Not collected = red.\nBuilds image carousels in popups when matching voucher folders exist.\nAdds a filter sidebar (family, species, status, with photos, subplots; plus search box).\nSaves a standalone HTML."
+  },
+  {
+    "objectID": "articles/plot_html_map.html#arguments",
+    "href": "articles/plot_html_map.html#arguments",
+    "title": "Generate interactive plot HTML map",
+    "section": "Arguments",
+    "text": "Arguments\n\n\n\n\n\n\n\nArgument\nDescription\n\n\n\n\nfp_file_path\nPath to the Excel file (ForestPlots format) containing tree data. Required.\n\n\nvertex_coords\nData frame or path to an Excel file with the four plot corners (Latitude, Longitude).\n\n\nplot_size\nTotal plot size in hectares. Default: 1.\n\n\nsubplot_size\nSubplot side length in meters. Default: 10.\n\n\nvoucher_imgs\nDirectory containing voucher images organized per voucher (enables photo carousels in popups). Optional.\n\n\nfilename\nName of the output HTML file. Default: \"plot_map.html\"."
+  },
+  {
+    "objectID": "articles/plot_html_map.html#basic-example-vertices-in-data-frame",
+    "href": "articles/plot_html_map.html#basic-example-vertices-in-data-frame",
+    "title": "Generate interactive plot HTML map",
+    "section": "Basic Example (vertices in data frame)",
+    "text": "Basic Example (vertices in data frame)\nvertex_df &lt;- data.frame(\n  Latitude  = c(-3.1230, -3.1230, -3.1250, -3.1250),\n  Longitude = c(-60.0120, -60.0100, -60.0120, -60.0100)\n)\n\nplot_html_map(\n  fp_file_path  = \"data/tree_data.xlsx\",\n  vertex_coords = vertex_df,\n  subplot_size  = 10,\n  voucher_imgs  = \"voucher_imgs\",\n  filename      = \"plot_map.html\"\n)"
+  },
+  {
+    "objectID": "articles/plot_html_map.html#using-an-excel-file-for-the-plot-corners",
+    "href": "articles/plot_html_map.html#using-an-excel-file-for-the-plot-corners",
+    "title": "Generate interactive plot HTML map",
+    "section": "Using an Excel file for the plot corners",
+    "text": "Using an Excel file for the plot corners\nplot_html_map(\n  fp_file_path  = \"data/tree_data.xlsx\",\n  vertex_coords = \"data/plot_vertices.xlsx\",  # sheet with Latitude/Longitude\n  voucher_imgs  = \"voucher_imgs\",\n  filename      = \"plot_map_from_xlsx.html\"\n)"
+  },
+  {
+    "objectID": "articles/plot_html_map.html#without-photos-no-voucher-images-folder",
+    "href": "articles/plot_html_map.html#without-photos-no-voucher-images-folder",
+    "title": "Generate interactive plot HTML map",
+    "section": "Without photos (no voucher images folder)",
+    "text": "Without photos (no voucher images folder)\nplot_html_map(\n  fp_file_path  = \"data/tree_data.xlsx\",\n  vertex_coords = \"data/plot_vertices.xlsx\",\n  voucher_imgs  = NULL,                        # popups without carousels\n  filename      = \"plot_map_no_photos.html\"\n)"
+  },
+  {
+    "objectID": "articles/plot_html_map.html#output",
+    "href": "articles/plot_html_map.html#output",
+    "title": "Generate interactive plot HTML map",
+    "section": "Output",
+    "text": "Output\nThe function saves a standalone HTML file (all assets embedded) named as specified by filename (often with a date prefix, depending on your wrapper). The map includes:\nBase layers (street/satellite/topo/dark).\nPlot boundary polygon and optional subplot grid (toggle in the layer control).\nPoint popups with Tag, Subplot, Family, Species, DBH, Voucher, and photos when found.\nYou can open the file directly in a browser or share it.\n# after running plot_html_map()\nlist.files(pattern = \"plot_map.*\\\\.html$\")"
+  },
+  {
+    "objectID": "articles/plot_html_map.html#tips",
+    "href": "articles/plot_html_map.html#tips",
+    "title": "Generate interactive plot HTML map",
+    "section": "Tips",
+    "text": "Tips\n\nVertices order: Keep the four corners in a consistent loop (e.g., clockwise). If your polygon self-intersects, check order.\nSigns: The function normalizes coordinates; verify latitude/longitude signs (southern/western hemispheres are negative).\nPhotos: Organize images under voucher_imgs////… to enable the carousel in popups.\nPerformance: Large plots benefit from fewer visible layers (hide subplot grid) and smaller marker radii.\nMetadata: Plot name/code/team are parsed from the first row of the ForestPlots sheet."
+  },
+  {
+    "objectID": "articles/plot_html_map.html#see-also",
+    "href": "articles/plot_html_map.html#see-also",
+    "title": "Generate interactive plot HTML map",
+    "section": "See Also",
+    "text": "See Also\n\nmk_voucheer_dirs(): Organize voucher image directories by updated IDs.\nplot_for_balance(): Parcel report with maps, checklist, navigation, and optional AGB.\nfp_herb_converter(): Convert ForestPlots sheets to herbarium formats."
+  },
+  {
+    "objectID": "faq/index.html",
+    "href": "faq/index.html",
+    "title": "Frequently Asked Questions",
+    "section": "",
+    "text": "What is forplotR?\nforplotR is an R package that helps organize, check, analyze, and report forest plot inventory data, with a special focus on data produced within the ForestPlots.net workflow (field sheets and query sheets). It encourages reproducibility and streamlines the path from raw data to curation.\n\n\nWhat can I use forplotR for?\n\nConvert ForestPlots spreadsheets for herbarium workflows with fp_herb_converter(): turns ForestPlots-format sheets into herbarium-friendly formats to support curation and digitization steps.\nOrganize voucher images with mk_voucher_dirs(): scaffolds a standardized folder structure for voucher photos (under your chosen voucher_imgs root), ensuring consistent paths that downstream functions (e.g., plot_for_balance() and plot_html_map()) can reference reliably.\nBuild complete plot reports (PDF) with plot_for_balance(): includes metadata, specimen maps, per-subplot maps, species checklists with anchors to tags, and export of collection sheets. Optionally, compute and show above-ground biomass (AGB) using the BiomasaFP package in a dedicated section.\nCreate interactive HTML maps with plot_html_map(): generates a Leaflet map and saves the HTML directly in your project directory (side by side with voucher_imgs), honoring your filters and layout tweaks.\n\n\n\nWhat inputs does forplotR expect?\n\nForestPlots-format spreadsheets such as fp_query_sheet or field_sheet (XLSX).\nOptional CSVs to compute AGB in plot_for_balance().\nTypical project folders may include an image directory (e.g., voucher_imgs) used by the reporting and mapping functions.\n\n\n\nWhat output can forplotR generate?\n\nPDF reports (from plot_for_balance()).\nVoucher image directories (from mk_voucher_dirs()): automatically scaffolds folders under voucher_imgs based on the preliminary taxonomic ID in your spreadsheet, ensuring predictable paths for images referenced in reports and maps.\nInteractive HTML maps (from plot_html_map(), saved at the project root).\nCSV/XLSX exports produced during conversion and quality-control steps.\n\n\n\nHow do I install forplotR?\nVisit the Get Started guide for step-by-step installation from GitHub (e.g., via devtools::install_github(\"DBOSlab/forplotR\")).\n\n\nIs forplotR free to use?\nYes. forplotR is open source, licensed under the MIT License.\n\n\nDoes forplotR modify my original files?\nBy default, functions read your inputs and write separate outputs (reports, maps, converted sheets). Your source files remain unchanged unless you explicitly overwrite them in your own workflow.\n\n\nWho are the developers of forplotR?\n\nGiulia Ottino (@DBOSlab)\nDomingos Cardoso (@DBOSlab)\n\nView the code and contribute on GitHub: https://github.com/DBOSlab/forplotR\n\n\nWhere can I report bugs or request features?\nSubmit issues on GitHub: forplotR Issues.\n\n\nWhere can I ask questions and discuss forplotR?\nJoin our community via GitHub Discussions to ask questions, suggest ideas, or help others.\n\n\nHow does forplotR relate to ForestPlots.net?\nforplotR works with the ForestPlots.net inventory workflow by processing its data products (e.g., field/query sheets). It does not replace ForestPlots.net; instead, it provides a programmatic, reproducible toolkit for QA/QC, analysis, and reporting based on those datasets."
+  },
+  {
+    "objectID": "LICENSE.html",
+    "href": "LICENSE.html",
+    "title": "",
+    "section": "",
+    "text": "Code\n\n \n\n\n\n\n\n\nMIT License\nCopyright (c) 2024 refloraR authors\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\nTHE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."
+  },
+  {
+    "objectID": "authors/index.html",
+    "href": "authors/index.html",
+    "title": "",
+    "section": "",
+    "text": "Code"
+  },
+  {
+    "objectID": "authors/index.html#the-forplotr-developers",
+    "href": "authors/index.html#the-forplotr-developers",
+    "title": "",
+    "section": "The forplotR Developers",
+    "text": "The forplotR Developers\n\n\n  \n    \n    \n      Giulia Ottino\n      \n        \n        \n        \n      \n      Plant science student leading the forplotR package, responsible for designing and coding functions as well as developing the project website\n    \n  \n\n  \n    \n    \n      Domingos Cardoso\n      \n        \n        \n        \n      \n      Taxonomist and bioinformatician leading the forplotR package, responsible for designing and coding functions as well as developing the project website"
+  },
+  {
+    "objectID": "articles/fp_herb_converter.html",
+    "href": "articles/fp_herb_converter.html",
+    "title": "Convert forest plot census data into a herbarium spreadsheet format",
+    "section": "",
+    "text": "Here we present a complete guide to the fp_herb_converter() function of the forplotR package. This function allows users to convert plot census specimen records to a herbarium spreadsheet Format from the Rio de Janeiro Botanical Garden’s JABOT herbarium collection spreadsheet It also supports for BRAHMS or other customized herbarium spreadsheet format (user-specified column mapping)."
+  },
+  {
+    "objectID": "articles/fp_herb_converter.html#function-overview",
+    "href": "articles/fp_herb_converter.html#function-overview",
+    "title": "Convert forest plot census data into a herbarium spreadsheet format",
+    "section": "Function Overview",
+    "text": "Function Overview\nThe fp_herb_converter() function convert forest plot census data into a herbarium spreadsheet format by reading a ForestPlots-format field dataset and an herbarium template, and outputs a filled herbarium data frame."
+  },
+  {
+    "objectID": "articles/fp_herb_converter.html#arguments",
+    "href": "articles/fp_herb_converter.html#arguments",
+    "title": "Convert forest plot census data into a herbarium spreadsheet format",
+    "section": "Arguments",
+    "text": "Arguments\n\n\n\n\n\n\n\nArgument\nDescription\n\n\n\n\nforestplots_file_path\nFile path to the forestplots dataset.\n\n\nherb_file_path\nFile path of the herbarium empty template dataset.\n\n\nlanguage\nLanguage for output metadata. Default is \"en\", options are \"en\", \"pt\" and \"es\".\n\n\nherbarium_format\nFormat of the herbarium dataset. Default is \"jabot\", additional options is “brahms”, “custom” herbarium format, where column names must be specified by the user.\n\n\ncountry\nCountry where the data was collected. Default is \"Brazil\".\n\n\nmajorarea\nState where the data was collected\n\n\nminorarea\nMunicipality where the data was collected.\n\n\nprotectedarea\nName of the protected area (if applicable).\n\n\nlocnotes\nA character vector of herbarium acronyms (e.g., \"RB\", \"K\"). Use NULL to download all collections.\n\n\nproject\nLogical. If FALSE, repatriated herbaria will be skipped. Use jabot_summary() to identify them.\n\n\ncollector\nLogical. If TRUE, messages describing download progress will be shown.\n\n\naddcoll\nDirectory path to save the files. Default is \"jabot_download\".\n\n\nlat\nA character vector of herbarium acronyms (e.g., \"RB\", \"K\"). Use NULL to download all collections.\n\n\nlon\nLogical. If FALSE, repatriated herbaria will be skipped. Use jabot_summary() to identify them.\n\n\nalt\nLogical. If download progress will be shown.\n\n\ndir\nDirectory path to save the files. Default is \"Results_rainfor_herb\".\n\n\nfilename\nDirectory path to save the files. Default is \"rainfor_to_herb\"."
+  },
+  {
+    "objectID": "articles/fp_herb_converter.html#convert-forestplot-dataset-into-jabot-spreadsheet-format",
+    "href": "articles/fp_herb_converter.html#convert-forestplot-dataset-into-jabot-spreadsheet-format",
+    "title": "Convert forest plot census data into a herbarium spreadsheet format",
+    "section": "Convert forestplot dataset into JABOT spreadsheet format",
+    "text": "Convert forestplot dataset into JABOT spreadsheet format\nUse the function with default settings to convert the fieldsheet into JABOT spreadsheet herbarium format\nfp_herb_converter(\n                       forestplots_file_path = NULL,\n                       herb_file_path = NULL,\n                       language = \"en\",\n                       herbarium_format = \"jabot\",\n                       country = \"Brazil\",\n                       majorarea = NULL,\n                       minorarea = NULL,\n                       protectedarea = NULL,\n                       locnotes = NULL,\n                       project = NULL,\n                       collector = NULL,\n                       addcoll = NULL,\n                       lat = NULL,\n                       long = NULL,\n                       alt = NULL,\n                       dir = \"Results_rainfor_herb\",\n                       filename = \"rainfor_to_herb\"\n)"
+  },
+  {
+    "objectID": "articles/fp_herb_converter.html#download-specimens-from-selected-collections",
+    "href": "articles/fp_herb_converter.html#download-specimens-from-selected-collections",
+    "title": "Convert forest plot census data into a herbarium spreadsheet format",
+    "section": "Download Specimens from Selected Collections",
+    "text": "Download Specimens from Selected Collections\nSpecify collection codes with the herbarium argument:\njabot_download(\n  herbarium = c(\"AFR\", \"R\", \"RB\"),\n  verbose = TRUE,\n  dir = \"jabot_download\"\n)"
+  },
+  {
+    "objectID": "articles/fp_herb_converter.html#skipping-repatriated-collections",
+    "href": "articles/fp_herb_converter.html#skipping-repatriated-collections",
+    "title": "Convert forest plot census data into a herbarium spreadsheet format",
+    "section": "Skipping Repatriated Collections",
+    "text": "Skipping Repatriated Collections\nTo exclude collections marked as repatriated:\njabot_download(\n  repatriated = FALSE,\n  verbose = TRUE,\n  dir = \"jabot_download\"\n)"
+  },
+  {
+    "objectID": "articles/fp_herb_converter.html#example-custom-directory-without-verbose-messages",
+    "href": "articles/fp_herb_converter.html#example-custom-directory-without-verbose-messages",
+    "title": "Convert forest plot census data into a herbarium spreadsheet format",
+    "section": "Example: Custom Directory Without Verbose Messages",
+    "text": "Example: Custom Directory Without Verbose Messages\njabot_download(\n  herbarium = \"RB\",\n  dir = \"custom_directory\"\n)"
+  },
+  {
+    "objectID": "articles/fp_herb_converter.html#additional-tips",
+    "href": "articles/fp_herb_converter.html#additional-tips",
+    "title": "Convert forest plot census data into a herbarium spreadsheet format",
+    "section": "Additional Tips",
+    "text": "Additional Tips\n\nUse fp_herb_converter to inspect which collections are available and whether they are repatriated.\nEnsure internet access is available when running jabot_download().\nReview the contents of the downloaded folder to verify occurrence.txt and metadata presence."
+  },
+  {
+    "objectID": "articles/fp_herb_converter.html#see-also",
+    "href": "articles/fp_herb_converter.html#see-also",
+    "title": "Convert forest plot census data into a herbarium spreadsheet format",
+    "section": "See Also",
+    "text": "See Also\n\njabot_summary(): Get a summary of JABOT collections"
+  },
+  {
+    "objectID": "articles/index.html",
+    "href": "articles/index.html",
+    "title": "Articles",
+    "section": "",
+    "text": "Convert forest plot census data into a herbarium spreadsheet format\n\nfp_herb_converter\n\n\n\n\n\n\nCreates a folder structure for organizing voucher images\n\n\nmk_voucher_dirs\n\n\n\n\n\n\n\nGenerates A full PDF report with plot metadata\n\nfp_herb_converter\n\n\n\n\n\n\nCreate a forestplot voucher interactive HTML map\n\nplot_html_map",
+    "crumbs": [
+      "Articles",
+      "Overview"
+    ]
+  },
+  {
+    "objectID": "articles/plot_for_balance.html",
+    "href": "articles/plot_for_balance.html",
+    "title": "Generate plot specimen map & collection balance",
+    "section": "",
+    "text": "This guide demonstrates how to use the plot_for_balance() function from the forplotR package. The function processes ForestPlots-format sheets to generate a specimen map, a full PDF plot report (with per-subplot maps and optional AGB section), and an Excel summary of collection percentages per subplot."
+  },
+  {
+    "objectID": "articles/plot_for_balance.html#function-overview",
+    "href": "articles/plot_for_balance.html#function-overview",
+    "title": "Generate plot specimen map & collection balance",
+    "section": "Function Overview",
+    "text": "Function Overview\nThe plot_for_balance() function reads a field sheet or Query Library export (ForestPlots format), cleans and normalizes coordinates/diameters, builds global plot coordinates, and creates:\n\nA main map of individuals with collection status (and optional palm highlighting).\nPer-subplot maps with navigation.\nAn optional Above-Ground Biomass (AGB) section (when calc_agb = TRUE).\nA PDF report and an Excel file summarizing collection balance per subplot."
+  },
+  {
+    "objectID": "articles/plot_for_balance.html#arguments",
+    "href": "articles/plot_for_balance.html#arguments",
+    "title": "Generate plot specimen map & collection balance",
+    "section": "Arguments",
+    "text": "Arguments\n\n\n\n\n\n\n\nArgument\nDescription\n\n\n\n\nfp_file_path\nPath to the Excel file (field or query sheet) in ForestPlots format. Required.\n\n\ninput_type\nOne of \"field_sheet\" or \"fp_query_sheet\"; indicates input file format.\n\n\nplot_size\nTotal plot size in hectares. Default: 1.\n\n\nsubplot_size\nSide length of each subplot in meters. Default: 10.\n\n\nhighlight_palms\nLogical. If TRUE, highlights Arecaceae. Default: TRUE.\n\n\ncalc_agb\nLogical. If TRUE, computes AGB with BiomasaFP and adds a section to the report. Default: FALSE.\n\n\nplot_size\nTotal plot size in hectares. Default: 1.\n\n\nsubplot_size\nLogical. If TRUE, displays progress messages.\n\n\ntrees_csv\nTree-level measurements for AGB (data frame or path to ForestPlots Data.csv). Optional.\n\n\nmd_csv\nPlot metadata (data frame or file path). Optional.\n\n\ndir\nOutput directory for results. Default: \"Results_map_plot\".\n\n\nfilename\nBasename for output files (without extension). Default: \"plot_specimen\"."
+  },
+  {
+    "objectID": "articles/plot_for_balance.html#basic-example-field-sheet",
+    "href": "articles/plot_for_balance.html#basic-example-field-sheet",
+    "title": "Generate plot specimen map & collection balance",
+    "section": "Basic Example (Field Sheet)",
+    "text": "Basic Example (Field Sheet)\nplot_for_balance(\nfp_file_path = \"data/forestplot.xlsx\",\ninput_type = \"field_sheet\",\nplot_size = 1,\nsubplot_size = 10,\nhighlight_palms = TRUE,\ncalc_agb = FALSE,\ndir = \"Results_map_plot\",\nfilename = \"plot_specimen\"\n)"
+  },
+  {
+    "objectID": "articles/plot_for_balance.html#using-a-query-library-export",
+    "href": "articles/plot_for_balance.html#using-a-query-library-export",
+    "title": "Generate plot specimen map & collection balance",
+    "section": "Using a Query Library Export",
+    "text": "Using a Query Library Export\nplot_for_balance(\nfp_file_path = \"data/query_export.xlsx\",\ninput_type = \"fp_query_sheet\",\nsubplot_size = 10,\ndir = \"Results_map_plot\",\nfilename = \"plot_from_query\"\n)"
+  },
+  {
+    "objectID": "articles/plot_for_balance.html#enabling-agb-computation",
+    "href": "articles/plot_for_balance.html#enabling-agb-computation",
+    "title": "Generate plot specimen map & collection balance",
+    "section": "Enabling AGB Computation",
+    "text": "Enabling AGB Computation\nplot_for_balance(\nfp_file_path = \"data/forestplot.xlsx\",\ninput_type = \"field_sheet\",\ncalc_agb = TRUE,\ntrees_csv = \"data/Data.csv\", # ForestPlots Advanced Search\nwd_csv = \"data/QL_Wood_Density_of_Individual_trees.csv\", # Query Library export\nmd_csv = \"data/QL_Plot_Information_for_R_Package_V1.1.csv\", # Query Library export\ndir = \"Results_map_plot\",\nfilename = \"plot_with_agb\"\n)"
+  },
+  {
+    "objectID": "articles/plot_for_balance.html#customizing-subplot-size-and-palms-highlight",
+    "href": "articles/plot_for_balance.html#customizing-subplot-size-and-palms-highlight",
+    "title": "Generate plot specimen map & collection balance",
+    "section": "Customizing Subplot Size and Palms Highlight",
+    "text": "Customizing Subplot Size and Palms Highlight\nplot_for_balance(\nfp_file_path = \"data/forestplot.xlsx\",\ninput_type = \"field_sheet\",\nsubplot_size = 20, # larger subplots\nhighlight_palms = FALSE, # no palm highlighting\ndir = \"Results_map_plot\",\nfilename = \"plot_custom_subplots\"\n)"
+  },
+  {
+    "objectID": "articles/plot_for_balance.html#structure-of-outputs",
+    "href": "articles/plot_for_balance.html#structure-of-outputs",
+    "title": "Generate plot specimen map & collection balance",
+    "section": "Structure of Outputs",
+    "text": "Structure of Outputs\nRunning the function creates a date-stamped subfolder inside dir, containing:\n\n*_full_report.pdf: PDF with metadata, general map, collected/uncollected maps, optional palm map, per-subplot maps, and optional AGB section.\ncollection_balance.xlsx: Spreadsheet with:\nCOLLECTION_PERCENTUAL: per-subplot and total collection percentages (with color scale).\nNOT_COLLECTED: counts and Tag Nos. for uncollected (excluding palms).\nCOLLECTED: counts and Tag Nos. for collected.\n\n# After running plot_for_balance()\nlist.files(\"Results_map_plot\", recursive = TRUE)"
+  },
+  {
+    "objectID": "articles/plot_for_balance.html#tips",
+    "href": "articles/plot_for_balance.html#tips",
+    "title": "Generate plot specimen map & collection balance",
+    "section": "Tips",
+    "text": "Tips\n\nInput format: Ensure your sheet follows ForestPlots conventions; for Query Library exports, set input_type = “fp_query_sheet”.\nCoordinates: Global plot coordinates are computed from subplot-relative positions; set plot_size and subplot_size according to your design.\nLabels: Tag numbers are printed on points; for dense plots, consider larger page sizes when exporting the PDF.\nAGB: When calc_agb = TRUE, provide consistent trees_csv, wd_csv, and md_csv from ForestPlots downloads.\nReproducibility: Outputs go to a date-stamped folder under dir for organized runs.."
+  },
+  {
+    "objectID": "articles/plot_for_balance.html#see-also",
+    "href": "articles/plot_for_balance.html#see-also",
+    "title": "Generate plot specimen map & collection balance",
+    "section": "See Also",
+    "text": "See Also\n\nmk_voucheer_dirs(): Organize voucher image directories by updated IDs.\nplot_html_map(): Interactive HTML maps for plots.\nfp_herb_converter(): Convert ForestPlots sheets to herbarium formats."
+  },
+  {
+    "objectID": "about.html#overview",
+    "href": "about.html#overview",
+    "title": "About forplotR",
+    "section": "Overview",
+    "text": "Overview\nforplotR is an R package designed to integrate and streamline the processing of data from long-term forest monitoring plots. By linking the physical voucher (specimen) to its associated spatial, taxonomic, and metadata information, it supports the concept of the extended specimen. The package responds to the growing need to systematize complex datasets in ways that not only ensure scientific rigor and reproducibility, but also simplify fieldwork logistics and post-field data processing — a major challenge in large-scale biodiversity monitoring.\nThe package interacts with the ForestPlots.net standard plot inventory protocol by reading standardized field templates and converting specimen records into herbarium-ready outputs, including the JABOT format, BRAHMS format, or any other user-defined structure.\nIt also provides tools for organizing voucher image directories based on preliminary taxonomic identification and individual voucher codes. These directories are dynamically updated to reflect changes in taxonomic determination, maintaining a coherent and traceable folder structure.\nIn addition, forplotR generates comprehensive PDF reports with overview maps of the plot, maps filtered by collection status (e.g., collected vs. uncollected), and subplot-specific maps. Optionally, it also produces an .xlsx spreadsheet summarizing the percentage of collected individuals per subplot.\nThe package includes functionality for producing interactive HTML maps for specimen visualization, with filtering options based on taxonomic groups, collection status, or the presence of voucher images."
+  },
+  {
+    "objectID": "about.html#the-forestplots.net",
+    "href": "about.html#the-forestplots.net",
+    "title": "About forplotR",
+    "section": "The ForestPlots.net",
+    "text": "The ForestPlots.net\nForestPlots.net is a global collaborative network that standardizes and integrates forest monitoring efforts across the tropical regions. It provides tools and protocols for establishing long-term permanent plots, where researchers can collect consistent data on tree species, diameters, locations, and dynamics over time.The platform enables scientists to monitor forest composition, structure, and changes in carbon stocks, biodiversity, and ecosystem processes. By adhering to a shared methodology, ForestPlots.net allows for comparisons across different regions and time periods, supporting large-scale analyses of forest ecology and climate change impacts."
+  },
+  {
+    "objectID": "about.html#package-description",
+    "href": "about.html#package-description",
+    "title": "About forplotR",
+    "section": "Package Description",
+    "text": "Package Description\nPackage: forplotR\nType: R Package\nVersion: 1.0.0\nAuthors: Domingos Cardoso (@DBOSlab ORCID), Giulia Cavalcanti Ottino (@DBOSlab ORCID)\nMaintainer: Giulia Ottino (botgiuc@gmail.com)\n\nFeatures\n\nConvert field data into JABOT, BRAHMS, or custom herbarium label formats\nCreate, organize and dynamically update voucher image directories\nGenerate PDF map reports with subplot-level collection summaries\nExport .xlsx files summarizing collection status by subplot\nProduce interactive HTML map for spatial visualization of the plot, specimen locations and images"
+  },
+  {
+    "objectID": "about.html#contribute",
+    "href": "about.html#contribute",
+    "title": "About forplotR",
+    "section": "Contribute",
+    "text": "Contribute\nYou can contribute to forplotR by:\n\nOpening issues for feedback or bug reports\nSubmitting pull requests for fixes or enhancements\nSuggesting or developing new features (please open an issue for discussion first)"
+  },
+  {
+    "objectID": "about.html#license",
+    "href": "about.html#license",
+    "title": "About forplotR",
+    "section": "License",
+    "text": "License\nforplotR is open source software. Open tools empower science through reproducibility, accessibility, and equitable knowledge sharing."
+  },
+  {
+    "objectID": "about.html#acknowledgements",
+    "href": "about.html#acknowledgements",
+    "title": "About forplotR",
+    "section": "Acknowledgements",
+    "text": "Acknowledgements\nWe gratefully acknowledge the financial support provided by CNPq - Conselho Nacional de Desenvolvimento Científico e Tecnológico and CAPES - Coordenação de Aperfeiçoamento de Pessoal de Nível Superior - Brasil and the institutional supports by the Rio de Janeiro Botanical Garden and National School of Tropical Botany."
+  },
+  {
+    "objectID": "reference/fp_herb_converter.html",
+    "href": "reference/fp_herb_converter.html",
+    "title": "fp_herb_converter",
+    "section": "",
+    "text": "forplotR::fp_herb_converter()\n\n\nDescription\nFunction to process data collected in the Forestplots format and convert it into a herbarium format. The default herbarium format is JABOT, but it also supports conversion to the Brahms and custom herbarium formats, where the user can specify the column names in column_map list. The function performs the following steps: (i) Reads the input forestplots field sheet template and herbarium datasets; (ii) Ensures all required metadata (e.g., majorarea, minorarea, lat, long) is correctly provided;(iii) Processes taxonomic, spatial, and additional metadata to fill the herbarium format sheet; (iv) Generates a new xlsx file with the converted data, saved in a directory named after the current date. This function automatically converts field codes from the Rainfor protocol (e.g., tree condition codes and light exposure codes) into their full descriptive meanings, and incorporates them into the final herbarium notes. For example, the code “A” is converted to “alive normal” (or “árvore viva normal” in Portuguese). These translations are integrated into a standardized descriptive text alongside other information extracted directly from the forestplots sheet, such as DBH, field notes, and subplot coordinates. For instance, a final note in English might read:\n“Tree, 24.83cm DBH, with peeling bark, small buttress roots, bark with tiny reddish plates, crown completely exposed to vertical and lateral light in a 45 degree curve. Individual #3 in the subplot 1, x = 1.5m, y = 2.5m.”\nThe phrases “with peeling bark” and “crown completely exposed to vertical and lateral light…” are automatically generated from the Rainfor codes, while phrases such as “small buttress roots” and “bark with reddish plates” come from the original field notes recorded in the Forestplots sheet.The conversion of Rainfor codes and the construction of this descriptive text are supported in three languages: English, Portuguese, and Spanish, depending on the value set in the language argument.\n\n\nArguments\n\n\n\n\n\n\n\nArgument\nDescription\n\n\n\n\nherb_file_path\nFile path of the herbarium empty template dataset.\n\n\nlanguage\nLanguage for output metadata. Default is “en”, options are “en”, “pt” and “es”.\n\n\nherbarium_format\nFormat of the herbarium dataset. Default is “jabot”, additional options is “brahms”, “custom” herbarium format, where column names must be specified by the user.\n\n\ncountry\nCountry where the data was collected. Default is “Brazil”.\n\n\nmajorarea\nState where the data was collected.\n\n\nminorarea\nMunicipality where the data was collected.\n\n\nprotectedarea\nName of the protected area (if applicable).\n\n\nlocnotes\nNotes of the locality where the data was collected.\n\n\nproject\nProject name or description (if applicable).\n\n\ncollector\nMain collector name. If 'NULL', extract the ‘Team’ information of forestplots dataset. the first member of the team will be considered as the main collector.\n\n\naddcoll\nCharacter. Additional collector(s) name(s).If 'NULL', extract the additional members of the ‘Team’ in forestplots dataset.\n\n\nlat\nLatitude in decimal degrees of the collection site.\n\n\nlong\nLongitude in decimal degrees of the collection site.\n\n\nalt\nAltitude in meters of the collection site. If 'NULL', extract the altitude from geographic coordinates dataset.\n\n\nadd_census_notes\nIf 'TRUE', census notes will be included in the herbarium sheet’s notes. If 'FALSE', census notes will be omitted.\n\n\ndir\nPathway to the computer’s directory, where the file will be saved. The default is to create a directory named Results_filled_herbarium_sheet and the search results will be saved within a subfolder named after the current date.\n\n\nfilename\nName of the output file. Default is forestplot_to_herbarium_sheet.\n\n\nforestplots_file_path\nFile path to the forestplots dataset.\n\n\n\n\n\nValue\nA data frame in herbarium format with the processed data from forestplots dataset.\n\n\nExamples\nfp_herb_converter &lt;- function(fp_file_path = NULL,\n                              herb_file_path = NULL,\n                              language = \"en\",\n                              herbarium_format = \"jabot\",\n                              country = \"Brazil\",\n                              majorarea = NULL,\n                              minorarea = NULL,\n                              protectedarea = NULL,\n                              locnotes = NULL,\n                              project = NULL,\n                              collector = NULL,\n                              addcoll = NULL,\n                              lat = NULL,\n                              long = NULL,\n                              alt = NULL,\n                              add_census_notes = TRUE,\n                              dir = \"Results_filled_herbarium_sheet\",\n                              filename =  \"forestplot_to_herbarium_sheet\")"
+  },
+  {
+    "objectID": "reference/index.html#forplotr",
+    "href": "reference/index.html#forplotr",
+    "title": "Function Reference",
+    "section": "forplotR",
+    "text": "forplotR\n\nfp_herb_converter()\nmk_voucher_dirs()\nplot_for_balance()\nplot_html_map()"
+  },
+  {
+    "objectID": "reference/plot_for_balance.html",
+    "href": "reference/plot_for_balance.html",
+    "title": "plot_for_balance",
+    "section": "",
+    "text": "forplotR::plot_for_balance()\n\n\nDescription\nProcesses field data collected using the Forestplots format and generates a specimen map (2D plot) with collection status and spatial distribution of individuals across subplots. Generate a PDF with a full plot report with separate maps, for each subplot and a spreadsheet summarizing the percentage of collected specimens per subplot. The function performs the following steps: (i) validates all input arguments and checks/create output folders; (ii) reads the Forestplots-formatted xlsx sheet, extracts metadata (team, plot name, plot code), and cleans the data; (iii) normalizes and cleans coordinate and diameter values, computing global plot coordinates from subplot-relative positions; (iv) creates a PDF report, including plot metadata, the main map, collected and uncollected specimen maps, optionally a map highlighting palms (Arecaceae) and navigable individual subplot maps; (v) optionally generates a xlsx spreadsheet with the collection percentage per subplot (including totals), distinguishing collected vs. uncollected, and palm individuals.\n\n\nArguments\n\n\n\n\n\n\n\nArgument\nDescription\n\n\n\n\nfp_file_path\nFile path to the forestplots dataset (Excel format).\n\n\nplot_size\nOverall plot size in hectares (default is 1 ha).\n\n\nsubplot_size\nSide length of subplots in meters (default is 10 m).\n\n\nhighlight_palms\nLogical. If TRUE, highlights Arecaceae in purple.\n\n\ndir\nDirectory path where output will be saved (default is “Results_map_plot”).\n\n\nfilename\nName of the output file for the main plot (without extension).\n\n\n\n\n\nValue\nA PDF report and a summary Excel file with collection statistics.\n\n\nExamples\nplot_for_balance(fp_file_path = \"data/forestplot.xlsx\",\n                 plot_size = 1,\n                 subplot_size = 10,\n                 highlight_palms = TRUE,\n                 dir = \"Results_map_plot\",\n                 filename = \"plot_specimen\")"
+  }
+]

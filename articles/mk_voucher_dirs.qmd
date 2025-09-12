@@ -1,0 +1,108 @@
+---
+title: "Organize voucher directories"
+format: html
+execute:
+  echo: false
+  eval: true
+  freeze: auto
+  cache: false
+  warning: false
+  message: false
+  include: true
+  inline: true
+---
+
+```{r setup, include=FALSE}
+library(forplotR)
+```
+
+This guide demonstrates how to use the `mk_voucher_dirs` function in the `forplotR` package to create and organize image directories of vouchers recorded in plot censuses based on their **updated taxonomic identification**.
+
+## Function Overview
+
+The `mk_voucher_dirs()` function organizes **voucher image folders** according to the most up-to-date taxonomic identification found in a **ForestPlots-style** Excel file.
+
+It is safe to run multiple times:
+
+* **First run:** creates the main output folder (default: `"voucher_imgs"`) and, for each voucher marked as **Collected**, creates the directory structure `Family/Genus/Voucher`.
+* **Subsequent runs (reorganization):** detects vouchers placed under outdated genera and **moves images** to the correct folder **without overwriting** existing files; then **removes empty, outdated directories**.
+
+## Arguments
+
+| Argument       | Description                                                                                      |
+| -------------- | ------------------------------------------------------------------------------------------------ |
+| `fp_file_path` | Path to the Excel file (ForestPlots template) containing voucher data. **Required**.             |
+| `output_dir`   | Directory where the voucher folder structure will be created/updated. Default: `"voucher_imgs"`. |
+
+## Basic Use Case
+
+```r
+mk_voucher_dirs(
+  fp_file_path = "data/RUS_plot.xlsx",
+  output_dir   = "voucher_imgs"
+)
+```
+
+## Reorganizing After Taxonomic Updates
+
+If some vouchers were reidentified (e.g., genus changed), just run the function again:
+
+```r
+mk_voucher_dirs(
+  fp_file_path = "data/RUS_plot.xlsx",
+  output_dir   = "voucher_imgs"
+)
+```
+
+* Images found under an outdated genus folder are **moved** to the correct genus folder.
+* The function **does not overwrite** existing files in the correct destination.
+* Any **empty old voucher folders** are removed.
+
+## Using a Custom Output Directory
+
+```r
+mk_voucher_dirs(
+  fp_file_path = "data/Inventory_A.xlsx",
+  output_dir   = "parcelA_voucher_imgs"
+)
+```
+
+## Inspecting the Resulting Structure
+
+```r
+# List created directories (first levels)
+list.dirs("voucher_imgs", recursive = FALSE)
+
+# Inspect all voucher-level directories
+dirs <- list.dirs("voucher_imgs", recursive = TRUE, full.names = TRUE)
+head(dirs, 20)
+```
+
+```{r}
+#| echo: false
+# Quick check: count voucher directories under output_dir
+out <- "voucher_imgs"
+if (dir.exists(out)) {
+  all_dirs <- list.dirs(out, recursive = TRUE, full.names = TRUE)
+  voucher_dirs <- all_dirs[grepl("[A-Za-z]+/[A-Za-z]+/[A-Za-z]{2,}[0-9]{3,}", all_dirs)]
+  cat("Total voucher directories found:", length(voucher_dirs), "
+")
+} else {
+  cat("Run mk_voucher_dirs() first to create", out, "
+")
+}
+```
+
+## Tips
+
+* Ensure your Excel file includes columns like `Family`, `Original determination`, `Voucher`, and `Collected`.
+* The **genus** is derived from the **first token** in `Original determination` (text before the first space).
+* Re-run the function whenever identifications change; it is designed to be **idempotent**.
+* Consider keeping a **backup** before large reorganizations when working with many images.
+* If a destination folder already has images, the function **skips moving** to avoid overwriting—review manually if you want to merge.
+
+## See Also
+
+* `plot_for_balance()`: Parcel report with maps, checklist, navigation, and optional AGB.
+* `plot_html_map()`: Interactive HTML maps for plots.
+* `fp_herb_converter()`: Convert ForestPlots sheets to herbarium formats.

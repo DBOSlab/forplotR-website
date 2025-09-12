@@ -1,0 +1,128 @@
+---
+title: "Generate interactive plot HTML map "
+format: html
+execute:
+  echo: false
+  eval: true
+  freeze: auto
+  cache: false
+  warning: false
+  message: false
+  include: true
+  inline: true
+---
+ 
+
+```{r setup, include=FALSE}
+library(forplotR)
+```
+
+This guide demonstrates how to use the `plot_html_map()` function from the `forplotR` package. The function creates a **self-contained interactive HTML map** (Leaflet) for ForestPlots data, converting subplot (X, Y) to geographic coordinates using the four plot corners, styling points by collection status (palms / collected / missing), and embedding voucher photo carousels when images are available.
+
+
+## Function Overview
+
+The `plot_html_map()` function:
+
+* Reads a ForestPlots-style Excel with vouchered trees and **extracts metadata** (team, plot name, plot code).
+
+* Converts local subplot coordinates to **latitude/longitude** using the 4 corner vertices.
+
+* Draws the **plot polygon** and a subplot grid (toggleable).
+
+* Colors points by status: **Palms = yellow**, **Collected = gray**, **Not collected = red**.
+
+* Builds **image carousels** in popups when matching voucher folders exist.
+
+* Adds a **filter sidebar** (family, species, status, with photos, subplots; plus search box).
+
+* Saves a **standalone HTML**.
+
+
+## Arguments
+
+| Argument        | Description                                                                                              |
+| --------------- | -------------------------------------------------------------------------------------------------------- |
+| `fp_file_path`  | Path to the Excel file (ForestPlots format) containing tree data. **Required**.                          |
+| `vertex_coords` | Data frame or path to an Excel file with the four plot corners (`Latitude`, `Longitude`).                |
+| `plot_size`     | Total plot size in hectares. Default: `1`.                                                               |
+| `subplot_size`  | Subplot side length in meters. Default: `10`.                                                            |
+| `voucher_imgs`  | Directory containing voucher images organized per voucher (enables photo carousels in popups). Optional. |
+| `filename`      | Name of the output HTML file. Default: `"plot_map.html"`.                                                |
+
+
+## Basic Example (vertices in data frame)
+
+```r
+vertex_df <- data.frame(
+  Latitude  = c(-3.1230, -3.1230, -3.1250, -3.1250),
+  Longitude = c(-60.0120, -60.0100, -60.0120, -60.0100)
+)
+
+plot_html_map(
+  fp_file_path  = "data/tree_data.xlsx",
+  vertex_coords = vertex_df,
+  subplot_size  = 10,
+  voucher_imgs  = "voucher_imgs",
+  filename      = "plot_map.html"
+)
+
+```
+
+## Using an Excel file for the plot corners
+
+```r
+plot_html_map(
+  fp_file_path  = "data/tree_data.xlsx",
+  vertex_coords = "data/plot_vertices.xlsx",  # sheet with Latitude/Longitude
+  voucher_imgs  = "voucher_imgs",
+  filename      = "plot_map_from_xlsx.html"
+)
+
+```
+
+## Without photos (no voucher images folder)
+```r
+plot_html_map(
+  fp_file_path  = "data/tree_data.xlsx",
+  vertex_coords = "data/plot_vertices.xlsx",
+  voucher_imgs  = NULL,                        # popups without carousels
+  filename      = "plot_map_no_photos.html"
+)
+```
+
+## Output
+
+The function saves a **standalone** HTML file (all assets embedded) named as specified by `filename` (often with a date prefix, depending on your wrapper). The map includes:
+
+Base layers (street/satellite/topo/dark).
+
+Plot boundary polygon and optional **subplot grid** (toggle in the layer control).
+
+Point popups with **Tag**, **Subplot**, **Family**, **Species**, **DBH**, **Voucher**, and **photos** when found.
+
+You can open the file directly in a browser or share it.
+
+```r
+# after running plot_html_map()
+list.files(pattern = "plot_map.*\\.html$")
+```
+
+## Tips
+
+* Vertices order: Keep the four corners in a consistent loop (e.g., clockwise). If your polygon self-intersects, check order.
+
+* Signs: The function normalizes coordinates; verify latitude/longitude signs (southern/western hemispheres are negative).
+
+* Photos: Organize images under voucher_imgs/<Family>/<Genus>/<Voucher>/... to enable the carousel in popups.
+
+* Performance: Large plots benefit from fewer visible layers (hide subplot grid) and smaller marker radii.
+
+* Metadata: Plot name/code/team are parsed from the first row of the ForestPlots sheet.
+
+
+## See Also
+
+* `mk_voucheer_dirs()`: Organize voucher image directories by updated IDs.
+* `plot_for_balance()`: Parcel report with maps, checklist, navigation, and optional AGB.
+* `fp_herb_converter()`: Convert ForestPlots sheets to herbarium formats.

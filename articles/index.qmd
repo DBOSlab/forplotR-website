@@ -1,0 +1,43 @@
+---
+title: "Articles"
+format: html
+---
+
+<style>
+  body {
+    position: relative;
+  }
+
+  .watermark {
+    position: fixed;
+    bottom: 50px;
+    right: 50px;
+    opacity: 0.15;
+    z-index: -1;
+    width: 400px;
+  }
+</style>
+
+<img src="/figures/forplotR_original_logo.png" class="watermark" alt="forplotR logo watermark">
+
+::: {layout-ncol="2"}
+::: {style="display: block;"}
+### Convert forest plot census data into a herbarium spreadsheet format
+- [fp_herb_converter](/articles/fp_herb_converter.qmd)  
+
+::: {style="display: block;"}
+:::
+### Creates a folder structure for organizing voucher images  
+- - [mk_voucher_dirs](/articles/download_jabot_collections.qmd)
+
+::: {style="display: block;"}
+:::
+### Generates A full PDF report with plot metadata
+- [fp_herb_converter](/articles/plot_for_balance.qmd)  
+
+::: {style="display: block;"}
+:::
+### Create a forestplot voucher interactive HTML map  
+- [plot_html_map](/articles/plot_html_map.qmd)
+:::
+:::

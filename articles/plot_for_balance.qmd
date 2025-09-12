@@ -1,0 +1,129 @@
+---
+title: "Generate plot specimen map & collection balance"
+format: html
+---
+
+This guide demonstrates how to use the `plot_for_balance()` function from the forplotR package. The function processes ForestPlots-format sheets to generate a specimen map, a full PDF plot report (with per-subplot maps and optional AGB section), and an Excel summary of collection percentages per subplot.
+
+## Function Overview
+
+The `plot_for_balance()` function reads a field sheet or Query Library export (ForestPlots format), cleans and normalizes coordinates/diameters, builds global plot coordinates, and creates:
+
+* A main map of individuals with collection status (and optional palm highlighting).
+
+* Per-subplot maps with navigation.
+
+* An optional Above-Ground Biomass (AGB) section (when `calc_agb = TRUE`).
+
+* A PDF report and an Excel file summarizing collection balance per subplot.
+
+## Arguments
+
+| Argument      | Description |
+|---------------|-------------|
+| `fp_file_path`        | Path to the Excel file (field or query sheet) in ForestPlots format. Required. |
+| `input_type`   | One of `"field_sheet"` or `"fp_query_sheet"`; indicates input file format.|
+| `plot_size` | Total plot size in hectares. Default: `1`. |
+| `subplot_size`     | Side length of each subplot in meters. Default: `10`. |
+`highlight_palms`        | Logical. If `TRUE`, highlights Arecaceae. Default: `TRUE`.|
+| `calc_agb`   | Logical. If `TRUE`, computes AGB with BiomasaFP and adds a section to the report. Default: `FALSE`.|
+| `plot_size` | Total plot size in hectares. Default: `1`. |
+| `subplot_size`     | Logical. If `TRUE`, displays progress messages. |
+| `trees_csv`   | Tree-level measurements for `AGB` (data frame or path to ForestPlots `Data.csv`). Optional.|
+| `md_csv` | Plot metadata (data frame or file path). Optional. |
+| `dir`     | Output directory for results. Default: `"Results_map_plot"`. |
+| `filename` | Basename for output files (without extension). Default: `"plot_specimen"`. |
+
+
+
+## Basic Example (Field Sheet)
+
+```r
+plot_for_balance(
+fp_file_path = "data/forestplot.xlsx",
+input_type = "field_sheet",
+plot_size = 1,
+subplot_size = 10,
+highlight_palms = TRUE,
+calc_agb = FALSE,
+dir = "Results_map_plot",
+filename = "plot_specimen"
+)
+```
+
+## Using a Query Library Export
+
+```r
+plot_for_balance(
+fp_file_path = "data/query_export.xlsx",
+input_type = "fp_query_sheet",
+subplot_size = 10,
+dir = "Results_map_plot",
+filename = "plot_from_query"
+)
+```
+
+## Enabling AGB Computation
+
+```r
+plot_for_balance(
+fp_file_path = "data/forestplot.xlsx",
+input_type = "field_sheet",
+calc_agb = TRUE,
+trees_csv = "data/Data.csv", # ForestPlots Advanced Search
+wd_csv = "data/QL_Wood_Density_of_Individual_trees.csv", # Query Library export
+md_csv = "data/QL_Plot_Information_for_R_Package_V1.1.csv", # Query Library export
+dir = "Results_map_plot",
+filename = "plot_with_agb"
+)
+```
+## Customizing Subplot Size and Palms Highlight
+
+```r
+plot_for_balance(
+fp_file_path = "data/forestplot.xlsx",
+input_type = "field_sheet",
+subplot_size = 20, # larger subplots
+highlight_palms = FALSE, # no palm highlighting
+dir = "Results_map_plot",
+filename = "plot_custom_subplots"
+)
+```
+
+## Structure of Outputs
+
+Running the function creates a date-stamped subfolder inside `dir`, containing:
+
+* `*_full_report.pdf`: PDF with metadata, general map, collected/uncollected maps, optional palm map, per-subplot maps, and optional AGB section.
+
+* `collection_balance.xlsx`: Spreadsheet with:
+
+* `COLLECTION_PERCENTUAL`: per-subplot and total collection percentages (with color scale).
+
+* `NOT_COLLECTED`: counts and Tag Nos. for uncollected (excluding palms).
+
+* `COLLECTED`: counts and Tag Nos. for collected.
+
+```r
+# After running plot_for_balance()
+list.files("Results_map_plot", recursive = TRUE)
+```
+
+## Tips
+
+* Input format: Ensure your sheet follows ForestPlots conventions; for Query Library exports, set input_type = "fp_query_sheet".
+
+* Coordinates: Global plot coordinates are computed from subplot-relative positions; set plot_size and subplot_size according to your design.
+
+* Labels: Tag numbers are printed on points; for dense plots, consider larger page sizes when exporting the PDF.
+
+* AGB: When calc_agb = TRUE, provide consistent trees_csv, wd_csv, and md_csv from ForestPlots downloads.
+
+* Reproducibility: Outputs go to a date-stamped folder under dir for organized runs..
+
+
+## See Also
+
+* `mk_voucheer_dirs()`: Organize voucher image directories by updated IDs.
+* `plot_html_map()`: Interactive HTML maps for plots.
+* `fp_herb_converter()`: Convert ForestPlots sheets to herbarium formats.

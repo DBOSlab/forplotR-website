@@ -1,0 +1,97 @@
+---
+title: "Frequently Asked Questions"
+format:
+  html:
+    toc: true
+---
+
+<style>
+  body {
+    position: relative;
+  }
+
+  .watermark {
+    position: fixed;
+    bottom: 50px;
+    right: 50px;
+    opacity: 0.15;
+    z-index: -1;
+    width: 400px;
+  }
+
+  .background-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.8);
+    z-index: -1;
+  }
+</style>
+
+<img src='/figures/forplotR_original_logo.png' class='watermark' alt='forplotR logo watermark'>
+
+
+### What is forplotR?
+
+`forplotR` is an R package that helps organize, check, analyze, and report **forest plot inventory data**, with a special focus on data produced within the ForestPlots.net workflow (field sheets and query sheets). It encourages reproducibility and streamlines the path from raw data to curation.
+
+
+### What can I use forplotR for?
+
+- **Convert ForestPlots spreadsheets for herbarium workflows** with `fp_herb_converter()`: turns ForestPlots-format sheets into herbarium-friendly formats to support curation and digitization steps.
+- **Organize voucher images** with `mk_voucher_dirs()`: scaffolds a standardized folder structure for voucher photos (under your chosen `voucher_imgs` root), ensuring consistent paths that downstream functions (e.g., `plot_for_balance()` and `plot_html_map()`) can reference reliably.
+- **Build complete plot reports (PDF)** with `plot_for_balance()`: includes metadata, specimen maps, per-subplot maps, species checklists with anchors to tags, and export of collection sheets. Optionally, compute and show **above-ground biomass (AGB)** using the `BiomasaFP` package in a dedicated section.
+- **Create interactive HTML maps** with `plot_html_map()`: generates a Leaflet map and saves the HTML **directly in your project directory** (side by side with `voucher_imgs`), honoring your filters and layout tweaks.
+
+### What inputs does forplotR expect?
+
+- ForestPlots-format spreadsheets such as **`fp_query_sheet`** or **`field_sheet`** (XLSX).
+- Optional CSVs to compute **AGB** in `plot_for_balance()`.
+- Typical project folders may include an image directory (e.g., `voucher_imgs`) used by the reporting and mapping functions.
+
+
+### What output can forplotR generate?
+
+- **PDF reports** (from `plot_for_balance()`).
+- **Voucher image directories** (from `mk_voucher_dirs()`): automatically scaffolds folders under `voucher_imgs` based on the **preliminary taxonomic ID** in your spreadsheet, ensuring predictable paths for images referenced in reports and maps.
+- **Interactive HTML maps** (from `plot_html_map()`, saved at the project root).
+- **CSV/XLSX exports** produced during conversion and quality-control steps.
+
+### How do I install forplotR?
+
+Visit the [Get Started guide](/get-started/index.qmd) for step-by-step installation from GitHub (e.g., via `devtools::install_github("DBOSlab/forplotR")`).
+
+
+### Is forplotR free to use?
+
+Yes. `forplotR` is open source, licensed under the [MIT License](https://opensource.org/license/mit/).
+
+
+### Does forplotR modify my original files?
+
+By default, functions **read your inputs and write separate outputs** (reports, maps, converted sheets). Your source files remain unchanged unless you explicitly overwrite them in your own workflow.
+
+
+### Who are the developers of forplotR?
+
+- Giulia Ottino ([\@DBOSlab](https://github.com/DBOSlab))
+- Domingos Cardoso ([\@DBOSlab](https://github.com/DBOSlab))
+
+View the code and contribute on GitHub: <https://github.com/DBOSlab/forplotR>
+
+
+### Where can I report bugs or request features?
+
+Submit issues on GitHub: [forplotR Issues](https://github.com/DBOSlab/forplotR/issues).
+
+
+### Where can I ask questions and discuss forplotR?
+
+Join our community via [GitHub Discussions](https://github.com/DBOSlab/forplotR/discussions) to ask questions, suggest ideas, or help others.
+
+
+### How does forplotR relate to ForestPlots.net?
+
+`forplotR` works **with** the ForestPlots.net inventory workflow by processing its data products (e.g., field/query sheets). It **does not replace** ForestPlots.net; instead, it provides a programmatic, reproducible toolkit for QA/QC, analysis, and reporting based on those datasets.

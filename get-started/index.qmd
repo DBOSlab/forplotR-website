@@ -1,0 +1,40 @@
+---
+title: "Install"
+format:
+  html:
+    toc: true
+---
+
+<style>
+  body {
+    position: relative;
+  }
+
+  .watermark {
+    position: fixed;
+    bottom: 50px;
+    right: 50px;
+    opacity: 0.15;
+    z-index: -1;
+    width: 400px;
+  }
+</style>
+
+<img src="/figures/forplotR_original_logo.png" class="watermark" alt="forplotR logo watermark">
+
+
+## Install the package
+
+You can install the latest development version of `forplotR` package from [GitHub](https://github.com/DBOSlab/forplotR) as follows:
+
+
+```{r}
+#| eval: false
+
+#install.packages("devtools")
+devtools::install_github("DBOSlab/forplotR")
+```
+
+:::{.callout-caution}
+The steps in this section are only needed if you need to run [...]. If you already have a running [...], then skip this section. 
+:::

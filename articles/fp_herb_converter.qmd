@@ -1,0 +1,103 @@
+---
+title: "Convert forest plot census data into a herbarium spreadsheet format"
+format: html
+---
+
+Here we present a complete guide to the `fp_herb_converter()` function of the `forplotR` package. This function allows users to convert plot census specimen records to a herbarium spreadsheet Format from the Rio de Janeiro Botanical Garden's JABOT herbarium collection spreadsheet  It also supports for BRAHMS or other customized herbarium spreadsheet  format (user-specified column mapping).
+
+## Function Overview
+
+The `fp_herb_converter()` function convert forest plot census data into a herbarium spreadsheet format by reading a ForestPlots-format field dataset and an herbarium template, and outputs a filled herbarium data frame.
+
+## Arguments
+
+| Argument    | Description |
+|-------------|-------------|
+| `forestplots_file_path` | File path to the forestplots dataset. |
+| `herb_file_path` | File path of the herbarium empty template dataset. |
+| `language`   | Language for output metadata. Default is `"en"`, options are `"en"`, `"pt"` and `"es"`.|
+| `herbarium_format`       | Format of the herbarium dataset. Default is `"jabot"`, additional options is "brahms", "custom" herbarium format, where column names must be specified by the user. |
+| `country` |Country where the data was collected. Default is `"Brazil"`.|
+| `majorarea` | State where the data was collected |
+| `minorarea`   | Municipality where the data was collected. |
+| `protectedarea`       |Name of the protected area (if applicable). |
+| `locnotes` | A character vector of herbarium acronyms (e.g., `"RB"`, `"K"`). Use `NULL` to download all collections. |
+| `project` | Logical. If `FALSE`, repatriated herbaria will be skipped. Use `jabot_summary()` to identify them. |
+| `collector`   | Logical. If `TRUE`, messages describing download progress will be shown. |
+| `addcoll`       | Directory path to save the files. Default is `"jabot_download"`. |
+| `lat` | A character vector of herbarium acronyms (e.g., `"RB"`, `"K"`). Use `NULL` to download all collections. |
+| `lon` | Logical. If `FALSE`, repatriated herbaria will be skipped. Use `jabot_summary()` to identify them. |
+| `alt`   | Logical. If download progress will be shown. |
+| `dir`       | Directory path to save the files. Default is `"Results_rainfor_herb"`. |
+|`filename`   | Directory path to save the files. Default is `"rainfor_to_herb"`.
+
+
+## Convert forestplot dataset into JABOT spreadsheet format
+
+Use the function with default settings to convert the fieldsheet into JABOT spreadsheet herbarium format
+
+```r
+fp_herb_converter(
+                       forestplots_file_path = NULL,
+                       herb_file_path = NULL,
+                       language = "en",
+                       herbarium_format = "jabot",
+                       country = "Brazil",
+                       majorarea = NULL,
+                       minorarea = NULL,
+                       protectedarea = NULL,
+                       locnotes = NULL,
+                       project = NULL,
+                       collector = NULL,
+                       addcoll = NULL,
+                       lat = NULL,
+                       long = NULL,
+                       alt = NULL,
+                       dir = "Results_rainfor_herb",
+                       filename = "rainfor_to_herb"
+)
+```
+
+## Download Specimens from Selected Collections
+
+Specify collection codes with the `herbarium` argument:
+
+```r
+jabot_download(
+  herbarium = c("AFR", "R", "RB"),
+  verbose = TRUE,
+  dir = "jabot_download"
+)
+```
+
+## Skipping Repatriated Collections
+
+To exclude collections marked as repatriated:
+
+```r
+jabot_download(
+  repatriated = FALSE,
+  verbose = TRUE,
+  dir = "jabot_download"
+)
+```
+
+## Example: Custom Directory Without Verbose Messages
+
+```r
+jabot_download(
+  herbarium = "RB",
+  dir = "custom_directory"
+)
+```
+
+## Additional Tips
+
+- Use `fp_herb_converter` to inspect which collections are available and whether they are repatriated.
+- Ensure internet access is available when running `jabot_download()`.
+- Review the contents of the downloaded folder to verify `occurrence.txt` and metadata presence.
+
+## See Also
+
+- [`jabot_summary()`](/articles/summarize_jabot_collections.qmd): Get a summary of JABOT collections
+
