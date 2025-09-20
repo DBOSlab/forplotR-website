@@ -6,7 +6,7 @@ project:
 
 website:
   title: "forplotR"
-  site-url: https://dboslab.github.io/jabotR-website/
+  site-url: https://dboslab.github.io/forplotR-website/
   page-navigation: true
   reader-mode: true
   favicon: "figures/forplotR_hex_sticker.png"
@@ -59,7 +59,7 @@ website:
     tools:
       - icon: github
         href: https://github.com/DBOSlab/forplotR
-        text: jabotR GitHub
+        text: forplotR GitHub
 
   sidebar:
     - id: articles
