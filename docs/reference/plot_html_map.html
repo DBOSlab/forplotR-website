@@ -4962,7 +4962,7 @@ height: 400px;
 </div>
 <section id="description" class="level3">
 <h3 class="anchored" data-anchor-id="description">Description</h3>
-<p>Generates an interactive and self-contained HTML map following the <a href="https://forestplots.net/">ForestPlots plot protocol</a>, using Leaflet and based on vouchered tree data and the geographical coordinates of the plot corners. The function:(i) Converts local subplot coordinates (X, Y) to geographic coordinates using geospatial interpolation from four corner vertices; (ii) automatically extracts metadata like team name, plot name, and plot code from the input xlsx file; (iii) draws the plot boundary polygon with angular ordering to prevent self-intersection, over a selectable basemap (“satellite” or “street”); (iv) colors tree points based on collection status and palms: palms (yellow), collected (gray), and missing (red); (v) embeds image carousels in the popups for vouchers when corresponding images are available in the specified folder; (vi) adds an interactive filter sidebar with checkboxes, multi-select inputs, and search box for filtering by family, species, collection status, and presence of photos; (vii) displays informative popups for each tree,showing tag number, subplot,family, species, DBH, voucher code, and photos; (viii) saves the resulting map as a date-stamped standalone HTML file with multiple interactive leaflet map options to the specified directory for easy sharing, archiving, or field consultation.</p>
+<p>Generates an interactive and self-contained HTML map for forest plots following either the <a href="https://forestplots.net/">ForestPlots plot protocol</a> or the <a href="https://www.gov.br/icmbio/pt-br/assuntos/monitoramento/programa-monitora"></a>MONITORA monitoring program, using Leaflet and based on vouchered tree data and plot coordinates. The function handles both standard ForestPlots layouts (1 ha or 0.5 ha plots defined by four corner vertices) and MONITORA layouts (Maltese cross design defined by a single central coordinate). It: (i) converts local subplot coordinates (X, Y) to geographic coordinates using geospatial interpolation from plot vertices or a central point; (ii) extracts metadata such as team name, plot name, and plot code from the input file; (iii) draws the plot boundary polygon or Maltese cross arms over selectable basemaps; (iv) colors tree points by collection status and palms (palms = yellow, collected = gray, missing = red); (v) embeds image carousels in specimen popups when matching voucher images are found in the specified folder; (vi) optionally performs a local herbarium lookup (e.g. JABOT DwC-A downloads) to attach direct “Herbarium image” links to each voucher when available; (vii) adds an interactive filter sidebar with checkboxes, multi-select inputs, and a search box for filtering by family, species, collection status, subplot, and presence of photos; (viii) displays informative popups for each tree, showing tag number, subplot, family, species, DBH, voucher code, herbarium image link (if found), and photos; and (x) saves the resulting map as a date-stamped standalone HTML file with multiple interactive Leaflet map options for easy sharing, archiving, or field consultation.</p>
 </section>
 <section id="arguments" class="level3">
 <h3 class="anchored" data-anchor-id="arguments">Arguments</h3>
@@ -4983,24 +4983,52 @@ height: 400px;
 <td>Character. Path to the Excel file containing tree data.</td>
 </tr>
 <tr class="even">
-<td>vertex_coords</td>
-<td>Data frame or path to Excel file with columns <code>Latitude</code> and <code>Longitude</code> for the four plot corners.</td>
+<td>input_type</td>
+<td>One of <code>&quot;field_sheet&quot;</code>, <code>&quot;fp_query_sheet&quot;</code> or <code>&quot;monitora&quot;</code>. For <code>&quot;fp_query_sheet&quot;</code>, the function expects a ForestPlots Query Library export and converts it internally into a field-sheet-like table. For <code>&quot;monitora&quot;</code>, it expects a Maltese-cross layout.</td>
 </tr>
 <tr class="odd">
+<td>vertex_coords</td>
+<td>Data frame, path to an Excel file, or numeric vector. For <code>&quot;field_sheet&quot;</code> and <code>&quot;fp_query_sheet&quot;</code>, provide four plot corners (Latitude/Longitude). For <code>&quot;monitora&quot;</code>, provide a single central Latitude/Longitude used as the cross center. A numeric vector of length two is interpreted either as <code>c(lat, lon)</code> or as a named vector with elements <code>lat</code>/<code>latitude</code> and <code>lon</code>/<code>longitude</code>.</td>
+</tr>
+<tr class="even">
 <td>plot_size</td>
 <td>Numeric. Total plot size in hectares (default is 1).</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>subplot_size</td>
 <td>Numeric. Subplot size in meters (default is 10).</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>voucher_imgs</td>
-<td>Character. Directory path where voucher images are stored.</td>
+<td>Character. Directory path where voucher images are stored. Subdirectories are assumed to be named after voucher IDs, each containing one or more image files.</td>
+</tr>
+<tr class="odd">
+<td>filename</td>
+<td>Character. Base name of the output HTML file (without extension). The function will prepend a date-stamped prefix and append <code>&quot;.html&quot;</code> (default is <code>&quot;plot_map&quot;</code>).</td>
 </tr>
 <tr class="even">
-<td>filename</td>
-<td>Character. Name of the output HTML file (default is “plot_map.html”)..</td>
+<td>station_name</td>
+<td>Character or <code>NULL</code>. For <code>&quot;monitora&quot;</code> inputs, optionally filter or loop over one or more station names. When a vector of station names is given, the function calls itself once per station.</td>
+</tr>
+<tr class="odd">
+<td>collector</td>
+<td>Character. Optional fallback collector name used when compact voucher codes are provided (e.g. <code>&quot;GCO1095&quot;</code> without an explicit collector string).</td>
+</tr>
+<tr class="even">
+<td>herbaria_lookup</td>
+<td>Logical. If <code>TRUE</code>, the function performs a local herbarium lookup and adds a <code>herbaria_link</code> column to the specimen data, building a minimal index from JABOT DwC-A downloads (via jabotR).</td>
+</tr>
+<tr class="odd">
+<td>herbaria</td>
+<td>Character vector or <code>NULL</code>. Herbarium codes to be used in the herbaria lookup, e.g. <code>c(&quot;RB&quot;,&quot;UPCB&quot;)</code>. When <code>herbaria_lookup = TRUE</code> this argument must be a non-empty vector; by default it is <code>NULL</code> and no herbaria search is performed unless the user explicitly supplies the herbarium codes.</td>
+</tr>
+<tr class="even">
+<td>jabot_cache_rds</td>
+<td>Character. Path to an <code>.rds</code> file used to cache the JABOT-based index (keys and catalog numbers) between runs. Defaults to <code>&quot;jabot_index.rds&quot;</code> in the working directory.</td>
+</tr>
+<tr class="odd">
+<td>jabot_force_refresh</td>
+<td>Logical. If <code>TRUE</code>, forces rebuilding the JABOT-based index from the local DwC-A archives, ignoring any existing cache file.</td>
 </tr>
 </tbody>
 </table>
@@ -5011,9 +5039,27 @@ height: 400px;
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">Latitude =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">3.123</span>, <span class="sc">-</span><span class="fl">3.123</span>, <span class="sc">-</span><span class="fl">3.125</span>, <span class="sc">-</span><span class="fl">3.125</span>),</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">Longitude =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">60.012</span>, <span class="sc">-</span><span class="fl">60.010</span>, <span class="sc">-</span><span class="fl">60.012</span>, <span class="sc">-</span><span class="fl">60.010</span>)</span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_html_map</span>(<span class="st">&quot;data/tree_data.xlsx&quot;</span>,</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>               <span class="at">vertex_coords =</span> vertex_df,</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>               <span class="at">voucher_imgs =</span> <span class="st">&quot;voucher_imgs&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Basic example (field_sheet)</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_html_map</span>(</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">fp_file_path =</span> <span class="st">&quot;data/tree_data.xlsx&quot;</span>,</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">input_type =</span> <span class="st">&quot;field_sheet&quot;</span>,</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">vertex_coords =</span> vertex_df,</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">voucher_imgs =</span> <span class="st">&quot;voucher_imgs&quot;</span>,</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">filename =</span> <span class="st">&quot;plot_map&quot;</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Example with herbaria lookup</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_html_map</span>(</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">fp_file_path =</span> <span class="st">&quot;data/RUS_plot.xlsx&quot;</span>,</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">input_type =</span> <span class="st">&quot;field_sheet&quot;</span>,</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">vertex_coords =</span> <span class="st">&quot;data/vertices.xlsx&quot;</span>,</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">voucher_imgs =</span> <span class="st">&quot;voucher_imgs&quot;</span>,</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">collector =</span> <span class="st">&quot;G. C. Ottino&quot;</span>,</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>  <span class="at">herbaria_lookup =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">herbaria =</span> <span class="fu">c</span>(<span class="st">&quot;RB&quot;</span>, <span class="st">&quot;UPCB&quot;</span>),</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>  <span class="at">filename =</span> <span class="st">&quot;rus_plot_map&quot;</span></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 
 <!-- -->
@@ -5651,48 +5697,78 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="fu">### Description</span></span>
 <span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>Generates an interactive and self-contained HTML map following the</span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">ForestPlots plot protocol</span><span class="co">](https://forestplots.net/)</span>, using Leaflet</span>
-<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>and based on vouchered tree data and the geographical coordinates of the</span>
-<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>plot corners. The function:(i) Converts local subplot coordinates (X, Y) to</span>
-<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>geographic coordinates using geospatial interpolation from four corner vertices;</span>
-<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>(ii) automatically extracts metadata like team name, plot name, and plot code</span>
-<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>from the input xlsx file; (iii) draws the plot boundary polygon with angular</span>
-<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>ordering to prevent self-intersection, over a selectable basemap (&quot;satellite&quot;</span>
-<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>or &quot;street&quot;); (iv) colors tree points based on collection status and palms:</span>
-<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>palms (yellow), collected (gray), and missing (red); (v) embeds image</span>
-<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>carousels in the popups for vouchers when corresponding images are available</span>
-<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>in the specified folder; (vi) adds an interactive filter sidebar with</span>
-<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>checkboxes, multi-select inputs, and search box for filtering by family,</span>
-<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>species, collection status, and presence of photos; (vii) displays informative</span>
-<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>popups for each tree,showing tag number, subplot,family, species, DBH,</span>
-<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>voucher code, and photos; (viii) saves the resulting map as a date-stamped</span>
-<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>standalone HTML file with multiple interactive leaflet map options to the</span>
-<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>specified directory for easy sharing, archiving, or field consultation.</span>
-<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a><span class="fu">### Arguments</span></span>
-<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a>| Argument | Description |</span>
-<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a>|---|---|</span>
-<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a>| fp_file_path | Character. Path to the Excel file containing tree data. |</span>
-<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a>| vertex_coords | Data frame or path to Excel file with columns <span class="in">`Latitude`</span> and <span class="in">`Longitude`</span> for the four plot corners. |</span>
-<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a>| plot_size | Numeric. Total plot size in hectares (default is 1). |</span>
-<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a>| subplot_size | Numeric. Subplot size in meters (default is 10). |</span>
-<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a>| voucher_imgs | Character. Directory path where voucher images are stored. |</span>
-<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a>| filename | Character. Name of the output HTML file (default is &quot;plot_map.html&quot;).. |</span>
-<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a><span class="fu">### Examples</span></span>
-<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a><span class="in">```r</span></span>
-<span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a>vertex_df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
-<span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a>  <span class="at">Latitude =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">3.123</span>, <span class="sc">-</span><span class="fl">3.123</span>, <span class="sc">-</span><span class="fl">3.125</span>, <span class="sc">-</span><span class="fl">3.125</span>),</span>
-<span id="cb3-53"><a href="#cb3-53" aria-hidden="true" tabindex="-1"></a>  <span class="at">Longitude =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">60.012</span>, <span class="sc">-</span><span class="fl">60.010</span>, <span class="sc">-</span><span class="fl">60.012</span>, <span class="sc">-</span><span class="fl">60.010</span>)</span>
-<span id="cb3-54"><a href="#cb3-54" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb3-55"><a href="#cb3-55" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_html_map</span>(<span class="st">&quot;data/tree_data.xlsx&quot;</span>,</span>
-<span id="cb3-56"><a href="#cb3-56" aria-hidden="true" tabindex="-1"></a>               <span class="at">vertex_coords =</span> vertex_df,</span>
-<span id="cb3-57"><a href="#cb3-57" aria-hidden="true" tabindex="-1"></a>               <span class="at">voucher_imgs =</span> <span class="st">&quot;voucher_imgs&quot;</span>)</span>
-<span id="cb3-58"><a href="#cb3-58" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>Generates an interactive and self-contained HTML map for forest plots</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>following either the <span class="co">[</span><span class="ot">ForestPlots plot protocol</span><span class="co">](https://forestplots.net/)</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>or the [](https://www.gov.br/icmbio/pt-br/assuntos/monitoramento/programa-monitora)MONITORA monitoring program, using Leaflet and based on vouchered tree data</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>and plot coordinates. The function handles both standard ForestPlots layouts</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>(1 ha or 0.5 ha plots defined by four corner vertices) and MONITORA</span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>layouts (Maltese cross design defined by a single central coordinate).</span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>It: (i) converts local subplot coordinates (X, Y) to geographic coordinates</span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>using geospatial interpolation from plot vertices or a  central point;</span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>(ii) extracts metadata such as team name, plot name, and plot code from the</span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>input file; (iii) draws the plot boundary polygon or Maltese cross arms over</span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>selectable basemaps; (iv) colors tree points by collection status and palms</span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>(palms = yellow, collected = gray, missing = red); (v) embeds image carousels in</span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>specimen popups when matching voucher images are found in the specified</span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>folder; (vi) optionally performs a local herbarium lookup (e.g. JABOT DwC-A</span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>downloads) to attach direct “Herbarium image” links to each voucher when</span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>available; (vii) adds an interactive filter sidebar with checkboxes,</span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>multi-select inputs, and a search box for filtering by family, species,</span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>collection status, subplot, and presence of photos; (viii) displays</span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>informative popups for each tree, showing tag number, subplot, family,</span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>species, DBH, voucher code, herbarium image link (if found), and photos;</span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>and (x) saves the resulting map as a date-stamped standalone HTML file with</span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a>multiple interactive Leaflet map options for easy sharing, archiving, or</span>
+<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a>field consultation.</span>
+<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a><span class="fu">### Arguments</span></span>
+<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a>| Argument | Description |</span>
+<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a>|---|---|</span>
+<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a>| fp_file_path | Character. Path to the Excel file containing tree data. |</span>
+<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a>| input_type | One of <span class="in">`&quot;field_sheet&quot;`</span>, <span class="in">`&quot;fp_query_sheet&quot;`</span> or <span class="in">`&quot;monitora&quot;`</span>. For <span class="in">`&quot;fp_query_sheet&quot;`</span>, the function expects a ForestPlots Query Library export and converts it internally into a field-sheet-like table. For <span class="in">`&quot;monitora&quot;`</span>, it expects a Maltese-cross layout. |</span>
+<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a>| vertex_coords | Data frame, path to an Excel file, or numeric vector. For <span class="in">`&quot;field_sheet&quot;`</span> and <span class="in">`&quot;fp_query_sheet&quot;`</span>, provide four plot corners (Latitude/Longitude). For <span class="in">`&quot;monitora&quot;`</span>, provide a single central Latitude/Longitude used as the cross center. A numeric vector of length two is interpreted either as <span class="in">`c(lat, lon)`</span> or as a named vector with elements <span class="in">`lat`</span>/<span class="in">`latitude`</span> and <span class="in">`lon`</span>/<span class="in">`longitude`</span>. |</span>
+<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a>| plot_size | Numeric. Total plot size in hectares (default is 1). |</span>
+<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a>| subplot_size | Numeric. Subplot size in meters (default is 10). |</span>
+<span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a>| voucher_imgs | Character. Directory path where voucher images are stored. Subdirectories are assumed to be named after voucher IDs, each containing one or more image files. |</span>
+<span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a>| filename | Character. Base name of the output HTML file (without extension). The function will prepend a date-stamped prefix and append <span class="in">`&quot;.html&quot;`</span> (default is <span class="in">`&quot;plot_map&quot;`</span>). |</span>
+<span id="cb3-53"><a href="#cb3-53" aria-hidden="true" tabindex="-1"></a>| station_name | Character or <span class="in">`NULL`</span>. For <span class="in">`&quot;monitora&quot;`</span> inputs, optionally filter or loop over one or more station names. When a vector of station names is given, the function calls itself once per station. |</span>
+<span id="cb3-54"><a href="#cb3-54" aria-hidden="true" tabindex="-1"></a>| collector | Character. Optional fallback collector name used when compact voucher codes are provided (e.g. <span class="in">`&quot;GCO1095&quot;`</span> without an explicit collector string). |</span>
+<span id="cb3-55"><a href="#cb3-55" aria-hidden="true" tabindex="-1"></a>| herbaria_lookup | Logical. If <span class="in">`TRUE`</span>, the function performs a local herbarium lookup and adds a <span class="in">`herbaria_link`</span> column to the specimen data, building a minimal index from JABOT DwC-A downloads (via jabotR). |</span>
+<span id="cb3-56"><a href="#cb3-56" aria-hidden="true" tabindex="-1"></a>| herbaria | Character vector or <span class="in">`NULL`</span>. Herbarium codes to be used in the herbaria lookup, e.g. <span class="in">`c(&quot;RB&quot;,&quot;UPCB&quot;)`</span>. When <span class="in">`herbaria_lookup = TRUE`</span> this argument must be a non-empty vector; by default it is <span class="in">`NULL`</span> and no herbaria search is performed unless the user explicitly supplies the herbarium codes. |</span>
+<span id="cb3-57"><a href="#cb3-57" aria-hidden="true" tabindex="-1"></a>| jabot_cache_rds | Character. Path to an <span class="in">`.rds`</span> file used to cache the JABOT-based index (keys and catalog numbers) between runs. Defaults to <span class="in">`&quot;jabot_index.rds&quot;`</span> in the working directory. |</span>
+<span id="cb3-58"><a href="#cb3-58" aria-hidden="true" tabindex="-1"></a>| jabot_force_refresh | Logical. If <span class="in">`TRUE`</span>, forces rebuilding the JABOT-based index from the local DwC-A archives, ignoring any existing cache file. |</span>
 <span id="cb3-59"><a href="#cb3-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-60"><a href="#cb3-60" aria-hidden="true" tabindex="-1"></a><span class="fu">### Examples</span></span>
+<span id="cb3-61"><a href="#cb3-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-62"><a href="#cb3-62" aria-hidden="true" tabindex="-1"></a><span class="in">```r</span></span>
+<span id="cb3-63"><a href="#cb3-63" aria-hidden="true" tabindex="-1"></a>vertex_df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb3-64"><a href="#cb3-64" aria-hidden="true" tabindex="-1"></a>  <span class="at">Latitude =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">3.123</span>, <span class="sc">-</span><span class="fl">3.123</span>, <span class="sc">-</span><span class="fl">3.125</span>, <span class="sc">-</span><span class="fl">3.125</span>),</span>
+<span id="cb3-65"><a href="#cb3-65" aria-hidden="true" tabindex="-1"></a>  <span class="at">Longitude =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">60.012</span>, <span class="sc">-</span><span class="fl">60.010</span>, <span class="sc">-</span><span class="fl">60.012</span>, <span class="sc">-</span><span class="fl">60.010</span>)</span>
+<span id="cb3-66"><a href="#cb3-66" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-67"><a href="#cb3-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-68"><a href="#cb3-68" aria-hidden="true" tabindex="-1"></a><span class="co"># Basic example (field_sheet)</span></span>
+<span id="cb3-69"><a href="#cb3-69" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_html_map</span>(</span>
+<span id="cb3-70"><a href="#cb3-70" aria-hidden="true" tabindex="-1"></a>  <span class="at">fp_file_path =</span> <span class="st">&quot;data/tree_data.xlsx&quot;</span>,</span>
+<span id="cb3-71"><a href="#cb3-71" aria-hidden="true" tabindex="-1"></a>  <span class="at">input_type =</span> <span class="st">&quot;field_sheet&quot;</span>,</span>
+<span id="cb3-72"><a href="#cb3-72" aria-hidden="true" tabindex="-1"></a>  <span class="at">vertex_coords =</span> vertex_df,</span>
+<span id="cb3-73"><a href="#cb3-73" aria-hidden="true" tabindex="-1"></a>  <span class="at">voucher_imgs =</span> <span class="st">&quot;voucher_imgs&quot;</span>,</span>
+<span id="cb3-74"><a href="#cb3-74" aria-hidden="true" tabindex="-1"></a>  <span class="at">filename =</span> <span class="st">&quot;plot_map&quot;</span></span>
+<span id="cb3-75"><a href="#cb3-75" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-76"><a href="#cb3-76" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-77"><a href="#cb3-77" aria-hidden="true" tabindex="-1"></a><span class="co"># Example with herbaria lookup</span></span>
+<span id="cb3-78"><a href="#cb3-78" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_html_map</span>(</span>
+<span id="cb3-79"><a href="#cb3-79" aria-hidden="true" tabindex="-1"></a>  <span class="at">fp_file_path =</span> <span class="st">&quot;data/RUS_plot.xlsx&quot;</span>,</span>
+<span id="cb3-80"><a href="#cb3-80" aria-hidden="true" tabindex="-1"></a>  <span class="at">input_type =</span> <span class="st">&quot;field_sheet&quot;</span>,</span>
+<span id="cb3-81"><a href="#cb3-81" aria-hidden="true" tabindex="-1"></a>  <span class="at">vertex_coords =</span> <span class="st">&quot;data/vertices.xlsx&quot;</span>,</span>
+<span id="cb3-82"><a href="#cb3-82" aria-hidden="true" tabindex="-1"></a>  <span class="at">voucher_imgs =</span> <span class="st">&quot;voucher_imgs&quot;</span>,</span>
+<span id="cb3-83"><a href="#cb3-83" aria-hidden="true" tabindex="-1"></a>  <span class="at">collector =</span> <span class="st">&quot;G. C. Ottino&quot;</span>,</span>
+<span id="cb3-84"><a href="#cb3-84" aria-hidden="true" tabindex="-1"></a>  <span class="at">herbaria_lookup =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb3-85"><a href="#cb3-85" aria-hidden="true" tabindex="-1"></a>  <span class="at">herbaria =</span> <span class="fu">c</span>(<span class="st">&quot;RB&quot;</span>, <span class="st">&quot;UPCB&quot;</span>),</span>
+<span id="cb3-86"><a href="#cb3-86" aria-hidden="true" tabindex="-1"></a>  <span class="at">filename =</span> <span class="st">&quot;rus_plot_map&quot;</span></span>
+<span id="cb3-87"><a href="#cb3-87" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-88"><a href="#cb3-88" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb3-89"><a href="#cb3-89" aria-hidden="true" tabindex="-1"></a></span>
 </code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

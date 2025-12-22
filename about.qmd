@@ -1,6 +1,6 @@
 ---
 title: "About forplotR"
-subtitle: "Open source tools to manage plant specimen data and collections from long term monitoring forest plot"
+subtitle: "Open source tools to manage plant specimen data and collections from long-term monitoring forest plots"
 format:
   html:
     toc: true
@@ -37,19 +37,30 @@ format:
 
 ## Overview
 
-`forplotR` is an R package designed to integrate and streamline the processing of data from long-term forest monitoring plots. By linking the physical voucher (specimen) to its associated spatial, taxonomic, and metadata information, it supports the concept of the extended specimen. The package responds to the growing need to systematize complex datasets in ways that not only ensure scientific rigor and reproducibility, but also simplify fieldwork logistics and post-field data processing — a major challenge in large-scale biodiversity monitoring.
+`forplotR` is an R package that streamlines the workflow linking long-term forest plot censuses to herbarium vouchers. In permanent plots, vouchers are the verifiable evidence that anchors the taxonomic identity of censused stems—supporting robust biodiversity assessments, reliable carbon estimates, and long-term comparability across censuses. Yet, turning raw field tables into curator-ready outputs is often slow, manual, and error-prone.
 
 The package interacts with the [ForestPlots.net standard plot inventory protocol](https://forestplots.net/) by reading standardized field templates and converting specimen records into herbarium-ready outputs, including the JABOT format, BRAHMS format, or any other user-defined structure.
 
-It also provides tools for organizing voucher image directories based on preliminary taxonomic identification and individual voucher codes. These directories are dynamically updated to reflect changes in taxonomic determination, maintaining a coherent and traceable folder structure.
+`forplotR` reduces this bottleneck by automating key steps from data validation and voucher tracking to reporting, image organization, interactive mapping, and herbarium exports. By explicitly connecting each physical voucher to its spatial position, taxonomy, and metadata, the package supports the concept of the extended specimen and helps teams maintain a traceable, reproducible link between field inventories and botanical collections.
 
-In addition, `forplotR` generates comprehensive PDF reports with overview maps of the plot, maps filtered by collection status (e.g., collected vs. uncollected), and subplot-specific maps. Optionally, it also produces an `.xlsx` spreadsheet summarizing the percentage of collected individuals per subplot.
+## Where it fits: ForestPlots.net and Monitora
 
-The package includes functionality for producing interactive HTML maps for specimen visualization, with filtering options based on taxonomic groups, collection status, or the presence of voucher images.
+[ForestPlots.net](https://forestplots.net/) is a collaborative infrastructure for measuring, monitoring, and understanding tropical forests through standardized long-term plot data. Its core data model is a stem-level census table (tags, measurements, identifications, and local x–y coordinates) designed to enable consistent analyses of forest structure, dynamics, and carbon across regions and time.
 
-## The ForestPlots.net
+`forplotR` reads standardized plot templates and turns plot-based specimen records into herbarium-ready outputs, including JABOT, BRAHMS, or any user-defined label structure. It also produces field-facing visual products (PDF reports and interactive maps) that make voucher coverage and plot navigation easier during campaigns and across repeated censuses.
 
-ForestPlots.net is a global collaborative network that standardizes and integrates forest monitoring efforts across the tropical regions. It provides tools and protocols for establishing long-term permanent plots, where researchers can collect consistent data on tree species, diameters, locations, and dynamics over time.The platform enables scientists to monitor forest composition, structure, and changes in carbon stocks, biodiversity, and ecosystem processes. By adhering to a shared methodology, ForestPlots.net allows for comparisons across different regions and time periods, supporting large-scale analyses of forest ecology and climate change impacts.
+Brazil’s National Biodiversity Monitoring Program (Monitora) generates long-term biodiversity information from protected areas to support management effectiveness and national indicators. In its forest component, vegetation is surveyed using permanent maltese-cross plots (0.4 ha), designed to capture local gradients through four orthogonal arms.
+
+forplotR supports this plot geometry and data structure by converting Monitora stem tables into the same suite of outputs—campaign reports, voucher image folders, interactive maps, and herbarium exports—so teams can iterate efficiently as identifications and voucher coverage improve.
+
+## What forplotR produces
+
+Across protocols, a typical workflow moves from clean census tables → field reports → voucher organization → interactive maps → herbarium exports, helping teams to:
+
+(i) Prepare field campaigns with plot/subplot stem maps and voucher coverage summaries
+(ii) Organize voucher media into taxonomically structured directories that update when identifications change
+(iii) Explore stems spatially through interactive HTML maps with filters (taxonomy, voucher status, images)
+(iv) Export curator-ready spreadsheets for label generation and ingestion into herbarium databases
 
 ## Package Description
 
@@ -57,11 +68,9 @@ Package: `forplotR`\
 Type: R Package\
 Version: 1.0.0
 
-Authors: Domingos Cardoso ([\@DBOSlab](https://github.com/DBOSlab) [ORCID](https://orcid.org/0000-0001-7072-2656)), Giulia Cavalcanti Ottino ([\@DBOSlab](https://github.com/DBOSlab) [ORCID](https://orcid.org/0009-0001-4352-1733))
+Authors and Maintainers: Giulia Cavalcanti Ottino ([\@DBOSlab](https://github.com/DBOSlab) [ORCID](https://orcid.org/0009-0001-4352-1733)) and Domingos Cardoso ([\@DBOSlab](https://github.com/DBOSlab) [ORCID](https://orcid.org/0000-0001-7072-2656))
 
-Maintainer: Giulia Ottino ([botgiuc\@gmail.com](mailto:botgiuc@gmail.com){.email})
-
-### Features
+### Key features
 
 -   Convert field data into JABOT, BRAHMS, or custom herbarium label formats
 -   Create, organize and dynamically update voucher image directories

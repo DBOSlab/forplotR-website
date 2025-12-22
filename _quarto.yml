@@ -69,22 +69,22 @@ website:
       contents:
         - text: Overview
           href: articles/index.qmd
-        - section: Summarize JABOT collections
+        - section: Using fp_herb_converter
           contents:
-          - text: Summarize herbarium collections
-            href: articles/summarize_jabot_collections.qmd
-        - section: Download and parse JABOT records
+          - text: General use
+            href: articles/fp_herb_converter_general_usage.qmd
+        - section: Using mk_voucher_dirs
           contents:
-          - text: Download specimen records
-            href: articles/download_jabot_collections.qmd
-          - text: Parse JABOT Darwin Core Archives
-            href: articles/parse_jabot_dwca.qmd
-        - section: Filter JABOT records
+          - text: General use
+            href: articles/mk_voucher_dirs_general_usage.qmd
+        - section: Using plot_for_balance
           contents:
-          - text: Retrieve taxon-specific specimens
-            href: articles/filter_jabot_records.qmd
-          - text: Filter indeterminate specimens
-            href: articles/filter_indeterminate_jabot_specimens.qmd
+          - text: General use
+            href: articles/plot_for_balance_general_usage.qmd
+        - section: Using plot_html_map
+          contents:
+          - text: General use
+            href: articles/plot_html_map_general_usage.qmd
 
 format:
   html:

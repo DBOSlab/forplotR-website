@@ -64,6 +64,7 @@ on the value set in the `language` argument.
 | long | Longitude in decimal degrees of the collection site. |
 | alt | Altitude in meters of the collection site. If `'NULL'`, extract the altitude from geographic coordinates dataset. |
 | add_census_notes | If `'TRUE'`, census notes will be included in the herbarium sheet's notes. If `'FALSE'`, census notes will be omitted. |
+| validate_locality | If `TRUE` (default), validates whether the coordinates fall within the provided administrative division (country/majorarea). |
 | dir | Pathway to the computer's directory, where the file will be saved. The default is to create a directory named **Results_filled_herbarium_sheet** and the search results will be saved within a subfolder named after the current date. |
 | filename | Name of the output file. Default is **forestplot_to_herbarium_sheet**. |
 | forestplots_file_path | File path to the forestplots dataset. |
@@ -92,6 +93,7 @@ fp_herb_converter <- function(fp_file_path = NULL,
                               long = NULL,
                               alt = NULL,
                               add_census_notes = TRUE,
+                              validate_locality = TRUE,
                               dir = "Results_filled_herbarium_sheet",
                               filename =  "forestplot_to_herbarium_sheet")
 ```

@@ -5042,14 +5042,18 @@ height: 400px;
 <td>If <code>&#39;TRUE&#39;</code>, census notes will be included in the herbarium sheet’s notes. If <code>&#39;FALSE&#39;</code>, census notes will be omitted.</td>
 </tr>
 <tr class="even">
+<td>validate_locality</td>
+<td>If <code>TRUE</code> (default), validates whether the coordinates fall within the provided administrative division (country/majorarea).</td>
+</tr>
+<tr class="odd">
 <td>dir</td>
 <td>Pathway to the computer’s directory, where the file will be saved. The default is to create a directory named <strong>Results_filled_herbarium_sheet</strong> and the search results will be saved within a subfolder named after the current date.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>filename</td>
 <td>Name of the output file. Default is <strong>forestplot_to_herbarium_sheet</strong>.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>forestplots_file_path</td>
 <td>File path to the forestplots dataset.</td>
 </tr>
@@ -5078,8 +5082,9 @@ height: 400px;
 <span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>                              <span class="at">long =</span> <span class="cn">NULL</span>,</span>
 <span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>                              <span class="at">alt =</span> <span class="cn">NULL</span>,</span>
 <span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>                              <span class="at">add_census_notes =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>                              <span class="at">dir =</span> <span class="st">&quot;Results_filled_herbarium_sheet&quot;</span>,</span>
-<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>                              <span class="at">filename =</span>  <span class="st">&quot;forestplot_to_herbarium_sheet&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>                              <span class="at">validate_locality =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>                              <span class="at">dir =</span> <span class="st">&quot;Results_filled_herbarium_sheet&quot;</span>,</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>                              <span class="at">filename =</span>  <span class="st">&quot;forestplot_to_herbarium_sheet&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 
 <!-- -->
@@ -5768,38 +5773,40 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb3-66"><a href="#cb3-66" aria-hidden="true" tabindex="-1"></a>| long | Longitude in decimal degrees of the collection site. |</span>
 <span id="cb3-67"><a href="#cb3-67" aria-hidden="true" tabindex="-1"></a>| alt | Altitude in meters of the collection site. If <span class="in">`&#39;NULL&#39;`</span>, extract the altitude from geographic coordinates dataset. |</span>
 <span id="cb3-68"><a href="#cb3-68" aria-hidden="true" tabindex="-1"></a>| add_census_notes | If <span class="in">`&#39;TRUE&#39;`</span>, census notes will be included in the herbarium sheet&#39;s notes. If <span class="in">`&#39;FALSE&#39;`</span>, census notes will be omitted. |</span>
-<span id="cb3-69"><a href="#cb3-69" aria-hidden="true" tabindex="-1"></a>| dir | Pathway to the computer&#39;s directory, where the file will be saved. The default is to create a directory named **Results_filled_herbarium_sheet** and the search results will be saved within a subfolder named after the current date. |</span>
-<span id="cb3-70"><a href="#cb3-70" aria-hidden="true" tabindex="-1"></a>| filename | Name of the output file. Default is **forestplot_to_herbarium_sheet**. |</span>
-<span id="cb3-71"><a href="#cb3-71" aria-hidden="true" tabindex="-1"></a>| forestplots_file_path | File path to the forestplots dataset. |</span>
-<span id="cb3-72"><a href="#cb3-72" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-73"><a href="#cb3-73" aria-hidden="true" tabindex="-1"></a><span class="fu">### Value</span></span>
-<span id="cb3-74"><a href="#cb3-74" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-75"><a href="#cb3-75" aria-hidden="true" tabindex="-1"></a>A data frame in herbarium format with the processed data from</span>
-<span id="cb3-76"><a href="#cb3-76" aria-hidden="true" tabindex="-1"></a>forestplots dataset.</span>
-<span id="cb3-77"><a href="#cb3-77" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-78"><a href="#cb3-78" aria-hidden="true" tabindex="-1"></a><span class="fu">### Examples</span></span>
-<span id="cb3-79"><a href="#cb3-79" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-80"><a href="#cb3-80" aria-hidden="true" tabindex="-1"></a><span class="in">```r</span></span>
-<span id="cb3-81"><a href="#cb3-81" aria-hidden="true" tabindex="-1"></a>fp_herb_converter <span class="ot">&lt;-</span> <span class="cf">function</span>(<span class="at">fp_file_path =</span> <span class="cn">NULL</span>,</span>
-<span id="cb3-82"><a href="#cb3-82" aria-hidden="true" tabindex="-1"></a>                              <span class="at">herb_file_path =</span> <span class="cn">NULL</span>,</span>
-<span id="cb3-83"><a href="#cb3-83" aria-hidden="true" tabindex="-1"></a>                              <span class="at">language =</span> <span class="st">&quot;en&quot;</span>,</span>
-<span id="cb3-84"><a href="#cb3-84" aria-hidden="true" tabindex="-1"></a>                              <span class="at">herbarium_format =</span> <span class="st">&quot;jabot&quot;</span>,</span>
-<span id="cb3-85"><a href="#cb3-85" aria-hidden="true" tabindex="-1"></a>                              <span class="at">country =</span> <span class="st">&quot;Brazil&quot;</span>,</span>
-<span id="cb3-86"><a href="#cb3-86" aria-hidden="true" tabindex="-1"></a>                              <span class="at">majorarea =</span> <span class="cn">NULL</span>,</span>
-<span id="cb3-87"><a href="#cb3-87" aria-hidden="true" tabindex="-1"></a>                              <span class="at">minorarea =</span> <span class="cn">NULL</span>,</span>
-<span id="cb3-88"><a href="#cb3-88" aria-hidden="true" tabindex="-1"></a>                              <span class="at">protectedarea =</span> <span class="cn">NULL</span>,</span>
-<span id="cb3-89"><a href="#cb3-89" aria-hidden="true" tabindex="-1"></a>                              <span class="at">locnotes =</span> <span class="cn">NULL</span>,</span>
-<span id="cb3-90"><a href="#cb3-90" aria-hidden="true" tabindex="-1"></a>                              <span class="at">project =</span> <span class="cn">NULL</span>,</span>
-<span id="cb3-91"><a href="#cb3-91" aria-hidden="true" tabindex="-1"></a>                              <span class="at">collector =</span> <span class="cn">NULL</span>,</span>
-<span id="cb3-92"><a href="#cb3-92" aria-hidden="true" tabindex="-1"></a>                              <span class="at">addcoll =</span> <span class="cn">NULL</span>,</span>
-<span id="cb3-93"><a href="#cb3-93" aria-hidden="true" tabindex="-1"></a>                              <span class="at">lat =</span> <span class="cn">NULL</span>,</span>
-<span id="cb3-94"><a href="#cb3-94" aria-hidden="true" tabindex="-1"></a>                              <span class="at">long =</span> <span class="cn">NULL</span>,</span>
-<span id="cb3-95"><a href="#cb3-95" aria-hidden="true" tabindex="-1"></a>                              <span class="at">alt =</span> <span class="cn">NULL</span>,</span>
-<span id="cb3-96"><a href="#cb3-96" aria-hidden="true" tabindex="-1"></a>                              <span class="at">add_census_notes =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb3-97"><a href="#cb3-97" aria-hidden="true" tabindex="-1"></a>                              <span class="at">dir =</span> <span class="st">&quot;Results_filled_herbarium_sheet&quot;</span>,</span>
-<span id="cb3-98"><a href="#cb3-98" aria-hidden="true" tabindex="-1"></a>                              <span class="at">filename =</span>  <span class="st">&quot;forestplot_to_herbarium_sheet&quot;</span>)</span>
-<span id="cb3-99"><a href="#cb3-99" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb3-100"><a href="#cb3-100" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-69"><a href="#cb3-69" aria-hidden="true" tabindex="-1"></a>| validate_locality | If <span class="in">`TRUE`</span> (default), validates whether the coordinates fall within the provided administrative division (country/majorarea). |</span>
+<span id="cb3-70"><a href="#cb3-70" aria-hidden="true" tabindex="-1"></a>| dir | Pathway to the computer&#39;s directory, where the file will be saved. The default is to create a directory named **Results_filled_herbarium_sheet** and the search results will be saved within a subfolder named after the current date. |</span>
+<span id="cb3-71"><a href="#cb3-71" aria-hidden="true" tabindex="-1"></a>| filename | Name of the output file. Default is **forestplot_to_herbarium_sheet**. |</span>
+<span id="cb3-72"><a href="#cb3-72" aria-hidden="true" tabindex="-1"></a>| forestplots_file_path | File path to the forestplots dataset. |</span>
+<span id="cb3-73"><a href="#cb3-73" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-74"><a href="#cb3-74" aria-hidden="true" tabindex="-1"></a><span class="fu">### Value</span></span>
+<span id="cb3-75"><a href="#cb3-75" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-76"><a href="#cb3-76" aria-hidden="true" tabindex="-1"></a>A data frame in herbarium format with the processed data from</span>
+<span id="cb3-77"><a href="#cb3-77" aria-hidden="true" tabindex="-1"></a>forestplots dataset.</span>
+<span id="cb3-78"><a href="#cb3-78" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-79"><a href="#cb3-79" aria-hidden="true" tabindex="-1"></a><span class="fu">### Examples</span></span>
+<span id="cb3-80"><a href="#cb3-80" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-81"><a href="#cb3-81" aria-hidden="true" tabindex="-1"></a><span class="in">```r</span></span>
+<span id="cb3-82"><a href="#cb3-82" aria-hidden="true" tabindex="-1"></a>fp_herb_converter <span class="ot">&lt;-</span> <span class="cf">function</span>(<span class="at">fp_file_path =</span> <span class="cn">NULL</span>,</span>
+<span id="cb3-83"><a href="#cb3-83" aria-hidden="true" tabindex="-1"></a>                              <span class="at">herb_file_path =</span> <span class="cn">NULL</span>,</span>
+<span id="cb3-84"><a href="#cb3-84" aria-hidden="true" tabindex="-1"></a>                              <span class="at">language =</span> <span class="st">&quot;en&quot;</span>,</span>
+<span id="cb3-85"><a href="#cb3-85" aria-hidden="true" tabindex="-1"></a>                              <span class="at">herbarium_format =</span> <span class="st">&quot;jabot&quot;</span>,</span>
+<span id="cb3-86"><a href="#cb3-86" aria-hidden="true" tabindex="-1"></a>                              <span class="at">country =</span> <span class="st">&quot;Brazil&quot;</span>,</span>
+<span id="cb3-87"><a href="#cb3-87" aria-hidden="true" tabindex="-1"></a>                              <span class="at">majorarea =</span> <span class="cn">NULL</span>,</span>
+<span id="cb3-88"><a href="#cb3-88" aria-hidden="true" tabindex="-1"></a>                              <span class="at">minorarea =</span> <span class="cn">NULL</span>,</span>
+<span id="cb3-89"><a href="#cb3-89" aria-hidden="true" tabindex="-1"></a>                              <span class="at">protectedarea =</span> <span class="cn">NULL</span>,</span>
+<span id="cb3-90"><a href="#cb3-90" aria-hidden="true" tabindex="-1"></a>                              <span class="at">locnotes =</span> <span class="cn">NULL</span>,</span>
+<span id="cb3-91"><a href="#cb3-91" aria-hidden="true" tabindex="-1"></a>                              <span class="at">project =</span> <span class="cn">NULL</span>,</span>
+<span id="cb3-92"><a href="#cb3-92" aria-hidden="true" tabindex="-1"></a>                              <span class="at">collector =</span> <span class="cn">NULL</span>,</span>
+<span id="cb3-93"><a href="#cb3-93" aria-hidden="true" tabindex="-1"></a>                              <span class="at">addcoll =</span> <span class="cn">NULL</span>,</span>
+<span id="cb3-94"><a href="#cb3-94" aria-hidden="true" tabindex="-1"></a>                              <span class="at">lat =</span> <span class="cn">NULL</span>,</span>
+<span id="cb3-95"><a href="#cb3-95" aria-hidden="true" tabindex="-1"></a>                              <span class="at">long =</span> <span class="cn">NULL</span>,</span>
+<span id="cb3-96"><a href="#cb3-96" aria-hidden="true" tabindex="-1"></a>                              <span class="at">alt =</span> <span class="cn">NULL</span>,</span>
+<span id="cb3-97"><a href="#cb3-97" aria-hidden="true" tabindex="-1"></a>                              <span class="at">add_census_notes =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb3-98"><a href="#cb3-98" aria-hidden="true" tabindex="-1"></a>                              <span class="at">validate_locality =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb3-99"><a href="#cb3-99" aria-hidden="true" tabindex="-1"></a>                              <span class="at">dir =</span> <span class="st">&quot;Results_filled_herbarium_sheet&quot;</span>,</span>
+<span id="cb3-100"><a href="#cb3-100" aria-hidden="true" tabindex="-1"></a>                              <span class="at">filename =</span>  <span class="st">&quot;forestplot_to_herbarium_sheet&quot;</span>)</span>
+<span id="cb3-101"><a href="#cb3-101" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb3-102"><a href="#cb3-102" aria-hidden="true" tabindex="-1"></a></span>
 </code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
