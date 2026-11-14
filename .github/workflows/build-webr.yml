@@ -32,8 +32,7 @@ concurrency:
 env:
   WEBR_VERSION: "0.6.0"
   WEBR_SHA256: "04c56d16c3ad29265a2c4ffcb800ee0b72ab6dd64dd678c9c8fec81a832cb8cc"
-  # Mesma versão do webR usada para compilar o pacote (R 4.6.0), fixada por digest.
-  WEBR_IMAGE: "ghcr.io/r-wasm/webr:v0.6.0@sha256:3fbf3dc3537c5b31bca94dd797dc25364693b18d71b1d0975f318fbfd6269d86"
+  # Versão menor do R embutido no webR 0.6.0 (R 4.6.0).
   R_WASM_VERSION: "4.6"
 
 jobs:
@@ -54,24 +53,23 @@ jobs:
           path: _pkg
           persist-credentials: false
 
-      - name: Compilar o forplotR para wasm
-        uses: r-wasm/actions/build-rwasm@0f8493df20b6b47d3621f16be81218926a09dad1 # v3
-        with:
-          packages: "local::./_pkg"
-          repo-path: "webr/repo"
-          image-path: "_rwasm_img"
-          webr-image: ${{ env.WEBR_IMAGE }}
-          compress: false
-
-      - name: Ajustar dono dos arquivos gerados no container
-        run: |
-          sudo chown -R "$(id -u):$(id -g)" webr _rwasm_img
-          rm -rf _rwasm_img
-          test -d "webr/repo/bin/emscripten/contrib/${R_WASM_VERSION}" || {
-            echo "::error::rwasm não gerou contrib/${R_WASM_VERSION}:"; ls -R webr/repo/bin; exit 1; }
-
-      - name: Instalar R (só para o script de espelhamento)
+      # O forplotR é R puro: o binário instalado no R 4.6 é portável para o
+      # webR (R 4.6.0). O compilador cruzado r-wasm/actions/build-rwasm não é
+      # usado porque o resolvedor dele está quebrado (r-wasm/rwasm#56).
+      - name: Instalar R ${{ env.R_WASM_VERSION }}
         uses: r-lib/actions/setup-r@f9a764fea8d5c63df6ef9a5c7795bf7deb5d7e05 # v2
+        with:
+          r-version: ${{ env.R_WASM_VERSION }}
+          use-public-rspm: true
+
+      - name: Instalar dependências do forplotR
+        uses: r-lib/actions/setup-r-dependencies@f9a764fea8d5c63df6ef9a5c7795bf7deb5d7e05 # v2
+        with:
+          working-directory: _pkg
+          dependencies: '"hard"'
+
+      - name: Gerar o binário do forplotR para o webR
+        run: Rscript scripts/build_pure_r_binary.R _pkg webr/repo "${R_WASM_VERSION}"
 
       - name: Espelhar dependências wasm (MD5 conferido)
         run: Rscript scripts/mirror_webr_deps.R webr/repo "${R_WASM_VERSION}"
