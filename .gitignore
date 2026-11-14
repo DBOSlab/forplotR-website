@@ -15,3 +15,4 @@ backend/pkg/*
 # webR runtime e repositório wasm (gerados pelo CI)
 /webr/
 /_freeze/
+/.forplotr-sha

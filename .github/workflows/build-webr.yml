@@ -91,15 +91,21 @@ jobs:
         uses: quarto-dev/quarto-actions/setup@8a96df13519ee81fd526f2dfca5962811136661b # v2.2.0
 
       - name: Renderizar o site
-        run: quarto render
+        run: |
+          # O código-fonte do pacote não faz parte do site.
+          git -C _pkg rev-parse HEAD > .forplotr-sha
+          rm -rf _pkg
+          quarto render
 
       - name: Montar a prévia
         run: |
+          # O Quarto copia parte de webr/ por conta própria; substitui pelo conjunto completo.
+          rm -rf _site/webr _site/webr-dev _site/_pkg
           cp -r webr _site/webr
           cp -r webr-dev _site/webr-dev
           # Registro do que foi compilado, para conferência.
           {
-            echo "forplotR ref: ${{ inputs.forplotr_ref || 'feat/webr' }} ($(git -C _pkg rev-parse HEAD))"
+            echo "forplotR ref: ${{ inputs.forplotr_ref || 'feat/webr' }} ($(cat .forplotr-sha))"
             echo "site commit:  ${GITHUB_SHA}"
             echo "webR:         ${WEBR_VERSION}"
           } > _site/webr/BUILD-INFO.txt
