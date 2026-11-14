@@ -32,7 +32,8 @@ concurrency:
 env:
   WEBR_VERSION: "0.6.0"
   WEBR_SHA256: "04c56d16c3ad29265a2c4ffcb800ee0b72ab6dd64dd678c9c8fec81a832cb8cc"
-  # Versão menor do R embutido no webR 0.6.0 (R 4.6.0).
+  # R embutido no webR 0.6.0: o binário do forplotR é gerado na mesma versão.
+  R_BUILD_VERSION: "4.6.0"
   R_WASM_VERSION: "4.6"
 
 jobs:
@@ -56,10 +57,10 @@ jobs:
       # O forplotR é R puro: o binário instalado no R 4.6 é portável para o
       # webR (R 4.6.0). O compilador cruzado r-wasm/actions/build-rwasm não é
       # usado porque o resolvedor dele está quebrado (r-wasm/rwasm#56).
-      - name: Instalar R ${{ env.R_WASM_VERSION }}
+      - name: Instalar R ${{ env.R_BUILD_VERSION }}
         uses: r-lib/actions/setup-r@f9a764fea8d5c63df6ef9a5c7795bf7deb5d7e05 # v2
         with:
-          r-version: ${{ env.R_WASM_VERSION }}
+          r-version: ${{ env.R_BUILD_VERSION }}
           use-public-rspm: true
 
       - name: Instalar dependências do forplotR
