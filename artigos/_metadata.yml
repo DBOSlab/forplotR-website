@@ -1,0 +1,6 @@
+# Configuração comum a todos os artigos (tutoriais) do site.
+page-layout: article
+toc: true
+toc-location: right
+sidebar: artigos
+body-classes: fp-article

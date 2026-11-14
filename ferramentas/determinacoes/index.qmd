@@ -1,0 +1,62 @@
+---
+title: "Verificação de determinações"
+pagetitle: "Verificação de determinações — forplotR"
+---
+
+```{=html}
+<section class="fp-hero" style="--fn:var(--jabuticaba)">
+  <div class="fp-hero-inner">
+    <p class="fp-hero-kicker"><span class="fn-mark"></span>forplotR::forplot_crossdet()</p>
+    <h1 class="fp-hero-title"><span data-lang="pt">Verificação de determinações</span><span data-lang="en">Determination cross-check</span></h1>
+    <p class="fp-hero-deck" data-lang="pt">Associação de cada voucher do inventário ao espécime correspondente em um herbário do JABOT e comparação das determinações.</p>
+    <p class="fp-hero-deck" data-lang="en">Matches each inventory voucher to its specimen in a JABOT herbarium and compares the determinations.</p>
+    <div class="fp-hero-actions"><a class="fx-btn fx-btn-primary" href="#ferramenta"><span data-lang="pt">Ir ao formulário</span><span data-lang="en">Go to the form</span></a><a class="fx-btn fx-btn-secondary" href="../../artigos/forplot_crossdet.html"><span data-lang="pt">Documentação da função</span><span data-lang="en">Function documentation</span></a></div>
+  </div>
+</section>
+```
+
+::: {.fp-section}
+
+## [Procedimento]{data-lang=pt}[Procedure]{data-lang=en} {#procedimento}
+
+::: {data-lang="pt"}
+1. Envie a planilha e informe a sigla do herbário (ex.: `RB`).
+2. Se os vouchers tiverem apenas o número, informe o coletor (ex.: `G. Ottino`).
+
+Na primeira consulta a um herbário, o servidor obtém os dados do JABOT, o que leva alguns minutos; as consultas seguintes usam a cópia em cache.
+:::
+::: {data-lang="en"}
+1. Upload the spreadsheet and enter the herbarium acronym (e.g. `RB`).
+2. If the vouchers carry only a number, enter the collector (e.g. `G. Ottino`).
+
+The first query to a herbarium downloads its data from JABOT, which takes a few minutes; later queries use the cached copy.
+:::
+
+```{=html}
+<div id="ferramenta" class="fp-tool-app" data-tool="crossdet"></div>
+```
+
+:::
+
+::: {.fp-section}
+
+## [Saídas]{data-lang=pt}[Outputs]{data-lang=en} {#saidas}
+
+::: {data-lang="pt"}
+- **Planilha XLSX** com três abas:
+    - *Matches*: vouchers encontrados cuja determinação requer revisão (indeterminados no inventário e determinados no herbário, o inverso, e divergências);
+    - *Diagnostics*: número de casos em cada classe;
+    - *Unmatched_inventory*: vouchers do inventário não encontrados no herbário.
+:::
+::: {data-lang="en"}
+- **XLSX workbook** with three sheets:
+    - *Matches*: matched vouchers whose determination needs review (indeterminate in the inventory and determined in the herbarium, the reverse, and conflicts);
+    - *Diagnostics*: number of cases in each class;
+    - *Unmatched_inventory*: inventory vouchers not found in the herbarium.
+:::
+
+:::
+
+```{=html}
+<script src="../../js/forplotr-app.js"></script>
+```

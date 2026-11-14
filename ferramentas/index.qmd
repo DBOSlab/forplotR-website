@@ -1,0 +1,68 @@
+---
+title: "Interface web"
+pagetitle: "Interface web — forplotR"
+---
+
+```{=html}
+<section class="fp-hero">
+  <div class="fp-hero-inner">
+    <p class="fp-hero-kicker">forplotR · <span data-lang="pt">interface web</span><span data-lang="en">web interface</span></p>
+    <h1 class="fp-hero-title"><span data-lang="pt">Interface web</span><span data-lang="en">Web interface</span></h1>
+    <p class="fp-hero-deck" data-lang="pt">Formulários que executam as cinco funções principais do pacote no servidor do Jardim Botânico do Rio de Janeiro, sem instalação local. Todos aceitam planilhas do ForestPlots.net (ficha de campo e Query Library), de Terras Indígenas e do Programa Monitora, e podem ser testados com os conjuntos de dados de exemplo.</p>
+    <p class="fp-hero-deck" data-lang="en">Forms that run the five main package functions on the Rio de Janeiro Botanical Garden server, with no local installation. All accept ForestPlots.net spreadsheets (field sheet and Query Library), Indigenous Land sheets and Monitora Program sheets, and can be tried with the example datasets.</p>
+    <div class="fp-hero-actions"><a class="fx-btn fx-btn-secondary" href="../artigos/index.html"><span data-lang="pt">Documentação do pacote em R</span><span data-lang="en">R package documentation</span></a></div>
+  </div>
+</section>
+```
+
+::: {.fp-section}
+
+## [Ferramentas disponíveis]{data-lang=pt}[Available tools]{data-lang=en} {#ferramentas-disponiveis}
+
+::: {data-lang="pt"}
+| Etapa | Ferramenta | Função | Saídas |
+|---|---|---|---|
+| Planejamento de campo e cobertura de coleta | [Relatório e balanço de coleta](relatorio/index.qmd) | `forplot_balance()` | HTML, PDF, PNG, XLSX |
+| Organização das imagens dos vouchers | [Diretórios de vouchers](vouchers/index.qmd) | `forplot_vouchers()` | ZIP |
+| Visualização espacial | [Mapa interativo da parcela](mapa/index.qmd) | `forplot_map()` | HTML |
+| Documentação de herbário | [Planilha para o herbário](herbario/index.qmd) | `forplot_sheets()` | XLSX (JABOT/BRAHMS) |
+| Verificação taxonômica | [Verificação de determinações](determinacoes/index.qmd) | `forplot_crossdet()` | XLSX |
+
+Cada formulário chama a mesma função do pacote, com os mesmos argumentos; os resultados são idênticos aos obtidos no R com a versão indicada em [Sobre](../sobre/index.qmd). Para lotes de parcelas e para registrar os parâmetros de cada análise, recomenda-se o uso do pacote diretamente no R.
+:::
+
+::: {data-lang="en"}
+| Step | Tool | Function | Outputs |
+|---|---|---|---|
+| Field planning and collection coverage | [Report and collection balance](relatorio/index.qmd) | `forplot_balance()` | HTML, PDF, PNG, XLSX |
+| Organising voucher images | [Voucher directories](vouchers/index.qmd) | `forplot_vouchers()` | ZIP |
+| Spatial visualisation | [Interactive plot map](mapa/index.qmd) | `forplot_map()` | HTML |
+| Herbarium documentation | [Herbarium spreadsheet](herbario/index.qmd) | `forplot_sheets()` | XLSX (JABOT/BRAHMS) |
+| Taxonomic verification | [Determination cross-check](determinacoes/index.qmd) | `forplot_crossdet()` | XLSX |
+
+Each form calls the same package function with the same arguments; results are identical to those obtained in R with the version shown under [About](../sobre/index.qmd). For batches of plots, and to keep a record of the parameters of each analysis, use the package directly in R.
+:::
+
+:::
+
+::: {.fp-section}
+
+## [Processamentos recentes]{data-lang=pt}[Recent jobs]{data-lang=en} {#processamentos-recentes}
+
+::: {data-lang="pt"}
+Os resultados ficam disponíveis por 72 horas e são listados apenas no navegador em que foram gerados.
+:::
+::: {data-lang="en"}
+Results are available for 72 hours and are listed only in the browser where they were produced.
+:::
+
+```{=html}
+<p><span class="api-status"></span></p>
+<div class="fp-recent"></div>
+```
+
+:::
+
+```{=html}
+<script src="../js/forplotr-app.js"></script>
+```

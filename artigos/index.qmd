@@ -1,0 +1,77 @@
+---
+title: "[Documentação]{data-lang=pt}[Documentation]{data-lang=en}"
+pagetitle: "Documentação — forplotR"
+subtitle: "[Artigos de referência das funções do forplotR]{data-lang=pt}[Reference articles for the forplotR functions]{data-lang=en}"
+description: "[Descrição de cada função do pacote, com formatos de entrada, argumentos, exemplos reprodutíveis e saídas da versão atual.]{data-lang=pt} [Each package function, with input layouts, arguments, reproducible examples and outputs of the current version.]{data-lang=en}"
+---
+
+::: {data-lang="pt"}
+Cada artigo descreve uma função: finalidade, formatos de planilha aceitos, argumentos principais, um exemplo reprodutível com os conjuntos de dados distribuídos com o pacote (`RUS01` e `TUM`) e a lista das saídas. Todas as funções também podem ser executadas pela [interface web](../ferramentas/index.qmd), sem instalação local.
+
+| Artigo | Etapa do fluxo de trabalho | Conteúdo |
+|---|---|---|
+| [Primeiros passos](comecar.qmd) | Preparação | Instalação, formatos de entrada (`input_type`), mapeamento de colunas, dados de exemplo e idiomas |
+| [`forplot_balance()`](forplot_balance.qmd) | Planejamento de campo | Relatório com mapas de fustes, checklist, subparcelas prioritárias e balanço de coleta |
+| [`forplot_vouchers()`](forplot_vouchers.qmd) | Organização dos vouchers | Hierarquia Família/Gênero/Voucher para imagens, reorganizada após revisões taxonômicas |
+| [`forplot_map()`](forplot_map.qmd) | Visualização espacial | Mapa Leaflet autocontido, com imagens dos vouchers e links para exsicatas digitalizadas |
+| [`forplot_sheets()`](forplot_sheets.qmd) | Documentação de herbário | Planilha de etiquetas nos formatos JABOT, BRAHMS ou em modelo próprio |
+| [`forplot_crossdet()`](forplot_crossdet.qmd) | Verificação taxonômica | Comparação das determinações do inventário com os registros de um herbário do JABOT |
+| [Perguntas frequentes](faq.qmd) | — | Problemas comuns com planilhas, relatórios e mapas |
+| [Novidades](novidades.qmd) | — | Histórico de versões e mudanças de nome das funções |
+
+: Artigos de documentação do forplotR. {.arg-table}
+:::
+
+::: {data-lang="en"}
+Each article describes one function: purpose, accepted spreadsheet layouts, main arguments, a reproducible example with the datasets shipped with the package (`RUS01` and `TUM`) and the list of outputs. Every function can also be run through the [web interface](../ferramentas/index.qmd), with no local installation.
+
+| Article | Workflow step | Content |
+|---|---|---|
+| [Get started](comecar.qmd) | Preparation | Installation, input layouts (`input_type`), column mapping, example data and languages |
+| [`forplot_balance()`](forplot_balance.qmd) | Field planning | Report with stem maps, checklist, priority subplots and collection balance |
+| [`forplot_vouchers()`](forplot_vouchers.qmd) | Voucher organisation | Family/Genus/Voucher hierarchy for images, reorganised after taxonomic revisions |
+| [`forplot_map()`](forplot_map.qmd) | Spatial visualisation | Self-contained Leaflet map with voucher images and links to digitised specimens |
+| [`forplot_sheets()`](forplot_sheets.qmd) | Herbarium documentation | Label spreadsheet in the JABOT or BRAHMS layout, or a custom template |
+| [`forplot_crossdet()`](forplot_crossdet.qmd) | Taxonomic verification | Comparison of inventory determinations with the records of a JABOT herbarium |
+| [FAQ](faq.qmd) | — | Common problems with spreadsheets, reports and maps |
+| [News](novidades.qmd) | — | Version history and function renamings |
+
+: forplotR documentation articles. {.arg-table}
+:::
+
+::: {.callout-note}
+## [Nomes das funções em versões anteriores]{data-lang=pt}[Function names in earlier versions]{data-lang=en}
+
+::: {data-lang="pt"}
+`plot_for_balance()` corresponde a `forplot_balance()`, `mk_voucher_dirs()` a `forplot_vouchers()`, `plot_html_map()` a `forplot_map()` e `fp_herb_converter()` a `forplot_sheets()`. A função `forplot_crossdet()` foi introduzida na versão atual. Ver [Novidades](novidades.qmd).
+:::
+::: {data-lang="en"}
+`plot_for_balance()` is now `forplot_balance()`, `mk_voucher_dirs()` is `forplot_vouchers()`, `plot_html_map()` is `forplot_map()` and `fp_herb_converter()` is `forplot_sheets()`. `forplot_crossdet()` was introduced in the current version. See [News](novidades.qmd).
+:::
+:::
+
+## [Sequência recomendada]{data-lang=pt}[Recommended sequence]{data-lang=en} {#sequencia-recomendada}
+
+::: {data-lang="pt"}
+Para uma parcela em nova campanha de campo, a sequência usual é:
+
+1. [`forplot_balance()`](forplot_balance.qmd): avaliar a cobertura de coleta e identificar os fustes a coletar ou revisitar;
+2. [`forplot_vouchers()`](forplot_vouchers.qmd): criar os diretórios e arquivar as fotografias de campo;
+3. [`forplot_map()`](forplot_map.qmd): integrar a tabela do censo, os vértices da parcela e as imagens em um mapa;
+4. [`forplot_sheets()`](forplot_sheets.qmd): gerar a planilha de etiquetas para o herbário;
+5. [`forplot_crossdet()`](forplot_crossdet.qmd): após o tombamento, comparar as determinações do inventário com as do herbário.
+
+Quando a tabela do censo é atualizada (novas coletas ou determinações revisadas), as etapas podem ser executadas novamente; as saídas são regeneradas a partir da mesma fonte.
+:::
+
+::: {data-lang="en"}
+For a plot entering a new field campaign, the usual sequence is:
+
+1. [`forplot_balance()`](forplot_balance.qmd): assess collection coverage and identify the stems to collect or revisit;
+2. [`forplot_vouchers()`](forplot_vouchers.qmd): create the directories and archive the field photographs;
+3. [`forplot_map()`](forplot_map.qmd): combine the census table, the plot vertices and the images in a map;
+4. [`forplot_sheets()`](forplot_sheets.qmd): produce the label spreadsheet for the herbarium;
+5. [`forplot_crossdet()`](forplot_crossdet.qmd): after accession, compare inventory determinations with those of the herbarium.
+
+When the census table is updated (new collections or revised determinations), the steps can be run again; the outputs are regenerated from the same source.
+:::

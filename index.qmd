@@ -1,129 +1,402 @@
 ---
-format:
-  html:
-    toc: true
-    page-layout: custom
-execute:
-  echo: false
-  eval: true
-  freeze: auto
-  cache: false
-  warning: false
-  message: false
-  include: true
-  # ENABLE inline R code evaluation
-  inline: true
-resources:
-  - figures/
+title: "forplotR"
+pagetitle: "forplotR — do censo da parcela à exsicata"
+description: "Pacote R de código aberto que conecta dados de censos de parcelas florestais permanentes a vouchers e coleções de herbário."
 ---
 
+<!-- Página inicial. Complementar ao manuscrito: apresenta o pacote, a figura do fluxo,
+     as funções, os estudos de caso e a interface web, sem repetir o texto do artigo.
+     Textos bilíngues: data-lang="pt" / data-lang="en" (seletor PT/EN no menu).
+     Estilos em styles.css (seção 6). Blocos de código em Markdown comum entre blocos
+     HTML, para receber realce de sintaxe e botão de copiar do Quarto.
+     A figura do topo (figures/rus01_stem_map.svg) foi gerada a partir dos dados RUS01. -->
 
+```{=html}
+<!-- ============ ABERTURA ============ -->
+<header class="hx-hero">
+  <div class="hx-wrap">
+    <div class="hx-hero-grid">
+      <div>
+        <p class="hx-eyebrow">
+          <span data-lang="pt">Pacote R de código aberto</span><span data-lang="en">Open-source R package</span>
+          <span data-lang="pt">Licença MIT</span><span data-lang="en">MIT licence</span>
+          <span>DBOSlab · JBRJ</span>
+        </p>
+        <h1 class="hx-title">forplotR</h1>
+        <p class="hx-tagline" data-lang="pt">Do censo da parcela <em>à exsicata</em>.</p>
+        <p class="hx-tagline" data-lang="en">From plot census <em>to herbarium specimen</em>.</p>
+        <p class="hx-lead" data-lang="pt">Para quem coleta, identifica e cura plantas em parcelas permanentes. A partir de uma única tabela do censo, o forplotR gera relatórios de campo, diretórios de imagens dos vouchers, mapas interativos e planilhas de herbário, e os regenera sempre que uma determinação muda.</p>
+        <p class="hx-lead" data-lang="en">For those who collect, identify and curate plants in permanent plots. From a single census table, forplotR produces field reports, voucher image directories, interactive maps and herbarium spreadsheets, and regenerates them whenever a determination changes.</p>
+        <div class="hx-actions">
+          <a href="artigos/comecar.html" class="fx-btn fx-btn-light"><span data-lang="pt">Primeiros passos</span><span data-lang="en">Get started</span> <span class="arrow" aria-hidden="true">→</span></a>
+          <a href="ferramentas/index.html" class="fx-btn fx-btn-outline-light"><span data-lang="pt">Usar no navegador</span><span data-lang="en">Use in the browser</span></a>
+          <a href="https://github.com/DBOSlab/forplotR" class="fx-btn fx-btn-outline-light">GitHub</a>
+        </div>
+        <p class="hx-server"><span data-lang="pt">Interface web no servidor do JBRJ</span><span data-lang="en">Web interface on the JBRJ server</span> <span class="api-status is-checking"></span></p>
+      </div>
 
-<style>
-  .floating-logos {
-    position: fixed;
-    top: 60px;
-    right: 450px;
-    width: 165px;
-    opacity: 100;
-    z-index: 1;
-  }
+      <figure class="hx-plot">
+        <div class="hx-plot-frame">
+          <img src="figures/rus01_stem_map.svg" width="468" height="468" alt="Mapa de fustes da parcela RUS01: 929 fustes em 1 ha, coloridos pela situação de coleta">
+          <span class="hx-axis hx-axis-x">100 m</span>
+          <span class="hx-axis hx-axis-y">100 m</span>
+        </div>
+        <figcaption>
+          <ul class="hx-legend">
+            <li><span class="dot ipe"></span><span data-lang="pt">coletados</span><span data-lang="en">collected</span> <b>682</b></li>
+            <li><span class="dot urucum"></span><span data-lang="pt">não coletados</span><span data-lang="en">not collected</span> <b>11</b></li>
+            <li><span class="dot agua"></span><span data-lang="pt">palmeiras</span><span data-lang="en">palms</span> <b>236</b></li>
+          </ul>
+        </figcaption>
+      </figure>
+    </div>
+  </div>
+</header>
 
-  .floating-logos img {
-    display: block;
-    width: 100%;
-    margin-bottom: 12px;
-    border-radius: 4px;
-  }
-</style>
+<!-- ============ POR QUE ============ -->
+<section class="hx-section" id="por-que">
+  <div class="hx-wrap">
+    <div class="hx-split">
+      <div class="hx-aside">
+        <p class="hx-kicker" data-lang="pt">Motivação</p><p class="hx-kicker" data-lang="en">Motivation</p>
+        <h2 class="hx-h2" data-lang="pt">Cada voucher liga muitos registros.</h2>
+        <h2 class="hx-h2" data-lang="en">Every voucher links many records.</h2>
+      </div>
+      <div>
+        <p class="hx-desc" data-lang="pt">Plaqueta, coordenadas, fotografias, coletor, localidade e determinação precisam continuar conectados ao longo de censos sucessivos, revisões taxonômicas e tombamento no herbário. Mantidos em planilhas e pastas separadas, eles divergem.</p>
+        <p class="hx-desc" data-lang="en">Tag, coordinates, photographs, collector, locality and determination must stay connected across successive censuses, taxonomic revisions and herbarium accession. Kept in separate spreadsheets and folders, they drift apart.</p>
+        <p class="hx-desc" data-lang="pt">O forplotR trata a tabela do censo como fonte única e deriva dela todas as saídas. Quando uma determinação é revisada, basta executar a função de novo.</p>
+        <p class="hx-desc" data-lang="en">forplotR treats the census table as the single source and derives every output from it. When a determination is revised, the function is simply run again.</p>
+      </div>
+    </div>
+    <figure class="hx-figure" id="figura-1">
+      <div class="fig-scroll">
+        <svg class="fig-workflow" viewBox="0 0 1000 520" role="img" aria-labelledby="fig1-title">
+          <title id="fig1-title">Fluxo de trabalho do forplotR / forplotR workflow</title>
+          <defs>
+            <marker id="f1-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0 0 L10 5 L0 10 z" class="f1-head"/>
+            </marker>
+          </defs>
 
-<div class="floating-logos">
-  <img src='/figures/forplotR_hex_sticker.png' alt='forplotR hex sticker'>
-</div>
+          <!-- rótulos das colunas -->
+          <text class="f1-col" x="110" y="20" text-anchor="middle" data-lang="pt">ENTRADA</text>
+          <text class="f1-col" x="110" y="20" text-anchor="middle" data-lang="en">INPUT</text>
+          <text class="f1-col" x="325" y="20" text-anchor="middle" data-lang="pt">PADRONIZAÇÃO</text>
+          <text class="f1-col" x="325" y="20" text-anchor="middle" data-lang="en">HARMONISATION</text>
+          <text class="f1-col" x="545" y="20" text-anchor="middle" data-lang="pt">FUNÇÕES</text>
+          <text class="f1-col" x="545" y="20" text-anchor="middle" data-lang="en">FUNCTIONS</text>
+          <text class="f1-col" x="835" y="20" text-anchor="middle" data-lang="pt">SAÍDAS</text>
+          <text class="f1-col" x="835" y="20" text-anchor="middle" data-lang="en">OUTPUTS</text>
 
-::: whitebox
-::: {style="padding-left: 100px; padding-right: 50px; display: inline-block;"}
+          <!-- A: tabela do censo -->
+          <rect class="f1-box" x="20" y="115" width="180" height="210"/>
+          <text class="f1-h" x="110" y="143" text-anchor="middle" data-lang="pt">Tabela do censo</text>
+          <text class="f1-h" x="110" y="143" text-anchor="middle" data-lang="en">Census table</text>
+          <text class="f1-m" x="40" y="174">field_sheet</text>
+          <text class="f1-m" x="40" y="196">field_sheet_ti</text>
+          <text class="f1-m" x="40" y="218">fp_query_sheet</text>
+          <text class="f1-m" x="40" y="240">monitora</text>
+          <text class="f1-s" x="40" y="272" data-lang="pt">argumento input_type</text>
+          <text class="f1-s" x="40" y="272" data-lang="en">input_type argument</text>
+          <text class="f1-s" x="40" y="292" data-lang="pt">colname_* · dimensões</text>
+          <text class="f1-s" x="40" y="292" data-lang="en">colname_* · plot dimensions</text>
 
-::: {layout-ncol="2"}
+          <line class="f1-line" x1="200" y1="220" x2="238" y2="220" marker-end="url(#f1-arrow)"/>
 
-::: {style="text-align: left;"}
+          <!-- B: tabela harmonizada -->
+          <rect class="f1-box" x="240" y="135" width="170" height="170"/>
+          <text class="f1-h" x="325" y="162" text-anchor="middle" data-lang="pt">Tabela harmonizada</text>
+          <text class="f1-h" x="325" y="162" text-anchor="middle" data-lang="en">Harmonised table</text>
+          <text class="f1-t" x="258" y="192" data-lang="pt">fuste e plaqueta</text>
+          <text class="f1-t" x="258" y="192" data-lang="en">stem and tag</text>
+          <text class="f1-t" x="258" y="212" data-lang="pt">táxon</text>
+          <text class="f1-t" x="258" y="212" data-lang="en">taxon</text>
+          <text class="f1-t" x="258" y="232" data-lang="pt">posição (x, y)</text>
+          <text class="f1-t" x="258" y="232" data-lang="en">position (x, y)</text>
+          <text class="f1-t" x="258" y="252" data-lang="pt">situação de coleta</text>
+          <text class="f1-t" x="258" y="252" data-lang="en">collection status</text>
+          <text class="f1-t" x="258" y="272">voucher</text>
 
-\
-`forplotR` helps you turn raw forest-plot censuses into shareable, verifiable outputs, bridging the everyday reality of field sheets with the long-term value of *voucher-based taxonomy* and herbarium archiving.
-\
-\
-Forest plot monitoring depends on specimen vouchers: they anchor the taxonomic identity of censused stems, make species lists auditable, and strengthen downstream science (from biodiversity discovery to carbon and dynamics estimates). Yet, transforming raw stem tables into coherent, curator-ready materials is often slow, manual, and error-prone (cleaning, voucher tracking, folder organization, label metadata, map products, and iterative updates after new identifications).
-\
-\
-The package `forplotR` streamlines this workflow as a modular toolbox that automates key curatorial steps. So, plot teams can generate outputs that are reproducible, traceable, and scalable across monitoring initiatives.
-\
-\
-What you get (typical outputs):\
- (i) *Herbarium-ready spreadsheets* for label generation and database ingestion (e.g., JABOT/BRAHMS-style templates)\
- (ii)*Organized voucher folders* (family/genus/voucher IDs) that stay aligned with taxonomic updates\
- (iii)*Plot and subplot stem maps* to plan field campaigns and track voucher coverage\
- (iv) *Interactive HTML maps* (Leaflet) linking stems to *voucher codes, images, and digitized specimens*\
-\
-The workflow connects field inventories to herbarium archives across *ForestPlots.net* and Brazil’s *Monitora* maltese-cross protocols.
-\
-\
+          <!-- barramento até as funções -->
+          <line class="f1-line" x1="410" y1="220" x2="430" y2="220"/>
+          <line class="f1-line" x1="430" y1="64" x2="430" y2="376"/>
+          <line class="f1-line" x1="430" y1="64" x2="448" y2="64" marker-end="url(#f1-arrow)"/>
+          <line class="f1-line" x1="430" y1="142" x2="448" y2="142" marker-end="url(#f1-arrow)"/>
+          <line class="f1-line" x1="430" y1="220" x2="448" y2="220" marker-end="url(#f1-arrow)"/>
+          <line class="f1-line" x1="430" y1="298" x2="448" y2="298" marker-end="url(#f1-arrow)"/>
+          <line class="f1-line" x1="430" y1="376" x2="448" y2="376" marker-end="url(#f1-arrow)"/>
 
-## The ForestPlot.net context
+          <!-- C: funções -->
+          <rect class="f1-fn f1-ipe" x="450" y="36" width="190" height="56"/>
+          <text class="f1-fm" x="545" y="60" text-anchor="middle">forplot_balance()</text>
+          <text class="f1-s" x="545" y="78" text-anchor="middle" data-lang="pt">planejamento de campo</text>
+          <text class="f1-s" x="545" y="78" text-anchor="middle" data-lang="en">field planning</text>
 
-*ForestPlots.net* is a collaborative infrastructure for measuring and understanding tropical forests, integrating long-term plot datasets across multiple networks while allowing partners to retain control over their data. Its core data model is a stem-level census table, where each row represents an individual with measurements (e.g., DBH), identification, a unique tag, and local x–y coordinates within the plot.
-\
-\
-Because ForestPlots.net emphasizes standardized, long-term monitoring, the value of a census increases dramatically when it is paired with well-documented vouchers deposited in herbaria. `forplotR` leverages the standardized stem-table structure to support the practical tasks that often block this integration: cleaning and validating census tables, tracking voucher status, producing campaign reports and stem maps, organizing images, and generating shareable interactive maps.
-\
-\
+          <rect class="f1-fn f1-folha" x="450" y="114" width="190" height="56"/>
+          <text class="f1-fm" x="545" y="138" text-anchor="middle">forplot_vouchers()</text>
+          <text class="f1-s" x="545" y="156" text-anchor="middle" data-lang="pt">imagens dos vouchers</text>
+          <text class="f1-s" x="545" y="156" text-anchor="middle" data-lang="en">voucher images</text>
 
-## The Monitora program context
+          <rect class="f1-fn f1-rio" x="450" y="192" width="190" height="56"/>
+          <text class="f1-fm" x="545" y="216" text-anchor="middle">forplot_map()</text>
+          <text class="f1-s" x="545" y="234" text-anchor="middle" data-lang="pt">visualização espacial</text>
+          <text class="f1-s" x="545" y="234" text-anchor="middle" data-lang="en">spatial visualisation</text>
 
-Brazil’s *National Biodiversity Monitoring Program (Monitora)* generates biodiversity information from protected areas to support management effectiveness, indicators, and assessments over time. In its forest component, vegetation is surveyed using permanent maltese-cross plots (0.4 ha) designed to sample local environmental heterogeneity through four orthogonal arms.
-\
-\
-Monitora datasets are also stem-level tables (station/census, measurements, identification, stem number, x–y position, voucher status). `forplotR` is explicitly designed to support this structure and plot geometry. So, teams can iterate efficiently across field campaigns, update identifications and voucher coverage, and export curator-ready products without rebuilding the workflow each time.
-\
-\
+          <rect class="f1-fn f1-urucum" x="450" y="270" width="190" height="56"/>
+          <text class="f1-fm" x="545" y="294" text-anchor="middle">forplot_sheets()</text>
+          <text class="f1-s" x="545" y="312" text-anchor="middle" data-lang="pt">dados para o herbário</text>
+          <text class="f1-s" x="545" y="312" text-anchor="middle" data-lang="en">herbarium data</text>
 
-## How `forplotR` fits into your workflow
+          <rect class="f1-fn f1-jabuticaba" x="450" y="348" width="190" height="56"/>
+          <text class="f1-fm" x="545" y="372" text-anchor="middle">forplot_crossdet()</text>
+          <text class="f1-s" x="545" y="390" text-anchor="middle" data-lang="pt">verificação taxonômica</text>
+          <text class="f1-s" x="545" y="390" text-anchor="middle" data-lang="en">taxonomic cross-check</text>
 
-A typical run progresses from *data validation → reporting → voucher organization → mapping → herbarium export*. Outputs are written to *date-stamped folders*, making each run *traceable and reproducible*.
-\
-\
-Core functions:\
-`plot_for_balance()` — creates a *PDF field-campaign report* (stem maps + checklist + voucher coverage; supports multi-census balances like recruitment/mortality when available)\
-`mk_voucher_dirs()` — builds/maintains *taxonomically structured voucher directories*, and reorganizes them automatically after taxonomic updates\
-`plot_html_map()` — generates a *self-contained interactive HTML map* with stem popups, optional voucher image carousels, and links to digitized specimens when available\
-`fp_herb_converter()` — exports a *herbarium-ready spreadsheet* for label generation and collection database workflows
-\
-\
-Together, these outputs provide a practical pathway to operationalize the synergy between *field ecology, taxonomy, and long-term monitoring*, turning plot censuses into curated, verifiable biodiversity evidence.
-\
-\
-:::
-::: {style="display: flex; gap: 16px; justify-content: center; align-items: center;"}
-:::
-:::
-:::
-:::
+          <!-- setas para as saídas -->
+          <line class="f1-line" x1="640" y1="64" x2="688" y2="64" marker-end="url(#f1-arrow)"/>
+          <line class="f1-line" x1="640" y1="142" x2="688" y2="142" marker-end="url(#f1-arrow)"/>
+          <line class="f1-line" x1="640" y1="220" x2="688" y2="220" marker-end="url(#f1-arrow)"/>
+          <line class="f1-line" x1="640" y1="298" x2="688" y2="298" marker-end="url(#f1-arrow)"/>
+          <line class="f1-line" x1="640" y1="376" x2="688" y2="376" marker-end="url(#f1-arrow)"/>
 
-::: mainbox
-::: {style="padding-left: 100px; padding-right: 100px; display: inline-block;"}
-::: {layout-ncol="2"}
-::: {style="text-align: center;"}
-### [Get Started](/get-started/index.qmd)
+          <!-- D: saídas -->
+          <rect class="f1-box" x="690" y="36" width="290" height="56"/>
+          <text class="f1-o" x="706" y="59" data-lang="pt">Relatório PDF / HTML</text>
+          <text class="f1-o" x="706" y="59" data-lang="en">PDF / HTML report</text>
+          <text class="f1-s" x="706" y="77" data-lang="pt">mapas de fustes, checklist, balanço (XLSX)</text>
+          <text class="f1-s" x="706" y="77" data-lang="en">stem maps, checklist, collection balance (XLSX)</text>
 
-Welcome new users! Start learning how to install `forplotR`
-:::
+          <rect class="f1-box" x="690" y="114" width="290" height="56"/>
+          <text class="f1-o" x="706" y="137" data-lang="pt">Família / Gênero / Voucher</text>
+          <text class="f1-o" x="706" y="137" data-lang="en">Family / Genus / Voucher</text>
+          <text class="f1-s" x="706" y="155" data-lang="pt">diretórios sincronizados com as determinações</text>
+          <text class="f1-s" x="706" y="155" data-lang="en">directories kept in sync with determinations</text>
 
-::: {style="text-align: center;"}
-### [Articles](/articles/index.qmd)
+          <rect class="f1-box" x="690" y="192" width="290" height="56"/>
+          <text class="f1-o" x="706" y="215" data-lang="pt">Mapa Leaflet em HTML autocontido</text>
+          <text class="f1-o" x="706" y="215" data-lang="en">Self-contained Leaflet HTML map</text>
+          <text class="f1-s" x="706" y="233" data-lang="pt">filtros, imagens, links para exsicatas</text>
+          <text class="f1-s" x="706" y="233" data-lang="en">filters, images, links to specimens</text>
 
-"How-to" articles to help you learn how to use `forplotR`
-:::
-:::
-:::
-:::
+          <rect class="f1-box" x="690" y="270" width="290" height="56"/>
+          <text class="f1-o" x="706" y="293" data-lang="pt">Planilha de herbário (XLSX)</text>
+          <text class="f1-o" x="706" y="293" data-lang="en">Herbarium spreadsheet (XLSX)</text>
+          <text class="f1-s" x="706" y="311" data-lang="pt">JABOT, BRAHMS ou modelo próprio</text>
+          <text class="f1-s" x="706" y="311" data-lang="en">JABOT, BRAHMS or custom template</text>
 
-:::
+          <rect class="f1-box" x="690" y="348" width="290" height="56"/>
+          <text class="f1-o" x="706" y="371" data-lang="pt">Planilha diagnóstica (XLSX)</text>
+          <text class="f1-o" x="706" y="371" data-lang="en">Diagnostic workbook (XLSX)</text>
+          <text class="f1-s" x="706" y="389" data-lang="pt">concordâncias, divergências, não encontrados</text>
+          <text class="f1-s" x="706" y="389" data-lang="en">agreements, conflicts, unmatched vouchers</text>
+
+          <!-- fonte externa: herbário -->
+          <rect class="f1-ext" x="450" y="432" width="190" height="40"/>
+          <text class="f1-t" x="545" y="457" text-anchor="middle" data-lang="pt">Herbário · JABOT (DwC-A)</text>
+          <text class="f1-t" x="545" y="457" text-anchor="middle" data-lang="en">Herbarium · JABOT (DwC-A)</text>
+          <line class="f1-line f1-dash" x1="545" y1="432" x2="545" y2="406" marker-end="url(#f1-arrow)"/>
+
+          <!-- ciclo de revisão -->
+          <path class="f1-line f1-dash" d="M835 404 V500 H110 V327" fill="none" marker-end="url(#f1-arrow)"/>
+          <text class="f1-s" x="285" y="492" text-anchor="middle" data-lang="pt">revisões taxonômicas e curatoriais → nova execução</text>
+          <text class="f1-s" x="285" y="492" text-anchor="middle" data-lang="en">taxonomic and curatorial revisions → re-run</text>
+        </svg>
+      </div>
+      <figcaption data-lang="pt"><strong>Figura 1.</strong> Fluxo de trabalho. A tabela do censo, em um dos quatro formatos (<code>input_type</code>), é harmonizada e usada pelas cinco funções. <code>forplot_map()</code> lê os diretórios de <code>forplot_vouchers()</code>; <code>forplot_crossdet()</code> consulta um herbário do JABOT. Revisões incorporadas à tabela são propagadas na execução seguinte (linha tracejada).</figcaption>
+      <figcaption data-lang="en"><strong>Figure 1.</strong> Workflow. The census table, in one of four layouts (<code>input_type</code>), is harmonised and used by the five functions. <code>forplot_map()</code> reads the <code>forplot_vouchers()</code> directories; <code>forplot_crossdet()</code> queries a JABOT herbarium. Revisions incorporated into the table propagate on the next run (dashed line).</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ============ FUNÇÕES ============ -->
+<section class="hx-section" id="funcoes">
+  <div class="hx-wrap">
+    <div class="hx-split">
+      <div class="hx-aside">
+        <p class="hx-kicker" data-lang="pt">Funções</p><p class="hx-kicker" data-lang="en">Functions</p>
+        <h2 class="hx-h2" data-lang="pt">Uma função para cada etapa, do campo ao herbário.</h2>
+        <h2 class="hx-h2" data-lang="en">One function per step, from field to herbarium.</h2>
+        <p class="hx-desc" data-lang="pt">Todas leem a mesma tabela do censo e aceitam os quatro formatos de entrada.</p>
+        <p class="hx-desc" data-lang="en">All read the same census table and accept the four input layouts.</p>
+      </div>
+      <div>
+        <ol class="hx-index">
+          <li class="hx-row m-ipe">
+            <span class="hx-num"><span class="fn-mark"></span>01</span>
+            <div class="hx-name"><code>forplot_balance()</code><h3 data-lang="pt">Planejar a campanha</h3><h3 data-lang="en">Plan the field campaign</h3></div>
+            <p data-lang="pt">Relatório em HTML e PDF com mapas de fustes por subparcela, checklist ligado às plaquetas e as subparcelas onde ainda faltam coletas.</p>
+            <p data-lang="en">HTML and PDF report with stem maps per subplot, a checklist linked to tags and the subplots where collections are still missing.</p>
+            <div class="hx-row-links"><a class="link-arrow" href="artigos/forplot_balance.html"><span data-lang="pt">Documentação</span><span data-lang="en">Documentation</span> <span class="arrow" aria-hidden="true">→</span></a><a class="link-arrow" href="ferramentas/relatorio/index.html"><span data-lang="pt">Executar online</span><span data-lang="en">Run online</span> <span class="arrow" aria-hidden="true">→</span></a></div>
+          </li>
+          <li class="hx-row m-folha">
+            <span class="hx-num"><span class="fn-mark"></span>02</span>
+            <div class="hx-name"><code>forplot_vouchers()</code><h3 data-lang="pt">Arquivar as imagens</h3><h3 data-lang="en">Archive the images</h3></div>
+            <p data-lang="pt">Diretórios Família/Gênero/Voucher para as fotografias de campo, reorganizados automaticamente quando uma determinação é revisada.</p>
+            <p data-lang="en">Family/Genus/Voucher directories for field photographs, reorganised automatically when a determination is revised.</p>
+            <div class="hx-row-links"><a class="link-arrow" href="artigos/forplot_vouchers.html"><span data-lang="pt">Documentação</span><span data-lang="en">Documentation</span> <span class="arrow" aria-hidden="true">→</span></a><a class="link-arrow" href="ferramentas/vouchers/index.html"><span data-lang="pt">Executar online</span><span data-lang="en">Run online</span> <span class="arrow" aria-hidden="true">→</span></a></div>
+          </li>
+          <li class="hx-row m-rio">
+            <span class="hx-num"><span class="fn-mark"></span>03</span>
+            <div class="hx-name"><code>forplot_map()</code><h3 data-lang="pt">Ver a parcela no mapa</h3><h3 data-lang="en">See the plot on a map</h3></div>
+            <p data-lang="pt">Mapa Leaflet em um único HTML: filtros por família e espécie, janela por fuste com as imagens do voucher e links para exsicatas digitalizadas no JABOT.</p>
+            <p data-lang="en">Leaflet map in a single HTML file: filters by family and species, a pop-up per stem with voucher images and links to digitised specimens in JABOT.</p>
+            <div class="hx-row-links"><a class="link-arrow" href="artigos/forplot_map.html"><span data-lang="pt">Documentação</span><span data-lang="en">Documentation</span> <span class="arrow" aria-hidden="true">→</span></a><a class="link-arrow" href="ferramentas/mapa/index.html"><span data-lang="pt">Executar online</span><span data-lang="en">Run online</span> <span class="arrow" aria-hidden="true">→</span></a></div>
+          </li>
+          <li class="hx-row m-urucum">
+            <span class="hx-num"><span class="fn-mark"></span>04</span>
+            <div class="hx-name"><code>forplot_sheets()</code><h3 data-lang="pt">Preparar as etiquetas</h3><h3 data-lang="en">Prepare the labels</h3></div>
+            <p data-lang="pt">Planilha no modelo do JABOT, do BRAHMS ou do seu herbário, com códigos RAINFOR e notas de campo redigidos como texto de etiqueta.</p>
+            <p data-lang="en">Spreadsheet in the JABOT, BRAHMS or your own herbarium template, with RAINFOR codes and field notes written out as label text.</p>
+            <div class="hx-row-links"><a class="link-arrow" href="artigos/forplot_sheets.html"><span data-lang="pt">Documentação</span><span data-lang="en">Documentation</span> <span class="arrow" aria-hidden="true">→</span></a><a class="link-arrow" href="ferramentas/herbario/index.html"><span data-lang="pt">Executar online</span><span data-lang="en">Run online</span> <span class="arrow" aria-hidden="true">→</span></a></div>
+          </li>
+          <li class="hx-row m-jabuticaba">
+            <span class="hx-num"><span class="fn-mark"></span>05</span>
+            <div class="hx-name"><code>forplot_crossdet()</code><h3 data-lang="pt">Conferir as determinações</h3><h3 data-lang="en">Cross-check determinations</h3></div>
+            <p data-lang="pt">Encontra cada voucher em um herbário do JABOT, por coletor e número, e separa concordâncias, divergências e espécimes ainda indeterminados.</p>
+            <p data-lang="en">Finds each voucher in a JABOT herbarium by collector and number, and separates agreements, conflicts and still-indeterminate specimens.</p>
+            <div class="hx-row-links"><a class="link-arrow" href="artigos/forplot_crossdet.html"><span data-lang="pt">Documentação</span><span data-lang="en">Documentation</span> <span class="arrow" aria-hidden="true">→</span></a><a class="link-arrow" href="ferramentas/determinacoes/index.html"><span data-lang="pt">Executar online</span><span data-lang="en">Run online</span> <span class="arrow" aria-hidden="true">→</span></a></div>
+          </li>
+        </ol>
+        <div class="hx-start">
+          <p data-lang="pt"><strong>Primeiros passos.</strong> Instalação, os quatro formatos de entrada (<code>field_sheet</code>, <code>field_sheet_ti</code>, <code>fp_query_sheet</code>, <code>monitora</code>) e como indicar colunas com outros nomes.</p>
+          <p data-lang="en"><strong>Get started.</strong> Installation, the four input layouts (<code>field_sheet</code>, <code>field_sheet_ti</code>, <code>fp_query_sheet</code>, <code>monitora</code>) and how to declare columns with other names.</p>
+          <a class="fx-btn fx-btn-secondary" href="artigos/comecar.html"><span data-lang="pt">Ler o guia</span><span data-lang="en">Read the guide</span> <span class="arrow" aria-hidden="true">→</span></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ NO R ============ -->
+<section class="hx-section hx-tint" id="no-r">
+  <div class="hx-wrap hx-code-grid">
+    <div>
+      <p class="hx-kicker" data-lang="pt">No R</p><p class="hx-kicker" data-lang="en">In R</p>
+      <p class="hx-desc" data-lang="pt">Requer R ≥ 4.3.2 e instala-se do GitHub. Os dados <code>RUS01</code> e <code>TUM</code> acompanham o pacote, e cada execução grava as saídas em um subdiretório datado (<code>ddMonYYYY</code>), o que deixa registrado de quando é cada versão do relatório, do mapa ou da planilha.</p>
+      <p class="hx-desc" data-lang="en">Requires R ≥ 4.3.2 and installs from GitHub. The <code>RUS01</code> and <code>TUM</code> datasets ship with the package, and each run writes its outputs to a date-stamped subdirectory (<code>ddMonYYYY</code>), recording when each version of the report, map or spreadsheet was made.</p>
+      <div class="hx-actions"><a href="artigos/comecar.html#instalacao" class="fx-btn fx-btn-secondary"><span data-lang="pt">Guia de instalação</span><span data-lang="en">Installation guide</span> <span class="arrow" aria-hidden="true">→</span></a></div>
+    </div>
+    <div class="hx-code">
+```
+
+```r
+devtools::install_github("DBOSlab/forplotR")
+library(forplotR)
+
+data(RUS01)
+openxlsx::write.xlsx(RUS01, "RUS01.xlsx")
+
+forplot_balance(fp_file_path = "RUS01.xlsx",
+                input_type = "field_sheet",
+                plot_size = 1,
+                subplot_size = 10,
+                language = "pt")
+
+forplot_vouchers(fp_file_path = "RUS01.xlsx",
+                 output_dir = "voucher_imgs")
+```
+
+```{=html}
+    </div>
+  </div>
+</section>
+
+<!-- ============ ESTUDOS DE CASO ============ -->
+<section class="hx-section" id="estudos-de-caso">
+  <div class="hx-wrap">
+    <div class="hx-split">
+      <div class="hx-aside">
+        <p class="hx-kicker" data-lang="pt">Estudos de caso</p><p class="hx-kicker" data-lang="en">Case studies</p>
+        <h2 class="hx-h2" data-lang="pt">Da Mata Atlântica à Amazônia.</h2>
+        <h2 class="hx-h2" data-lang="en">From the Atlantic Forest to Amazonia.</h2>
+        <p class="hx-desc" data-lang="pt">Duas redes de monitoramento, dois desenhos de parcela. Os mapas foram gerados com <code>forplot_map()</code> durante as campanhas de campo.</p>
+        <p class="hx-desc" data-lang="en">Two monitoring networks, two plot designs. The maps were produced with <code>forplot_map()</code> during the field campaigns.</p>
+      </div>
+      <div class="hx-cases">
+        <article class="hx-case">
+          <div class="hx-case-logo"><img src="figures/forestplotsnet_logo.png" alt="ForestPlots.net"></div>
+          <p class="hx-case-meta">RUS01 · 1 ha · RAINFOR</p>
+          <h3 data-lang="pt">Mata Atlântica montana, REBIO Augusto Ruschi (ES)</h3>
+          <h3 data-lang="en">Montane Atlantic Forest, REBIO Augusto Ruschi (ES)</h3>
+          <p data-lang="pt">Parcela permanente integrada ao ForestPlots.net, em uma região onde novas espécies continuam a ser descritas, entre elas uma <em>Roucheria</em> (Linaceae) encontrada na própria parcela.</p>
+          <p data-lang="en">Permanent plot integrated into ForestPlots.net, in a region where new species are still being described, among them a <em>Roucheria</em> (Linaceae) found in the plot itself.</p>
+          <a class="link-arrow" href="https://html-rainfor-forplotr.pages.dev/"><span data-lang="pt">Abrir o mapa interativo</span><span data-lang="en">Open the interactive map</span> <span class="arrow" aria-hidden="true">↗</span></a>
+        </article>
+        <article class="hx-case">
+          <div class="hx-case-logo"><img src="figures/monitora_logo.png" alt="Programa Monitora, ICMBio"></div>
+          <p class="hx-case-meta">TUM · 3 × <span data-lang="pt">0,4 ha · cruz-de-malta</span><span data-lang="en">0.4 ha · maltese cross</span></p>
+          <h3 data-lang="pt">Amazônia, PARNA Montanhas do Tumucumaque (AP)</h3>
+          <h3 data-lang="en">Amazonia, PARNA Montanhas do Tumucumaque (AP)</h3>
+          <p data-lang="pt">Componente florestal do Programa Monitora (ICMBio), no maior parque nacional do Brasil. Com vários censos, o relatório também acompanha mortalidade e recrutamento entre campanhas.</p>
+          <p data-lang="en">Forest component of ICMBio's Monitora Program, in Brazil's largest national park. With several censuses, the report also tracks mortality and recruitment between campaigns.</p>
+          <a class="link-arrow" href="https://html-monitora-forplotr.pages.dev/"><span data-lang="pt">Abrir o mapa interativo</span><span data-lang="en">Open the interactive map</span> <span class="arrow" aria-hidden="true">↗</span></a>
+        </article>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ INTERFACE WEB ============ -->
+<section class="hx-section" id="interface-web">
+  <div class="hx-wrap">
+    <div class="hx-split">
+      <div class="hx-aside">
+        <p class="hx-kicker" data-lang="pt">Interface web</p><p class="hx-kicker" data-lang="en">Web interface</p>
+        <p class="hx-desc"><span class="status-tag is-queued"><span data-lang="pt">Em desenvolvimento</span><span data-lang="en">In development</span></span></p>
+        <p class="hx-desc" data-lang="en">Each form runs the package function in an isolated R process on the JBRJ server. Files and results are deleted after 72 hours. Useful in the field, in courses and for those who do not yet use R.</p>
+      </div>
+      <div>
+        <ul class="hx-tools">
+          <li class="m-ipe"><a href="ferramentas/relatorio/index.html"><span class="fn-mark"></span><span><span data-lang="pt">Relatório e balanço de coleta</span><span data-lang="en">Report and collection balance</span></span><code>forplot_balance()</code><span class="arrow" aria-hidden="true">→</span></a></li>
+          <li class="m-folha"><a href="ferramentas/vouchers/index.html"><span class="fn-mark"></span><span><span data-lang="pt">Diretórios de vouchers</span><span data-lang="en">Voucher directories</span></span><code>forplot_vouchers()</code><span class="arrow" aria-hidden="true">→</span></a></li>
+          <li class="m-rio"><a href="ferramentas/mapa/index.html"><span class="fn-mark"></span><span><span data-lang="pt">Mapa interativo da parcela</span><span data-lang="en">Interactive plot map</span></span><code>forplot_map()</code><span class="arrow" aria-hidden="true">→</span></a></li>
+          <li class="m-urucum"><a href="ferramentas/herbario/index.html"><span class="fn-mark"></span><span><span data-lang="pt">Planilha para o herbário</span><span data-lang="en">Herbarium spreadsheet</span></span><code>forplot_sheets()</code><span class="arrow" aria-hidden="true">→</span></a></li>
+          <li class="m-jabuticaba"><a href="ferramentas/determinacoes/index.html"><span class="fn-mark"></span><span><span data-lang="pt">Verificação de determinações</span><span data-lang="en">Determination cross-check</span></span><code>forplot_crossdet()</code><span class="arrow" aria-hidden="true">→</span></a></li>
+        </ul>
+        <h3 class="hx-sub"><span data-lang="pt">Processamentos recentes neste navegador</span><span data-lang="en">Recent jobs in this browser</span></h3>
+        <div class="fp-recent"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ AUTORIA E CITAÇÃO ============ -->
+<section class="hx-section hx-tint" id="autoria">
+  <div class="hx-wrap">
+    <div class="hx-split">
+      <div class="hx-aside">
+        <p class="hx-kicker" data-lang="pt">Autoria</p><p class="hx-kicker" data-lang="en">Authorship</p>
+        <h2 class="hx-h2" data-lang="pt">Como citar.</h2>
+        <h2 class="hx-h2" data-lang="en">How to cite.</h2>
+      </div>
+      <div>
+        <ul class="hx-credits">
+          <li><h3>Giulia C. Ottino</h3><p data-lang="pt">Desenvolvimento do pacote e do site · JBRJ</p><p data-lang="en">Package and website development · JBRJ</p></li>
+          <li><h3>Domingos Cardoso</h3><p data-lang="pt">Co-desenvolvimento e supervisão · JBRJ, CNPq, FAPERJ</p><p data-lang="en">Co-development and supervision · JBRJ, CNPq, FAPERJ</p></li>
+          <li><h3 data-lang="pt">Coautores do manuscrito</h3><h3 data-lang="en">Manuscript co-authors</h3><p>Renata Asprino, Peter Moonlight (Trinity College Dublin), Pedro Lage Viana (INMA)</p></li>
+        </ul>
+        <div class="hx-cite">
+          <p class="hx-cite-text" id="cite-text">Ottino, G. C. &amp; Cardoso, D. <em>forplotR: Streamlined Forest Plot Data Management and Visualization in R</em>. R package. https://github.com/DBOSlab/forplotR</p>
+          <div class="hx-cite-actions">
+            <button type="button" class="fx-btn fx-btn-secondary fx-btn-sm" data-copy="#cite-text" data-done-pt="Citação copiada" data-done-en="Citation copied"><span data-lang="pt">Copiar citação</span><span data-lang="en">Copy citation</span></button>
+            <a class="fx-btn fx-btn-quiet fx-btn-sm" href="https://github.com/DBOSlab/forplotR/issues"><span data-lang="pt">Relatar um problema</span><span data-lang="en">Report an issue</span></a>
+          </div>
+        </div>
+        <p class="hx-small" data-lang="pt">Outros pacotes do DBOSlab:</p>
+        <p class="hx-small" data-lang="en">Other DBOSlab packages:</p>
+        <ul class="hx-eco">
+          <li><a href="https://github.com/DBOSlab/expowo">expowo</a></li>
+          <li><a href="https://github.com/DBOSlab/floraR">floraR</a></li>
+          <li><a href="https://github.com/DBOSlab/refloraR">refloraR</a></li>
+          <li><a href="https://github.com/DBOSlab/barRoso">barRoso</a></li>
+        </ul>
+        <p class="hx-small" data-lang="pt">Logotipo: Luiz Ottino e Andressa Novaes.</p>
+        <p class="hx-small" data-lang="en">Logo: Luiz Ottino and Andressa Novaes.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script src="js/forplotr-app.js"></script>
+```

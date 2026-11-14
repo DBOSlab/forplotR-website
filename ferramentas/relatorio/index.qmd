@@ -1,0 +1,64 @@
+---
+title: "Relatório e balanço de coleta"
+pagetitle: "Relatório e balanço de coleta — forplotR"
+---
+
+```{=html}
+<section class="fp-hero" style="--fn:var(--ipe)">
+  <div class="fp-hero-inner">
+    <p class="fp-hero-kicker"><span class="fn-mark"></span>forplotR::forplot_balance()</p>
+    <h1 class="fp-hero-title"><span data-lang="pt">Relatório e balanço de coleta</span><span data-lang="en">Report and collection balance</span></h1>
+    <p class="fp-hero-deck" data-lang="pt">Relatório que sintetiza a estrutura da parcela, a composição de espécies e a cobertura de vouchers: mapas da parcela e das subparcelas, situação de coleta, checklist e subparcelas prioritárias para a próxima campanha.</p>
+    <p class="fp-hero-deck" data-lang="en">A report summarising plot structure, species composition and voucher coverage: maps of the plot and of each subplot, collection status, checklist and the priority subplots for the next campaign.</p>
+    <div class="fp-hero-actions"><a class="fx-btn fx-btn-primary" href="#ferramenta"><span data-lang="pt">Ir ao formulário</span><span data-lang="en">Go to the form</span></a><a class="fx-btn fx-btn-secondary" href="../../artigos/forplot_balance.html"><span data-lang="pt">Documentação da função</span><span data-lang="en">Function documentation</span></a></div>
+  </div>
+</section>
+```
+
+::: {.fp-section}
+
+## [Procedimento]{data-lang=pt}[Procedure]{data-lang=en} {#procedimento}
+
+::: {data-lang="pt"}
+1. Envie a planilha e selecione o formato (ForestPlots.net, Terra Indígena, Query Library ou Programa Monitora).
+2. Verifique a área da parcela e o lado da subparcela. Para o Monitora, informe a estação.
+3. Selecione as saídas. A compilação do PDF acrescenta alguns minutos ao processamento.
+
+Para executar sem planilha própria, marque **Usar os dados de exemplo**.
+:::
+::: {data-lang="en"}
+1. Upload the spreadsheet and select its layout (ForestPlots.net, Indigenous Land, Query Library or Monitora Program).
+2. Check the plot area and the subplot side. For Monitora, give the station.
+3. Select the outputs. Compiling the PDF adds a few minutes to processing.
+
+To run without your own spreadsheet, tick **Use the example data**.
+:::
+
+```{=html}
+<div id="ferramenta" class="fp-tool-app" data-tool="balance"></div>
+```
+
+:::
+
+::: {.fp-section}
+
+## [Saídas]{data-lang=pt}[Outputs]{data-lang=en} {#saidas}
+
+::: {data-lang="pt"}
+- **Relatório HTML interativo**: mapa geral e de cada subparcela, filtros por situação de coleta e checklist por família com links para cada indivíduo.
+- **Relatório PDF** com o mesmo conteúdo, para impressão e uso em campo.
+- **Figuras PNG**: mapa geral, coletados, não coletados, palmeiras, subparcelas prioritárias, espécies e famílias mais abundantes.
+- **Planilha XLSX** com o percentual de coleta por subparcela e as plaquetas coletadas e não coletadas (não disponível para o Monitora).
+:::
+::: {data-lang="en"}
+- **Interactive HTML report**: overall map and one per subplot, filters by collection status and a checklist by family linking to each individual.
+- **PDF report** with the same content, for printing and field use.
+- **PNG figures**: overall map, collected, not collected, palms, priority subplots, most abundant species and families.
+- **XLSX spreadsheet** with the collection percentage per subplot and the collected and uncollected tags (not available for Monitora).
+:::
+
+:::
+
+```{=html}
+<script src="../../js/forplotr-app.js"></script>
+```

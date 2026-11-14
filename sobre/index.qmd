@@ -1,0 +1,95 @@
+---
+title: "Sobre"
+pagetitle: "Sobre — forplotR"
+---
+
+```{=html}
+<section class="fp-hero">
+  <div class="fp-hero-inner">
+    <p class="fp-hero-kicker">forplotR · <span data-lang="pt">Jardim Botânico do Rio de Janeiro</span><span data-lang="en">Rio de Janeiro Botanical Garden</span></p>
+    <h1 class="fp-hero-title"><span data-lang="pt">Sobre</span><span data-lang="en">About</span></h1>
+    <p class="fp-hero-deck" data-lang="pt">Documentação e interface web do pacote R de código aberto forplotR, mantidas no servidor do Jardim Botânico do Rio de Janeiro.</p>
+    <p class="fp-hero-deck" data-lang="en">Documentation and web interface of the open-source R package forplotR, hosted on the Rio de Janeiro Botanical Garden server.</p>
+  </div>
+</section>
+```
+
+::: {.fp-section}
+
+## [Funcionamento da interface web]{data-lang=pt}[How the web interface works]{data-lang=en} {#funcionamento}
+
+::: {data-lang="pt"}
+O site é estático (gerado com Quarto). Ao acionar **Processar**, o navegador envia a planilha ao servidor do forplotR, que:
+
+1. valida os arquivos e os parâmetros e inclui o pedido em uma fila;
+2. executa a função do pacote **forplotR** em um processo R novo e isolado, com tempo limite;
+3. armazena os arquivos gerados e os disponibiliza para download e visualização.
+
+O código executado no servidor é o mesmo do pacote instalado no R, na versão indicada abaixo; os resultados são idênticos.
+:::
+::: {data-lang="en"}
+The website is static (built with Quarto). When you press **Run**, the browser sends the spreadsheet to the forplotR server, which:
+
+1. validates the files and parameters and places the request in a queue;
+2. runs the **forplotR** package function in a fresh, isolated R process, with a time limit;
+3. stores the generated files and makes them available for download and preview.
+
+The code run on the server is the same as the package installed in R, at the version shown below; the results are identical.
+:::
+
+```{=html}
+<p class="server-line"><span class="api-status"></span> <span class="fp-versions muted-note"></span></p>
+```
+
+:::
+
+::: {.fp-section}
+
+## [Dados enviados]{data-lang=pt}[Uploaded data]{data-lang=en} {#dados-enviados}
+
+::: {data-lang="pt"}
+- As planilhas e os resultados permanecem no servidor do JBRJ apenas pelo tempo necessário para o download e são **apagados automaticamente após 72 horas**.
+- Os dados não são compartilhados nem usados para outra finalidade.
+- O endereço de cada resultado é aleatório; apenas quem possui o link pode abri-lo.
+- Dados de Terras Indígenas e de unidades de conservação estão sujeitos aos acordos de uso de cada projeto. Em caso de dúvida, recomenda-se executar o pacote localmente.
+:::
+::: {data-lang="en"}
+- Spreadsheets and results stay on the JBRJ server only as long as needed for download and are **deleted automatically after 72 hours**.
+- Data are not shared or used for any other purpose.
+- Each result address is random; only those who hold the link can open it.
+- Data from Indigenous Lands and protected areas are subject to each project's data-use agreements. If in doubt, run the package locally.
+:::
+
+:::
+
+::: {.fp-section}
+
+## [Como citar]{data-lang=pt}[How to cite]{data-lang=en} {#como-citar}
+
+Ottino, G. C. & Cardoso, D. *forplotR: Streamlined Forest Plot Data Management and Visualization in R*. R package. <https://github.com/DBOSlab/forplotR>
+
+::: {data-lang="pt"}
+Ao citar resultados gerados pela interface web, informe também a versão do forplotR indicada acima.
+:::
+::: {data-lang="en"}
+When citing results produced with the web interface, also give the forplotR version shown above.
+:::
+
+:::
+
+::: {.fp-section}
+
+## [Autoria e código-fonte]{data-lang=pt}[Authorship and source code]{data-lang=en} {#autoria}
+
+::: {data-lang="pt"}
+**Giulia C. Ottino** e **Domingos Cardoso**, Jardim Botânico do Rio de Janeiro (DBOSlab). O código do pacote e do site está disponível no [GitHub](https://github.com/DBOSlab/forplotR) sob licença MIT; relatos de erros e contribuições são recebidos pelas [issues do repositório](https://github.com/DBOSlab/forplotR/issues).
+:::
+::: {data-lang="en"}
+**Giulia C. Ottino** and **Domingos Cardoso**, Rio de Janeiro Botanical Garden (DBOSlab). The package and website code is available on [GitHub](https://github.com/DBOSlab/forplotR) under the MIT licence; bug reports and contributions are welcome through the [repository issues](https://github.com/DBOSlab/forplotR/issues).
+:::
+
+:::
+
+```{=html}
+<script src="../js/forplotr-app.js"></script>
+```

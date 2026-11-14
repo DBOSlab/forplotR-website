@@ -1,0 +1,8 @@
+_site
+_freeze
+.quarto
+data
+scripts
+*.qmd
+*.md
+.git
