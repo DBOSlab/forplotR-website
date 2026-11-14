@@ -30,6 +30,7 @@ if (dir.exists(file.path(pkg_dir, "src"))) {
 
 contrib <- file.path(repo_dir, "bin", "emscripten", "contrib", r_ver)
 dir.create(contrib, recursive = TRUE, showWarnings = FALSE)
+contrib <- normalizePath(contrib, mustWork = TRUE)
 
 work <- tempfile("fpbuild")
 dir.create(work)
@@ -57,7 +58,7 @@ if (nzchar(built[2])) stop("Binário dependente de plataforma: Built = ", desc[1
 if (dir.exists(file.path(lib, "forplotR", "libs"))) stop("O binário contém libs/.")
 
 version <- desc[1, "Version"]
-dest <- file.path(normalizePath(contrib), paste0("forplotR_", version, ".tgz"))
+dest <- file.path(contrib, paste0("forplotR_", version, ".tgz"))
 # Empacota a pasta instalada (mesmo formato do binário que o webR espera:
 # um .tgz com forplotR/ na raiz), igual em qualquer sistema.
 setwd(lib)
