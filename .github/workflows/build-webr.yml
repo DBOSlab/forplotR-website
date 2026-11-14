@@ -1,0 +1,117 @@
+# Build do site com o forplotR rodando no navegador (webR) ----------------------
+#
+# Gera uma prévia completa do site (artefato "site-preview"), com:
+#   - o forplotR compilado para WebAssembly a partir do ref escolhido;
+#   - todas as dependências wasm espelhadas na própria origem (MD5 conferido);
+#   - o runtime do webR em versão fixa (sha256 conferido).
+# Nada é publicado no GitHub Pages: a prévia é baixada e servida localmente.
+#
+# Para testar localmente depois do build:
+#   gh run download <run-id> -n site-preview -D preview
+#   python -m http.server -d preview 8000   ->  http://localhost:8000/webr-dev/
+
+name: Build webR preview
+
+on:
+  workflow_dispatch:
+    inputs:
+      forplotr_ref:
+        description: "Branch, tag ou commit do DBOSlab/forplotR a compilar"
+        default: "feat/webr"
+        required: true
+  push:
+    branches: [feat/webr-site]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: build-webr-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  WEBR_VERSION: "0.6.0"
+  WEBR_SHA256: "04c56d16c3ad29265a2c4ffcb800ee0b72ab6dd64dd678c9c8fec81a832cb8cc"
+  # Mesma versão do webR usada para compilar o pacote (R 4.6.0), fixada por digest.
+  WEBR_IMAGE: "ghcr.io/r-wasm/webr:v0.6.0@sha256:3fbf3dc3537c5b31bca94dd797dc25364693b18d71b1d0975f318fbfd6269d86"
+  R_WASM_VERSION: "4.6"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Checkout do site
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Checkout do pacote forplotR
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: DBOSlab/forplotR
+          ref: ${{ inputs.forplotr_ref || 'feat/webr' }}
+          path: _pkg
+          persist-credentials: false
+
+      - name: Compilar o forplotR para wasm
+        uses: r-wasm/actions/build-rwasm@0f8493df20b6b47d3621f16be81218926a09dad1 # v3
+        with:
+          packages: "local::./_pkg"
+          repo-path: "webr/repo"
+          image-path: "_rwasm_img"
+          webr-image: ${{ env.WEBR_IMAGE }}
+          compress: false
+
+      - name: Ajustar dono dos arquivos gerados no container
+        run: |
+          sudo chown -R "$(id -u):$(id -g)" webr _rwasm_img
+          rm -rf _rwasm_img
+          test -d "webr/repo/bin/emscripten/contrib/${R_WASM_VERSION}" || {
+            echo "::error::rwasm não gerou contrib/${R_WASM_VERSION}:"; ls -R webr/repo/bin; exit 1; }
+
+      - name: Instalar R (só para o script de espelhamento)
+        uses: r-lib/actions/setup-r@f9a764fea8d5c63df6ef9a5c7795bf7deb5d7e05 # v2
+
+      - name: Espelhar dependências wasm (MD5 conferido)
+        run: Rscript scripts/mirror_webr_deps.R webr/repo "${R_WASM_VERSION}"
+
+      - name: Baixar o runtime do webR (sha256 conferido)
+        run: |
+          f="webr-${WEBR_VERSION}.tar.gz"
+          curl -fsSL -o "$f" "https://github.com/r-wasm/webr/releases/download/v${WEBR_VERSION}/$f"
+          echo "${WEBR_SHA256}  $f" | sha256sum -c -
+          mkdir -p webr/runtime
+          tar -xzf "$f" -C webr/runtime --strip-components=1
+          rm "$f"
+          # O REPL de demonstração e os source maps não são usados pelo site.
+          rm -f webr/runtime/index.html webr/runtime/repl.* webr/runtime/*.map
+          rm -rf webr/runtime/assets
+          du -sh webr/runtime webr/repo
+
+      - name: Instalar Quarto
+        uses: quarto-dev/quarto-actions/setup@8a96df13519ee81fd526f2dfca5962811136661b # v2.2.0
+
+      - name: Renderizar o site
+        run: quarto render
+
+      - name: Montar a prévia
+        run: |
+          cp -r webr _site/webr
+          cp -r webr-dev _site/webr-dev
+          # Registro do que foi compilado, para conferência.
+          {
+            echo "forplotR ref: ${{ inputs.forplotr_ref || 'feat/webr' }} ($(git -C _pkg rev-parse HEAD))"
+            echo "site commit:  ${GITHUB_SHA}"
+            echo "webR:         ${WEBR_VERSION}"
+          } > _site/webr/BUILD-INFO.txt
+          cat _site/webr/BUILD-INFO.txt
+          du -sh _site
+
+      - name: Publicar artefato site-preview
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: site-preview
+          path: _site
+          retention-days: 7
+          if-no-files-found: error
