@@ -5,15 +5,25 @@
 #
 # Tipos de campo: file, example, select, number, bool, text, text_vec, vertices
 # Grupos: "principal" (sempre visível), "avancado", "colunas" (recolhidos)
+#
+# Dois motores usam este arquivo:
+#   "http"  servidor Plumber (backend/plumber.R);
+#   "local" webR no navegador (backend/webr/engine.R): os dados não saem do
+#           computador, então nada que use a internet é oferecido.
+# Para o modo local:
+#   fld(local = FALSE)            o campo não aparece;
+#   fld(local = list(...))        substitui atributos (ex.: required, help);
+#   ferramenta local = FALSE      indisponível, com local_note explicando;
+#   ferramenta local_fixed        argumentos impostos (ex.: validate_locality = FALSE).
 
 fld <- function(name, label, type, arg = name, default = NULL, options = NULL,
                 required = FALSE, help = NULL, group = "principal",
-                accept_ext = NULL, show_if = NULL) {
+                accept_ext = NULL, show_if = NULL, local = NULL) {
   x <- list(
     name = name, label = label, type = type, arg = arg, default = default,
     options = options, required = required, help = help, group = group,
     accept_ext = if (!is.null(accept_ext)) I(accept_ext) else NULL,
-    show_if = show_if
+    show_if = show_if, local = local
   )
   Filter(Negate(is.null), x)
 }
@@ -145,6 +155,10 @@ TOOLS <- list(
       "e planilha-resumo. Saídas em HTML interativo, PDF e XLSX."),
     eta = "1 a 5 minutos (PDF leva mais)",
     example = TRUE,
+    local = FALSE,
+    local_note = paste(
+      "O relatório ainda não roda no navegador: a geração do HTML está sendo",
+      "adaptada. Por enquanto, use o pacote forplotR no R."),
     fields = flatten_fields(
       f_fp_file(), f_example(), f_input_type(), f_language(), f_station(multiple = TRUE),
       f_geometry(),
@@ -190,12 +204,14 @@ TOOLS <- list(
       fld("embed_voucher_imgs", "Embutir as fotos no HTML (arquivo único)", "bool",
           default = TRUE, group = "avancado"),
       fld("herbaria_lookup", "Buscar exsicatas nos herbários (JABOT/REFLORA)", "bool",
-          default = FALSE, help = "Baixa os dados do herbário; a primeira vez é demorada."),
+          default = FALSE, help = "Baixa os dados do herbário; a primeira vez é demorada.",
+          local = FALSE),
       fld("herbaria", "Herbários", "text_vec", default = "RB",
-          help = "Siglas separadas por vírgula, ex.: RB, UPCB."),
-      fld("collector", "Coletor (quando o voucher só tem número)", "text", group = "avancado"),
+          help = "Siglas separadas por vírgula, ex.: RB, UPCB.", local = FALSE),
+      fld("collector", "Coletor (quando o voucher só tem número)", "text", group = "avancado",
+          local = FALSE),
       fld("herbaria_force_refresh", "Forçar novo download dos herbários", "bool",
-          default = FALSE, group = "avancado"),
+          default = FALSE, group = "avancado", local = FALSE),
       fld("highlight_palms", "Destacar palmeiras (Arecaceae)", "bool", default = TRUE,
           group = "avancado"),
       f_plot_meta(),
@@ -237,7 +253,9 @@ TOOLS <- list(
       fld("lat", "Latitude (graus decimais)", "number", required = TRUE),
       fld("long", "Longitude (graus decimais)", "number", required = TRUE),
       fld("alt", "Altitude (m)", "number",
-          help = "Recomendado. Se vazio, o servidor baixa um modelo de elevação global de baixa resolução (~4,5 km)."),
+          help = "Recomendado. Se vazio, o servidor baixa um modelo de elevação global de baixa resolução (~4,5 km).",
+          local = list(required = TRUE,
+                       help = "Obrigatória no navegador: o modelo de elevação global não é baixado.")),
       fld("protectedarea", "Unidade de conservação", "text"),
       fld("collector", "Coletor principal", "text", group = "avancado",
           help = "Se vazio, é lido da planilha (campo Team)."),
@@ -250,8 +268,9 @@ TOOLS <- list(
           group = "avancado"),
       fld("validate_locality", "Conferir se as coordenadas caem no estado", "bool",
           default = FALSE, group = "avancado",
-          help = "Baixa os limites administrativos do GADM.")
+          help = "Baixa os limites administrativos do GADM.", local = FALSE)
     ),
+    local_fixed = list(validate_locality = FALSE),
     fixed = function(ctx, params) list(dir = ctx$outputs, filename = "planilha_herbario"),
     check = function(params, ctx) {
       if (is.null(params$herb_file_path)) {
@@ -274,6 +293,10 @@ TOOLS <- list(
       "divergências e vouchers ainda não tombados."),
     eta = "primeira vez: vários minutos (download do JABOT); depois, ~1 minuto",
     example = TRUE,
+    local = FALSE,
+    local_note = paste(
+      "O cruzamento precisa baixar os dados do herbário (JABOT) pela internet,",
+      "o que não é feito no modo navegador. Use o pacote forplotR no R."),
     fields = flatten_fields(
       f_fp_file(), f_example(),
       f_input_type(opts(field_sheet = "ForestPlots — field sheet",
@@ -325,9 +348,45 @@ TOOLS <- list(
   )
 )
 
+# Spec de uma ferramenta para um motor ("http" ou "local").
+tool_spec <- function(id, mode = c("http", "local")) {
+  mode <- match.arg(mode)
+  spec <- TOOLS[[id]]
+  if (is.null(spec)) user_error("Ferramenta desconhecida: ", id)
+  if (identical(mode, "local")) {
+    if (identical(spec$local, FALSE)) {
+      user_error(spec$local_note %||% "Esta ferramenta não está disponível no navegador.")
+    }
+    spec$fields <- local_fields(spec$fields)
+  }
+  spec
+}
+
+local_fields <- function(fields) {
+  out <- list()
+  for (f in fields) {
+    loc <- f$local
+    if (identical(loc, FALSE)) next
+    if (is.list(loc)) for (nm in names(loc)) f[[nm]] <- loc[[nm]]
+    f$local <- NULL
+    out[[length(out) + 1]] <- f
+  }
+  out
+}
+
 # Versão pública do spec (sem funções) para o site.
-tools_public <- function() {
+tools_public <- function(mode = c("http", "local")) {
+  mode <- match.arg(mode)
   lapply(unname(TOOLS), function(t) {
-    t[c("id", "fun", "chip", "title", "description", "eta", "example", "fields")]
+    out <- t[c("id", "fun", "chip", "title", "description", "eta", "example")]
+    if (identical(mode, "local")) {
+      out$available <- !identical(t$local, FALSE)
+      if (!out$available) out$note <- t$local_note
+      out$fields <- local_fields(t$fields)
+    } else {
+      out$available <- TRUE
+      out$fields <- lapply(t$fields, function(f) { f$local <- NULL; f })
+    }
+    out
   })
 }

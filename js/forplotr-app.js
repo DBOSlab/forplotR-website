@@ -3,7 +3,12 @@
  *   <div class="fp-tool-app" data-tool="balance"></div>   -> formulário + resultados
  *   <div class="fp-recent"></div>                          -> processamentos recentes
  *   <span class="api-status"></span>                       -> situação do servidor
- * O formulário vem da API (GET /v1/tools), definida em backend/R/tools_spec.R.
+ * Dois motores, mesma especificação (backend/R/tools_spec.R):
+ *   local (padrão): o forplotR roda no navegador (webR, js/forplotr-local.js);
+ *                   os dados não saem do computador e nada é guardado.
+ *   http:           servidor Plumber (/v1). Ative com
+ *                   <meta name="forplotr-engine" content="http"> ou
+ *                   localStorage.FORPLOTR_ENGINE = 'http'.
  *
  * Idioma: todo texto visível é criado em PT e EN (função bi) e alternado pelo CSS
  * (html.fp-en). Textos que vêm do servidor em português são traduzidos pelo
@@ -26,6 +31,12 @@
     var m = document.querySelector('meta[name="quarto:offset"]');
     return m ? m.content : './';
   })();
+  var MODE = (function () {
+    try { var o = localStorage.getItem('FORPLOTR_ENGINE'); if (o === 'http' || o === 'local') return o; } catch (e) {}
+    var m = document.querySelector('meta[name="forplotr-engine"]');
+    return m && m.content === 'http' ? 'http' : 'local';
+  })();
+  var LOCAL = MODE === 'local' && window.ForplotrLocalEngine ? window.ForplotrLocalEngine(ROOT) : null;
   var PAGES = { balance: 'relatorio', map: 'mapa', sheets: 'herbario', crossdet: 'determinacoes', vouchers: 'vouchers' };
   function toolPage(id) { return ROOT + 'ferramentas/' + (PAGES[id] || id) + '/index.html'; }
   var STORE = 'forplotR_jobs_v1';
@@ -156,7 +167,15 @@
     'Informe as coordenadas da parcela (digitadas ou em planilha).': 'Give the plot coordinates (typed or as a spreadsheet).',
     'Latitude fora do intervalo.': 'Latitude out of range.',
     'Longitude fora do intervalo.': 'Longitude out of range.',
-    'Informe uma única sigla de herbário, só letras e números.': 'Give a single herbarium acronym, letters and digits only.'
+    'Informe uma única sigla de herbário, só letras e números.': 'Give a single herbarium acronym, letters and digits only.',
+    // modo local (navegador)
+    'Obrigatória no navegador: o modelo de elevação global não é baixado.': 'Required in the browser: the global elevation model is not downloaded.',
+    'O relatório ainda não roda no navegador: a geração do HTML está sendo adaptada. Por enquanto, use o pacote forplotR no R.':
+      'The report does not run in the browser yet: HTML generation is being adapted. For now, use the forplotR package in R.',
+    'O cruzamento precisa baixar os dados do herbário (JABOT) pela internet, o que não é feito no modo navegador. Use o pacote forplotR no R.':
+      'The cross-check needs to download herbarium data (JABOT) from the internet, which the browser mode does not do. Use the forplotR package in R.',
+    'Acesso à rede desativado: no navegador, os dados não saem do seu computador.': 'Network access disabled: in the browser, your data never leave your computer.',
+    'Arquivo enviado em local inválido.': 'Uploaded file in an invalid location.'
   };
   // mensagens do servidor com partes variáveis
   var SERVER_EN_RX = [
@@ -255,7 +274,38 @@
     node.appendChild(bi(pt, en));
     if (title) node.title = title;
   }
+  var STAGE_TXT = {
+    idle: ['R no navegador: aguardando', 'R in the browser: waiting'],
+    runtime: ['carregando o R no navegador…', 'loading R in the browser…'],
+    packages: ['instalando o forplotR no navegador…', 'installing forplotR in the browser…'],
+    engine: ['preparando o forplotR…', 'preparing forplotR…'],
+    failed: ['não foi possível iniciar o R no navegador', 'could not start R in the browser']
+  };
+  var localChipsBound = false;
+  function checkLocal() {
+    if (localChipsBound) return;
+    localChipsBound = true;
+    LOCAL.onStage(function (stage) {
+      document.querySelectorAll('.api-status').forEach(function (s) {
+        if (stage === 'ready') {
+          var h = LOCAL.info() || {};
+          setStatus(s, 'is-ok', 'pronto · processado no seu navegador', 'ready · processed in your browser',
+                    'forplotR ' + (h.forplotR || '') + ' · ' + (h.R || ''));
+        } else {
+          var t = STAGE_TXT[stage] || STAGE_TXT.idle;
+          setStatus(s, stage === 'failed' ? 'is-bad' : 'is-checking', t[0], t[1]);
+        }
+      });
+      var v = document.querySelector('.fp-versions');
+      var h2 = LOCAL.info();
+      if (v && stage === 'ready' && h2) {
+        v.innerHTML = '';
+        v.appendChild(bi('No navegador: forplotR ' + h2.forplotR + ' · ' + h2.R + '.', 'In the browser: forplotR ' + h2.forplotR + ' · ' + h2.R + '.'));
+      }
+    });
+  }
   function checkHealth() {
+    if (LOCAL) { checkLocal(); return Promise.resolve(null); }
     var chips = document.querySelectorAll('.api-status');
     chips.forEach(function (s) { if (!s.textContent.trim()) setStatus(s, 'is-checking', 'verificando servidor', 'checking server'); });
     return getJSON(API + '/health').then(function (h) {
@@ -282,6 +332,15 @@
   function renderRecent() {
     var list = document.querySelector('.fp-recent');
     if (!list) return;
+    if (LOCAL) {
+      list.innerHTML = '';
+      var note = el('div', { class: 'recent-empty' }, [svg(IC.clock)]);
+      note.appendChild(biEl('p', null,
+        'As ferramentas rodam no seu navegador: as planilhas não são enviadas a nenhum servidor e nada fica guardado depois que a página é fechada.',
+        'The tools run in your browser: spreadsheets are not sent to any server and nothing is kept after the page is closed.'));
+      list.appendChild(note);
+      return;
+    }
     var jobs = loadJobs();
     list.innerHTML = '';
     if (!jobs.length) {
@@ -410,7 +469,17 @@
     mount.appendChild(shell);
   }
 
+  function renderUnavailable(tool, mount) {
+    mount.innerHTML = '';
+    var box = el('div', { class: 'result-empty is-error', role: 'note' }, [svg(IC.offline)]);
+    box.appendChild(biEl('h3', null, 'Indisponível no navegador', 'Not available in the browser'));
+    box.appendChild(biEl('p', null, tool.note || ''));
+    box.appendChild(el('p', { class: 'muted-note' }, 'forplotR::' + tool.fun + '()'));
+    mount.appendChild(box);
+  }
+
   function renderTool(tool, mount) {
+    if (tool.available === false) { renderUnavailable(tool, mount); return; }
     mount.innerHTML = '';
     var shell = el('div', { class: 'tool-shell' });
     var card = el('div', { class: 'tool-card' });
@@ -519,6 +588,7 @@
       if (first) first.focus();
       return;
     }
+    if (LOCAL) { submitLocal(tool, built.fd); return; }
     var btn = $('submit-btn');
     setBusy(btn, true);
     renderProgress({ status: 'uploading', title: tool.title }, 0);
@@ -547,6 +617,41 @@
                 'Could not reach the server. Check your connection and try again.');
     };
     xhr.send(built.fd);
+  }
+
+  // Motor local: roda no navegador; o progresso e o registro vêm do webR.
+  function submitLocal(tool, fd) {
+    var btn = $('submit-btn');
+    btn.disabled = true;
+    btn.classList.add('is-loading');
+    btn.setAttribute('aria-busy', 'true');
+    btn.innerHTML = '';
+    btn.appendChild(bi('Processando…', 'Running…'));
+    stopWatching();
+    var started = null;
+    state.tick = setInterval(function () {
+      var t = $('elapsed');
+      if (t && started) t.textContent = fmtDur(Date.now() / 1000 - started);
+    }, 1000);
+    var done = function () { stopWatching(); setBusy(btn, false); };
+    LOCAL.run(tool, fd, {
+      progress: function (st) {
+        if (st.status === 'running') started = st.started_epoch;
+        renderProgress(st);
+      },
+      log: function (text) {
+        var b = $('live-log');
+        if (b) { b.textContent = text; b.scrollTop = b.scrollHeight; }
+      }
+    }).then(function (r) {
+      done();
+      renderResult(r.st, r.log);
+    }).catch(function (e) {
+      done();
+      if (window.console) console.error(e);
+      showError('Não foi possível rodar o forplotR no navegador. Recarregue a página e tente de novo; se persistir, use o pacote no R.',
+                'Could not run forplotR in the browser. Reload the page and try again; if it persists, use the package in R.');
+    });
   }
 
   function stopWatching() {
@@ -609,7 +714,13 @@
     var fill = $('progress-fill'), tag = $('job-tag'), sub = $('job-sub');
     $('job-title').innerHTML = ''; $('job-title').appendChild(bi(st.title || ''));
     tag.innerHTML = ''; sub.innerHTML = '';
-    if (st.status === 'uploading') {
+    if (st.status === 'loading') {
+      var stg = STAGE_TXT[st.stage] || STAGE_TXT.runtime;
+      tag.appendChild(statusTag('is-queued', 'Preparando', 'Preparing'));
+      sub.appendChild(bi(stg[0].charAt(0).toUpperCase() + stg[0].slice(1) + ' Na primeira vez, o download leva alguns minutos; depois, o navegador guarda os arquivos.',
+                         stg[1].charAt(0).toUpperCase() + stg[1].slice(1) + ' The first download takes a few minutes; afterwards the browser caches the files.'));
+      fill.className = 'progress-fill is-waiting'; fill.style.width = '';
+    } else if (st.status === 'uploading') {
       var pc = Math.round((frac || 0) * 100);
       tag.appendChild(statusTag('is-uploading', 'Enviando', 'Uploading'));
       sub.appendChild(bi('Enviando arquivos… ' + pc + '%', 'Uploading files… ' + pc + '%'));
@@ -623,13 +734,19 @@
       tag.appendChild(statusTag('is-running', 'Processando', 'Running'));
       sub.appendChild(document.createTextNode('forplotR::' + (st.fun || '') + '() · '));
       sub.appendChild(el('span', { id: 'elapsed' }, st.started_epoch ? fmtDur(Date.now() / 1000 - st.started_epoch) : '0 s'));
-      sub.appendChild(bi('. É possível fechar a página e voltar pelo link; o resultado fica guardado.',
-                         '. You can close the page and come back via the link; the result is kept.'));
+      if (LOCAL) sub.appendChild(bi('. Processando no seu navegador; mantenha esta página aberta.',
+                                    '. Running in your browser; keep this page open.'));
+      else sub.appendChild(bi('. É possível fechar a página e voltar pelo link; o resultado fica guardado.',
+                              '. You can close the page and come back via the link; the result is kept.'));
       fill.className = 'progress-fill is-running'; fill.style.width = '';
     }
   }
 
-  function fileUrl(st, f, inline) { return API + '/jobs/' + st.id + '/files/' + f.id + (inline ? '?inline=1' : ''); }
+  function fileUrl(st, f, inline) {
+    if (LOCAL) return LOCAL.fileUrl(st, f);
+    return API + '/jobs/' + st.id + '/files/' + f.id + (inline ? '?inline=1' : '');
+  }
+  function zipUrl(st) { return LOCAL ? LOCAL.zipUrl(st) : API + '/jobs/' + st.id + '/files/all'; }
 
   function renderResult(st, log) {
     var p = panel();
@@ -655,9 +772,10 @@
     var files = arr(st.files);
     if (files.length) {
       var actions = el('div', { class: 'result-actions' });
-      if (st.zip) actions.appendChild(biEl('a', { class: 'fx-btn fx-btn-primary', href: API + '/jobs/' + st.id + '/files/all' }, 'Baixar tudo (.zip)', 'Download all (.zip)'));
-      var share = biEl('button', { type: 'button', class: 'fx-btn fx-btn-secondary' }, 'Copiar link do resultado', 'Copy result link');
-      share.addEventListener('click', function () {
+      if (st.zip) actions.appendChild(biEl('a', { class: 'fx-btn fx-btn-primary', href: zipUrl(st), download: LOCAL ? st.zip : null }, 'Baixar tudo (.zip)', 'Download all (.zip)'));
+      // No modo local não há link para compartilhar: o resultado só existe nesta página.
+      var share = LOCAL ? null : biEl('button', { type: 'button', class: 'fx-btn fx-btn-secondary' }, 'Copiar link do resultado', 'Copy result link');
+      if (share) share.addEventListener('click', function () {
         var u = location.href.split('#')[0] + '#job=' + st.id;
         var done = function () {
           share.innerHTML = ''; share.appendChild(bi('Link copiado', 'Link copied')); share.disabled = true;
@@ -665,7 +783,7 @@
         };
         if (navigator.clipboard) navigator.clipboard.writeText(u).then(done); else window.prompt('', u);
       });
-      actions.appendChild(share);
+      if (share) actions.appendChild(share);
       box.appendChild(actions);
 
       var htmls = files.filter(function (f) { return f.kind === 'html'; });
@@ -707,7 +825,7 @@
         info.appendChild(biEl('strong', null, f.label));
         info.appendChild(el('span', null, f.path + ' · ' + fmtSize(f.size)));
         card.appendChild(info);
-        card.appendChild(biEl('a', { class: 'fx-btn fx-btn-secondary fx-btn-sm', href: fileUrl(st, f, false) }, 'Baixar', 'Download'));
+        card.appendChild(biEl('a', { class: 'fx-btn fx-btn-secondary fx-btn-sm', href: fileUrl(st, f, false), download: LOCAL ? f.name : null }, 'Baixar', 'Download'));
         list.appendChild(card);
       });
       box.appendChild(list);
@@ -740,14 +858,25 @@
   function boot() {
     var mount = document.querySelector('.fp-tool-app');
     renderRecent();
-    if (!mount) { checkHealth(); setInterval(checkHealth, 30000); return; }
+    if (!mount) {
+      if (!LOCAL) { checkHealth(); setInterval(checkHealth, 30000); }
+      else document.querySelectorAll('.api-status').forEach(function (s) {
+        setStatus(s, 'is-ok', 'roda no seu navegador', 'runs in your browser');
+      });
+      return;
+    }
     var id = mount.getAttribute('data-tool');
     skeleton(mount);
-    getJSON(API + '/tools').then(function (tools) {
+    (LOCAL ? LOCAL.tools() : getJSON(API + '/tools')).then(function (tools) {
       state.tools = arr(tools);
       var tool = state.tools.filter(function (t) { return t.id === id; })[0];
       if (!tool) { mount.innerHTML = ''; mount.appendChild(biEl('div', { class: 'error-box' }, 'Ferramenta não encontrada: ' + id, 'Tool not found: ' + id)); return; }
       renderTool(tool, mount);
+      if (LOCAL) {
+        // O R começa a carregar assim que a ferramenta abre (fica pronto até o envio).
+        if (tool.available !== false) { LOCAL.warmup(); checkHealth(); }
+        return;
+      }
       checkHealth();
       setInterval(checkHealth, 30000);
       var j = hashJob();
@@ -755,14 +884,21 @@
     }).catch(function () {
       mount.innerHTML = '';
       var box = el('div', { class: 'result-empty is-error', role: 'alert' }, [svg(IC.offline)]);
-      box.appendChild(biEl('h3', null, 'Servidor indisponível', 'Server unavailable'));
-      box.appendChild(biEl('p', null,
-        'O formulário não pôde ser carregado porque o servidor do forplotR não respondeu. Tente novamente mais tarde ou use o pacote diretamente no R.',
-        'The form could not be loaded because the forplotR server did not respond. Try again later or use the package directly in R.'));
+      if (LOCAL) {
+        box.appendChild(biEl('h3', null, 'Formulário indisponível', 'Form unavailable'));
+        box.appendChild(biEl('p', null,
+          'Os arquivos do forplotR para o navegador não foram encontrados neste site. Tente novamente mais tarde ou use o pacote diretamente no R.',
+          'The forplotR browser files were not found on this site. Try again later or use the package directly in R.'));
+      } else {
+        box.appendChild(biEl('h3', null, 'Servidor indisponível', 'Server unavailable'));
+        box.appendChild(biEl('p', null,
+          'O formulário não pôde ser carregado porque o servidor do forplotR não respondeu. Tente novamente mais tarde ou use o pacote diretamente no R.',
+          'The form could not be loaded because the forplotR server did not respond. Try again later or use the package directly in R.'));
+      }
       var retry = biEl('button', { type: 'button', class: 'fx-btn fx-btn-secondary fx-btn-sm' }, 'Tentar de novo', 'Try again');
       retry.addEventListener('click', boot);
       box.appendChild(retry);
-      box.appendChild(el('p', { class: 'muted-note' }, API));
+      if (!LOCAL) box.appendChild(el('p', { class: 'muted-note' }, API));
       mount.appendChild(box);
       checkHealth();
     });

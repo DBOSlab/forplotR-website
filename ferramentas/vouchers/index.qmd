@@ -52,5 +52,6 @@ Without a ZIP, the tool returns the empty structure, ready to receive the images
 :::
 
 ```{=html}
+<script src="../../js/forplotr-local.js"></script>
 <script src="../../js/forplotr-app.js"></script>
 ```

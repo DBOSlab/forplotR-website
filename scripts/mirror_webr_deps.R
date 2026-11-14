@@ -1,8 +1,10 @@
 # Espelha no site as dependências wasm do forplotR ---------------------------
 #
 # Uso (no CI, depois do build do forplotR com r-wasm/actions/build-rwasm):
-#   Rscript scripts/mirror_webr_deps.R <repo_dir> <r_version>
-#   ex.: Rscript scripts/mirror_webr_deps.R webr/repo 4.6
+#   Rscript scripts/mirror_webr_deps.R <repo_dir> <r_version> [extras]
+#   ex.: Rscript scripts/mirror_webr_deps.R webr/repo 4.6 zip
+#   [extras]: pacotes adicionais (separados por vírgula) usados pelo motor
+#   local do site, além das dependências do forplotR.
 #
 # O que faz:
 #   1. lê a entrada do forplotR no PACKAGES gerado pelo rwasm em <repo_dir>;
@@ -20,6 +22,8 @@ args <- commandArgs(trailingOnly = TRUE)
 if (length(args) < 2) stop("Uso: Rscript mirror_webr_deps.R <repo_dir> <r_version>")
 repo_dir <- args[1]
 r_ver <- args[2]
+extras <- if (length(args) >= 3) trimws(strsplit(args[3], ",")[[1]]) else character(0)
+extras <- extras[nzchar(extras)]
 
 upstream <- paste0("https://repo.r-wasm.org/bin/emscripten/contrib/", r_ver)
 contrib <- file.path(repo_dir, "bin", "emscripten", "contrib", r_ver)
@@ -49,7 +53,8 @@ field <- function(db, pkg, f) if (f %in% colnames(db)) db[pkg, f] else NA_charac
 
 # Fecho de dependências
 todo <- c(dep_names(field(local_db, "forplotR", "Depends")),
-          dep_names(field(local_db, "forplotR", "Imports")))
+          dep_names(field(local_db, "forplotR", "Imports")),
+          extras)
 need <- character(0)
 while (length(todo)) {
   p <- todo[1]; todo <- todo[-1]
@@ -93,7 +98,8 @@ close(con)
 gz <- gzfile(file.path(contrib, "PACKAGES.gz"), "w")
 writeLines(readLines(out), gz)
 close(gz)
-unlink(file.path(contrib, "PACKAGES.rds"))
+# PACKAGES.rds é o primeiro índice que o webR procura (evita um 404 a cada instalação).
+saveRDS(read.dcf(out), file.path(contrib, "PACKAGES.rds"), compress = "xz")
 
 sizes <- file.info(list.files(contrib, "\\.tgz$", full.names = TRUE))$size
 message(sprintf("Repositório pronto: %d pacotes, %.1f MB", length(need) + 1, sum(sizes) / 1024^2))

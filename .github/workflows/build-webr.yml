@@ -72,8 +72,17 @@ jobs:
       - name: Gerar o binário do forplotR para o webR
         run: Rscript scripts/build_pure_r_binary.R _pkg webr/repo "${R_WASM_VERSION}"
 
+      # zip: usado pelo motor local (extrair o ZIP de fotos e gerar "Baixar tudo").
       - name: Espelhar dependências wasm (MD5 conferido)
-        run: Rscript scripts/mirror_webr_deps.R webr/repo "${R_WASM_VERSION}"
+        run: Rscript scripts/mirror_webr_deps.R webr/repo "${R_WASM_VERSION}" zip
+
+      - name: Motor local (código R e formulários)
+        run: |
+          mkdir -p webr/engine
+          cp backend/R/config.R backend/R/tools_spec.R backend/R/core_params.R \
+             backend/R/core_run.R backend/webr/engine.R webr/engine/
+          Rscript scripts/export_local_tools.R webr/engine/tools-local.json
+          ls -la webr/engine
 
       - name: Baixar o runtime do webR (sha256 conferido)
         run: |

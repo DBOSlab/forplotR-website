@@ -64,5 +64,6 @@ Results are available for 72 hours and are listed only in the browser where they
 :::
 
 ```{=html}
+<script src="../js/forplotr-local.js"></script>
 <script src="../js/forplotr-app.js"></script>
 ```

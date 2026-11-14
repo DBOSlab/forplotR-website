@@ -398,5 +398,6 @@ forplot_vouchers(fp_file_path = "RUS01.xlsx",
   </div>
 </section>
 
+<script src="js/forplotr-local.js"></script>
 <script src="js/forplotr-app.js"></script>
 ```

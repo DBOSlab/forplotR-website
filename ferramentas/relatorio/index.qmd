@@ -60,5 +60,6 @@ To run without your own spreadsheet, tick **Use the example data**.
 :::
 
 ```{=html}
+<script src="../../js/forplotr-local.js"></script>
 <script src="../../js/forplotr-app.js"></script>
 ```

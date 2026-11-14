@@ -58,5 +58,6 @@ The first query to a herbarium downloads its data from JABOT, which takes a few 
 :::
 
 ```{=html}
+<script src="../../js/forplotr-local.js"></script>
 <script src="../../js/forplotr-app.js"></script>
 ```

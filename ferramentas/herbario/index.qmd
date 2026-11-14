@@ -54,5 +54,6 @@ Label notes are written from the DBH, the RAINFOR codes (e.g. “with loose bark
 :::
 
 ```{=html}
+<script src="../../js/forplotr-local.js"></script>
 <script src="../../js/forplotr-app.js"></script>
 ```
