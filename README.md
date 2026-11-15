@@ -1,8 +1,10 @@
 # forplotR online
 
-Site em **Quarto** + servidor **R** que rodam as funções do pacote
-[forplotR](https://github.com/DBOSlab/forplotR) pelo navegador, com fila de
-processamento e download dos resultados, e os **artigos/tutoriais** de cada função.
+Site em **Quarto** que roda as funções do pacote
+[forplotR](https://github.com/DBOSlab/forplotR) **no navegador de quem acessa**
+(webR, o R compilado para WebAssembly), sem servidor e sem enviar os dados das
+parcelas a lugar nenhum, e os **artigos/tutoriais** de cada função. O servidor R
+(Plumber + fila) continua disponível como modo alternativo.
 
 Visual: identidade tropical sobre base científica. Tipografia fontzz (SIL OFL 1.1,
 em `fonts/`): Folio (títulos), Halden (texto) e Signal (código). Paleta verde-mata,
@@ -11,13 +13,13 @@ cor fixa. A figura da abertura (`figures/rus01_stem_map.svg`) é o mapa de fuste
 real da parcela RUS01. Botão PT/EN no menu.
 Exemplos de código: um argumento por linha, um espaço em torno de `=`, sem alinhar.
 
-| Página | Função | Saídas |
-| --- | --- | --- |
-| `ferramentas/relatorio/` | `forplot_balance()` | relatório HTML/PDF, mapas PNG, balanço XLSX |
-| `ferramentas/mapa/` | `forplot_map()` | mapa HTML interativo |
-| `ferramentas/herbario/` | `forplot_sheets()` | planilha JABOT/BRAHMS |
-| `ferramentas/determinacoes/` | `forplot_crossdet()` | cruzamento com o JABOT (XLSX) |
-| `ferramentas/vouchers/` | `forplot_vouchers()` | pastas Família/Gênero/Voucher (ZIP) |
+| Página | Função | Saídas | No navegador |
+| --- | --- | --- | --- |
+| `ferramentas/relatorio/` | `forplot_balance()` | relatório HTML/PDF, mapas PNG, balanço XLSX | sim (PDF pela impressão do navegador) |
+| `ferramentas/mapa/` | `forplot_map()` | mapa HTML interativo | sim (sem busca em herbários) |
+| `ferramentas/herbario/` | `forplot_sheets()` | planilha JABOT/BRAHMS | sim (altitude obrigatória, sem GADM) |
+| `ferramentas/determinacoes/` | `forplot_crossdet()` | cruzamento com o JABOT (XLSX) | não: precisa baixar o JABOT |
+| `ferramentas/vouchers/` | `forplot_vouchers()` | pastas Família/Gênero/Voucher (ZIP) | sim |
 
 ## Estrutura
 
@@ -25,7 +27,7 @@ Exemplos de código: um argumento por linha, um espaço em torno de `=`, sem ali
 _quarto.yml               site: navbar, rodapé, tema
 _language.yml             textos da interface do Quarto
 _includes/
-  forplotr-head.html      onde está a API (<meta name="forplotr-api">) + fontes
+  forplotr-head.html      política de segurança (CSP), motor/API + fontes
   forplotr-after.html     botão PT/EN, animações, abas dos diagramas
 theme.scss                cores e fontes (Bootstrap)
 styles.css                visual do site, das ferramentas e dos artigos
@@ -50,15 +52,25 @@ ferramentas/
   vouchers/index.qmd
 sobre/index.qmd           como funciona, privacidade, como citar
 figures/                  logos e fundo
-js/forplotr-app.js        formulários, fila, resultados (lê a API)
-backend/                  servidor R (Plumber + fila + workers)
-  iniciar.R               demonstração local: site + API + 2 workers
+js/forplotr-app.js        formulários e resultados (escolhe o motor)
+js/forplotr-local.js      motor local: webR no navegador
+backend/
+  R/tools_spec.R          campos de cada ferramenta (fonte única, dos dois motores)
+  R/core_params.R         núcleo comum: campos do formulário -> argumentos
+  R/core_run.R            núcleo comum: execução e organização das saídas
+  R/config.R              configuração e utilidades
+  webr/engine.R           motor local (roda dentro do webR)
+  iniciar.R               modo servidor: site + API + 2 workers
   plumber.R               rotas /v1/... e o site estático (_site/)
-  worker.R, run_api.R     uso em servidor
-  R/tools_spec.R          campos de cada ferramenta (fonte única)
-  R/inputs.R, R/jobs.R    uploads, fila, execução, limpeza
+  worker.R, run_api.R     modo servidor em produção
+  R/inputs.R, R/jobs.R    modo servidor: uploads, fila, limpeza
   Dockerfile, nginx-jbrj.conf
 docker-compose.yml        servidor do JBRJ
+.github/workflows/build-webr.yml   build do site com o webR (prévia; no main, Pages)
+scripts/build_pure_r_binary.R      binário do forplotR para o webR
+scripts/mirror_webr_deps.R         espelha as dependências wasm (MD5 conferido)
+scripts/export_local_tools.R       formulários do modo navegador (JSON)
+webr-dev/index.html       página interna de teste de fumaça do webR (só nas prévias)
 scripts/smoke.sh          teste de ponta a ponta
 scripts/mock_server.py    API falsa para mexer no visual sem R
 ```
@@ -104,7 +116,49 @@ o site renderiza sem precisar do R.
 
 `data-tool` aceita `balance`, `map`, `sheets`, `crossdet`, `vouchers`.
 
-## Rodar no seu computador (apresentação)
+## Modo navegador (webR)
+
+É o modo padrão. O `js/forplotr-local.js` carrega o webR assim que a página de
+uma ferramenta abre, instala o forplotR e o código R do motor (tudo servido pelo
+próprio site) e, ao clicar em **Processar**, grava os arquivos no sistema de
+arquivos virtual do webR (memória), roda `local_run()` (`backend/webr/engine.R`)
+e devolve os resultados como URLs `blob:`. Ao terminar, a pasta de trabalho é
+apagada; nada é guardado no navegador além do idioma e do tema.
+
+Os dois motores usam a mesma especificação (`backend/R/tools_spec.R`) e o mesmo
+núcleo (`core_params.R`, `core_run.R`). No modo navegador, `fld(local = FALSE)`
+esconde um campo, `fld(local = list(...))` muda atributos (ex.: altitude
+obrigatória), e uma ferramenta com `local = FALSE` mostra `local_note`.
+
+**Segurança.** Os dados das parcelas não saem do computador:
+- CSP em todas as páginas (`_includes/forplotr-head.html`): conexões, imagens e
+  iframes só da própria origem (mais `blob:`/`data:`). As prévias herdam a
+  política, então um mapa aberto ali não busca imagens de satélite em terceiros.
+- No R: `options(forplotR.offline = TRUE)` e `download.file`, `url()` e as
+  funções de download do curl trocados por funções que dão erro.
+- Prévias em `iframe sandbox` sem `allow-same-origin`.
+- webR com versão e sha256 fixos; dependências espelhadas com MD5 conferido;
+  actions fixadas por SHA; nenhum script, fonte ou serviço de terceiros.
+
+**Build** (`.github/workflows/build-webr.yml`): gera o binário do forplotR (R
+puro, portável para o webR) a partir do ref escolhido, espelha as dependências,
+baixa o runtime do webR, exporta os formulários e renderiza o site. Nos branches
+de teste publica o artefato `site-preview`; no `main`, publica no GitHub Pages
+(Settings > Pages > Source: **GitHub Actions**).
+
+**Testar uma prévia:**
+
+```bash
+gh run download <run-id> -n site-preview -D preview
+python -m http.server -d preview 8000     # http://127.0.0.1:8000/
+```
+
+`http://127.0.0.1:8000/webr-dev/` mede o tempo de cada etapa (só nas prévias).
+Para usar o servidor em vez do navegador: `<meta name="forplotr-engine"
+content="http">` no `_includes/forplotr-head.html`, ou, para testar,
+`localStorage.FORPLOTR_ENGINE = 'http'` no console.
+
+## Modo servidor: rodar no seu computador
 
 Requisitos: R ≥ 4.1, o forplotR e o Quarto.
 
@@ -191,11 +245,13 @@ bash scripts/smoke.sh http://127.0.0.1:8000
 | `FORPLOTR_MAX_QUEUE` | 20 | jobs na fila antes de recusar novos |
 | `FORPLOTR_CORS_ORIGINS` | vazio | outros domínios autorizados a usar a API |
 
-## Limitações deste protótipo
+## Limitações
 
-- O backend R **ainda não foi executado**: o site foi renderizado com Quarto
-  1.9.38 e testado no navegador contra a API simulada; o código R foi revisado à
-  mão. Rode `scripts/smoke.sh` antes da apresentação.
+- Modo navegador: o primeiro acesso baixa cerca de 120 MB (depois fica no cache);
+  o relatório do RUS01 leva cerca de 2 minutos. Busca em herbários, GADM,
+  altitude automática e o cruzamento de determinações ficam só no pacote, no R.
+- Modo servidor: as rotas foram testadas pelo núcleo comum (`build_params`,
+  `child_run`); rode `scripts/smoke.sh` antes de uma apresentação.
 - Os bugs do pacote apontados na auditoria aparecem nos resultados até serem
   corrigidos no forplotR.
 - Sem login. Para abrir ao público, combinar com a TI um limite por IP no nginx.
