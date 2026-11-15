@@ -1,0 +1,5 @@
+| family | genus | sp1 | number | collector | notes |
+|---|---|---|---|---|---|
+| Myrtaceae |  |  | 1001 | G. C. Ottino | Árvore, 26.74cm de diâmetro à altura do peito (DAP), com casca solta/descamando, face abaxial ferrugínea, sob muita luz vertical (>50%). Indivíduo #1 na subparcela 1, x = 1.5m, y = 2.5m. |
+| Rubiaceae | Simira | eliezeriana | 1002 | G. C. Ottino | Árvore, 34.38cm de diâmetro à altura do peito (DAP), com caule oco, danificada por cupins, corola verde, anteras vináceas, fruto imaturo verde escuro, sob muita luz vertical (>50%). Indivíduo #2 na subparcela 1, x = 2m, y = 4m. |
+| Lauraceae | Ocotea |  | 1003 | G. C. Ottino | Árvore, 24.83cm de diâmetro à altura do peito (DAP), com casca solta/descamando, raiz tabular pequena, casca com placas avermelhadas diminutas, copa totalmente exposta à luz vertical e lateral numa curva de 45 graus. Indivíduo #3 na subparcela 1, x = 2m, y = 5m. |

@@ -1,3 +1,60 @@
+::: {.lead}
+[«O nome que dei no campo bate com o que está no herbário?»]{data-lang=pt}[“Does the name I gave in the field match the one in the herbarium?”]{data-lang=en}
+:::
+
+::: {data-lang="pt"}
+Depois que os vouchers são tombados, um especialista pode rever um espécime e mudar a determinação no herbário. `forplot_crossdet()` cruza a planilha da parcela com os registros de um herbário do JABOT (Darwin Core Archive), pareando cada voucher pelo coletor e número, e **aponta as divergências** entre o campo e o herbário. Ele não decide qual nome está certo: a lista é para alguém que conhece as plantas conferir.
+:::
+::: {data-lang="en"}
+After the vouchers are accessioned, a specialist may review a specimen and change its determination in the herbarium. `forplot_crossdet()` cross-references the plot spreadsheet with the records of a JABOT herbarium (Darwin Core Archive), matching each voucher by collector and number, and **points out the differences** between field and herbarium. It does not decide which name is right: the list is for someone who knows the plants to review.
+:::
+
+## [Exemplo com o RUS01]{data-lang=pt}[Example with RUS01]{data-lang=en} {#exemplo}
+
+```{.r .rede}
+library(forplotR)
+
+openxlsx::write.xlsx(RUS01, "RUS01.xlsx")
+
+forplot_crossdet(
+  "RUS01.xlsx",
+  herbaria = "RB",
+  collector_fallback = "G. C. Ottino"
+)
+```
+
 ::: {.note}
-[Página em construção.]{data-lang=pt}[Page under construction.]{data-lang=en}
+[Este exemplo não tem saída nesta página: a função baixa os dados do herbário do JABOT na primeira vez (depois usa o cache local), e o site não faz conexões externas. A estrutura da tabela de resultado está em [Saídas](#saidas) e na [referência]({{LINK:reference}}#forplot_crossdet).]{data-lang=pt}[This example has no output on this page: the function downloads the herbarium data from JABOT the first time (and uses the local cache afterwards), and the site makes no external connections. The structure of the result table is under [Outputs](#saidas) and in the [reference]({{LINK:reference}}#forplot_crossdet).]{data-lang=en}
+:::
+
+{{< include /aplicacoes/determinacoes/_doc.md >}}
+
+[Todos os argumentos estão na [referência]({{LINK:reference}}#forplot_crossdet).]{data-lang=pt}[All arguments are in the [reference]({{LINK:reference}}#forplot_crossdet).]{data-lang=en}
+
+## [Cuidados]{data-lang=pt}[Things to check]{data-lang=en} {#cuidados}
+
+::: {data-lang="pt"}
+- **Divergência não é erro.** `different_determination` quer dizer que os dois lados registram nomes diferentes; qual é o mais recente, ou o mais correto, é uma decisão taxonômica.
+- **O pareamento depende do coletor e do número.** Vouchers sem número, ou com o coletor escrito de outro jeito no herbário, podem ficar sem par; use `collector_fallback` quando a planilha só tem o número.
+- **Um herbário por vez.** A comparação usa os registros de um único herbário (por exemplo, `herbaria = "RB"`).
+- **Usa a internet na primeira vez**, para baixar os dados do JABOT; depois o processamento é local.
+:::
+::: {data-lang="en"}
+- **A difference is not an error.** `different_determination` means the two sides record different names; which one is more recent, or more correct, is a taxonomic decision.
+- **Matching depends on collector and number.** Vouchers without a number, or with the collector written differently in the herbarium, may stay unmatched; use `collector_fallback` when the spreadsheet only has the number.
+- **One herbarium at a time.** The comparison uses the records of a single herbarium (for example, `herbaria = "RB"`).
+- **Uses the internet the first time**, to download the JABOT data; after that, processing is local.
+:::
+
+## [No navegador]{data-lang=pt}[In the browser]{data-lang=en} {#no-navegador}
+
+::: {data-lang="pt"}
+Esta é a única função que não roda no navegador: ela precisa baixar os dados do herbário, e as ferramentas do site não fazem conexões externas. Use o pacote no R.
+:::
+::: {data-lang="en"}
+This is the only function that does not run in the browser: it needs to download the herbarium data, and the site's tools make no external connections. Use the package in R.
+:::
+
+::: {.actions}
+[[Como instalar o forplotR]({{LINK:start}}#instalacao){.btn}]{data-lang=pt}[[How to install forplotR]({{LINK:start}}#instalacao){.btn}]{data-lang=en}
 :::

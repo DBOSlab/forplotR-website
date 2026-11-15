@@ -1,0 +1,24 @@
+voucher_imgs/
+├── Annonaceae/
+│   ├── Anaxagorea/
+│   │   └── GCO1125_Tree#125/
+│   ├── Annona/
+│   │   ├── GCO1819_Tree#819/
+│   │   ├── GCO1863_Tree#863/
+│   │   └── GCO1874_Tree#874/
+│   └── … +4
+├── Aptandraceae/
+│   ├── Cathedra/
+│   │   ├── GCO1146_Tree#146/
+│   │   ├── GCO1301_Tree#301/
+│   │   ├── GCO1580_Tree#580/
+│   │   └── … +2
+│   └── Indet/
+│       └── GCO1492_Tree#492/
+└── Aquifoliaceae/
+    └── Ilex/
+        ├── GCO1134_Tree#134/
+        ├── GCO1249_Tree#249/
+        ├── GCO1543_Tree#543/
+        └── … +2
+… +39

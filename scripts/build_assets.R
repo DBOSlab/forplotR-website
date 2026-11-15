@@ -60,6 +60,25 @@ tree <- lapply(fams[seq_len(min(3, length(fams)))], function(f) {
 })
 write_json(list(families = length(fams), voucher_folders = sum(depth == max(depth)), sample = tree),
            file.path(out, "fotos", "rus01_pastas.json"), auto_unbox = TRUE, pretty = TRUE)
+# a mesma amostra como árvore de texto, incluída na página "Organizar as fotos"
+tl <- "voucher_imgs/"
+for (i in seq_along(tree)) {
+  fl <- i == length(tree)
+  tl <- c(tl, paste0(if (fl) "└── " else "├── ", tree[[i]]$family, "/"))
+  pre1 <- if (fl) "    " else "│   "
+  gs <- tree[[i]]$genera
+  for (j in seq_along(gs)) {
+    gl <- j == length(gs) && tree[[i]]$more == 0
+    tl <- c(tl, paste0(pre1, if (gl) "└── " else "├── ", gs[[j]]$name, "/"))
+    pre2 <- paste0(pre1, if (gl) "    " else "│   ")
+    vs <- unlist(gs[[j]]$vouchers)
+    for (k in seq_along(vs)) tl <- c(tl, paste0(pre2, if (k == length(vs) && gs[[j]]$more == 0) "└── " else "├── ", vs[k], "/"))
+    if (gs[[j]]$more > 0) tl <- c(tl, paste0(pre2, "└── … +", gs[[j]]$more))
+  }
+  if (tree[[i]]$more > 0) tl <- c(tl, paste0(pre1, "└── … +", tree[[i]]$more))
+}
+tl <- c(tl, sprintf("… +%d", length(fams) - length(tree)))
+writeLines(enc2utf8(tl), file.path(out, "fotos", "rus01_arvore.txt"), useBytes = TRUE)
 
 # ---------------------------------------------------------------- 2. mapa
 for (lg in c("pt", "en")) {
@@ -108,6 +127,16 @@ lab <- forplot_sheets(fp_file_path = fp, herb_file_path = herb, input_type = "fo
 openxlsx::write.xlsx(lab, file.path(out, "etiquetas", "RUS01_etiquetas_jabot.xlsx"))
 show <- intersect(c("family", "genus", "sp1", "number", "collector", "colldd", "collmm", "collyy", "notes"), names(lab))
 utils::write.csv(utils::head(lab[, show], 4), file.path(out, "etiquetas", "RUS01_etiquetas_trecho.csv"), row.names = FALSE, fileEncoding = "UTF-8")
+# o mesmo trecho como tabela Markdown, incluída na página "Etiquetas para o herbário"
+md_table <- function(df) {
+  cell <- function(x) { x <- ifelse(is.na(x), "", as.character(x)); gsub("|", "\\|", x, fixed = TRUE) }
+  c(paste0("| ", paste(names(df), collapse = " | "), " |"),
+    paste0("|", paste(rep("---", ncol(df)), collapse = "|"), "|"),
+    apply(df, 1, function(r) paste0("| ", paste(cell(r), collapse = " | "), " |")))
+}
+trecho <- utils::head(lab[, intersect(c("family", "genus", "sp1", "number", "collector", "notes"), names(lab))], 3)
+writeLines(enc2utf8(md_table(trecho)), file.path(out, "etiquetas", "rus01_etiquetas_trecho.md"), useBytes = TRUE)
+writeLines(enc2utf8(lab$notes[1]), file.path(out, "etiquetas", "rus01_nota1.txt"), useBytes = TRUE)
 tum <- forplot_sheets(fp_file_path = fm, herb_file_path = herb, input_type = "monitora", station_name = "EA-1", language = "pt",
                       majorarea = "AP", minorarea = "Laranjal do Jari", lat = 1.5, long = -52.5, alt = 300,
                       validate_locality = FALSE, dir = file.path(work, "herb"), filename = "TUM_etiquetas_jabot")
@@ -187,6 +216,22 @@ writeLines(c(
                    sum(sub$collected), sum(sub$missing))),
   grid_lines(), paste0('<g class="pano-bars">', paste(bars, collapse = ""), "</g></svg>")
 ), file.path(out, "panorama", "rus01_balanco.svg"), useBytes = TRUE)
+
+# ------------------------------------------- 5b. política de segurança dos exemplos
+# Os exemplos HTML abrem dentro do site (iframe); a CSP do site não vale lá
+# dentro, então cada arquivo ganha a sua: nada de terceiros (o mapa fica sem a
+# imagem de satélite, como na prévia das ferramentas).
+csp <- paste0('<meta http-equiv="Content-Security-Policy" content="default-src \'self\' data: blob:; ',
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; ",
+              "img-src 'self' data: blob:; font-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'none'\">")
+add_csp <- function(f) {
+  h <- readLines(f, encoding = "UTF-8", warn = FALSE)
+  h <- h[!grepl("http-equiv=\"Content-Security-Policy\"", h, fixed = TRUE)]
+  i <- grep("<head[^>]*>", h)[1]
+  h[i] <- sub("(<head[^>]*>)", paste0("\\1", csp), h[i])
+  writeLines(h, f, useBytes = TRUE)
+}
+for (f in list.files(out, pattern = "\\.html$", recursive = TRUE, full.names = TRUE)) add_csp(f)
 
 # --------------------------------------------------------------- 6. números
 tum_st <- table(TUM$Nome_estacao)

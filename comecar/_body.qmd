@@ -1,3 +1,1 @@
-::: {.note}
-[Página em construção.]{data-lang=pt}[Page under construction.]{data-lang=en}
-:::
+{{< include /comecar/_doc.md >}}

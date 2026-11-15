@@ -1,1 +1,1 @@
-{{< include _rd.md >}}
+{{< include /referencia/_rd.md >}}

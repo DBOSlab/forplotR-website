@@ -1,3 +1,83 @@
+::: {.lead}
+[«Onde está cada árvore marcada, e qual já tem foto ou voucher?»]{data-lang=pt}[“Where is each tagged tree, and which ones already have a photo or a voucher?”]{data-lang=en}
+:::
+
+::: {data-lang="pt"}
+`forplot_map()` coloca no mapa cada indivíduo da planilha da parcela, na posição medida em campo, e grava tudo num único arquivo HTML que abre em qualquer navegador. A equipe filtra por família, espécie e situação de coleta, vê as fotos do voucher e passa o arquivo a quem não usa R.
+:::
+::: {data-lang="en"}
+`forplot_map()` places every individual of the plot spreadsheet on a map, at the position measured in the field, and writes everything into a single HTML file that opens in any browser. The team filters by family, species and collection status, sees the voucher photos and shares the file with people who do not use R.
+:::
+
+## [Exemplo com o RUS01]{data-lang=pt}[Example with RUS01]{data-lang=en} {#exemplo}
+
+[O código abaixo é o que gera o mapa logo em seguida, com os dados que vêm no pacote.]{data-lang=pt}[The code below is what produces the map right after it, with the data that ship with the package.]{data-lang=en}
+
+```{.r .offline}
+library(forplotR)
+
+openxlsx::write.xlsx(RUS01, "RUS01.xlsx")
+forplot_vouchers("RUS01.xlsx", output_dir = "voucher_imgs")
+
+vertices <- data.frame(
+  Latitude = c(-19.9000, -19.9009, -19.9000, -19.9009),
+  Longitude = c(-40.5500, -40.5500, -40.5490, -40.5490)
+)
+
+forplot_map(
+  "RUS01.xlsx",
+  vertex_coords = vertices,
+  voucher_imgs = "voucher_imgs",
+  language = "pt"
+)
+```
+
+```{=html}
+<figure class="live">
+  <div class="live-bar">
+    <span>RUS01 · forplot_map() · forplotR {{< var forplotr.versao >}}</span>
+    <a data-lang="pt" href="{{ROOT}}exemplos/mapa/RUS01_mapa_pt.html" data-live-src data-title="Mapa interativo do RUS01" data-opened="Abrir em outra aba">Abrir o mapa (1,7 MB)</a>
+    <a data-lang="en" href="{{ROOT}}exemplos/mapa/RUS01_mapa_en.html" data-live-src data-title="Interactive map of RUS01" data-opened="Open in a new tab">Open the map (1.7 MB)</a>
+  </div>
+  <div class="live-stage">
+    <p data-lang="pt">O mapa real do RUS01, gerado pelo forplotR: {{< var rus01.arvores >}} árvores, filtros e a janela de cada indivíduo. Ele só é carregado quando você pede.</p>
+    <p data-lang="en">The real RUS01 map, produced by forplotR: {{< var rus01.arvores >}} trees, filters and a pop-up for each individual. It loads only when you ask.</p>
+  </div>
+</figure>
+```
+
 ::: {.note}
-[Página em construção.]{data-lang=pt}[Page under construction.]{data-lang=en}
+[Os vértices acima são aproximados, só para ilustração, como na vinheta do pacote. Aqui o mapa abre sem a imagem de satélite, porque o site não carrega nada de terceiros; no seu computador, a camada de satélite aparece normalmente.]{data-lang=pt}[The vertices above are approximate, for illustration only, as in the package vignette. Here the map opens without the satellite layer, because the site loads nothing from third parties; on your computer the satellite layer appears as usual.]{data-lang=en}
+:::
+
+{{< include /aplicacoes/mapa/_doc.md >}}
+
+[Todos os argumentos estão na [referência]({{LINK:reference}}#forplot_map).]{data-lang=pt}[All arguments are in the [reference]({{LINK:reference}}#forplot_map).]{data-lang=en}
+
+## [Cuidados]{data-lang=pt}[Things to check]{data-lang=en} {#cuidados}
+
+::: {data-lang="pt"}
+- **A ordem dos vértices importa.** Se as distâncias entre eles não batem com o tamanho da parcela, a função avisa; quase sempre é a ordem.
+- **O mapa mostra o que a planilha diz.** Famílias, espécies e situação de coleta vêm da planilha; o forplotR não confere nem corrige determinações.
+- **Indivíduos sem subparcela ficam de fora.** No RUS01, uma plaqueta sem subparcela (`T1`) é excluída com um aviso, em vez de interromper o mapa.
+- **A busca nas exsicatas usa a internet** (`herbaria_lookup = TRUE`); o resto do mapa é feito sem conexão.
+:::
+::: {data-lang="en"}
+- **Vertex order matters.** If the distances between them do not match the plot size, the function warns; it is almost always the order.
+- **The map shows what the spreadsheet says.** Families, species and collection status come from the spreadsheet; forplotR does not check or correct determinations.
+- **Individuals without a subplot are left out.** In RUS01, one tag without a subplot (`T1`) is excluded with a warning instead of stopping the map.
+- **The specimen lookup uses the internet** (`herbaria_lookup = TRUE`); the rest of the map is built offline.
+:::
+
+## [No navegador]{data-lang=pt}[In the browser]{data-lang=en} {#no-navegador}
+
+::: {data-lang="pt"}
+A mesma função roda no navegador, sem instalar o R: você informa a planilha e os vértices, e o mapa é gerado no seu computador. A busca nas exsicatas dos herbários fica só no pacote, porque usa a internet.
+:::
+::: {data-lang="en"}
+The same function runs in the browser, without installing R: you provide the spreadsheet and the vertices, and the map is built on your computer. The herbarium specimen lookup stays in the package, because it uses the internet.
+:::
+
+::: {.actions}
+[[Abrir a ferramenta no navegador]({{LINK:tool-map}}){.btn .btn-primary}]{data-lang=pt}[[Open the tool in the browser]({{LINK:tool-map}}){.btn .btn-primary}]{data-lang=en}
 :::

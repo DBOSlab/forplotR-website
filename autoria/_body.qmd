@@ -1,3 +1,58 @@
-::: {.note}
-[Página em construção.]{data-lang=pt}[Page under construction.]{data-lang=en}
+::: {.statement}
+[O **forplotR** foi desenvolvido por **Giulia C. Ottino** como produto de seu mestrado, sob orientação de **Domingos Cardoso**, no Instituto de Pesquisas Jardim Botânico do Rio de Janeiro (JBRJ), no DBOSlab.]{data-lang=pt}[**forplotR** was developed by **Giulia C. Ottino** as the product of her master's degree, supervised by **Domingos Cardoso**, at the Rio de Janeiro Botanical Garden Research Institute (JBRJ), in DBOSlab.]{data-lang=en}
 :::
+
+{{THESIS_BLOCK}}
+
+::: {data-lang="pt"}
+O pacote junta, numa só fonte, o que o trabalho com parcelas florestais permanentes costuma espalhar: a planilha do censo, as fotos dos vouchers, as etiquetas do herbário e as determinações que mudam com o tempo.
+:::
+::: {data-lang="en"}
+The package brings together, in a single source, what work with permanent forest plots tends to scatter: the census spreadsheet, the voucher photos, the herbarium labels and the determinations that change over time.
+:::
+
+```{=html}
+<div class="people">
+  <section class="person" id="giulia-c-ottino">
+    <h2>Giulia C. Ottino</h2>
+    <p class="role" data-lang="pt">Autora e mantenedora. Desenvolveu o forplotR no mestrado.</p>
+    <p class="role" data-lang="en">Author and maintainer. Developed forplotR during her master's degree.</p>
+    <ul>
+      <li>ORCID <a href="https://orcid.org/0009-0001-4352-1733" rel="me">0009-0001-4352-1733</a></li>
+      <li>GitHub <a href="https://github.com/giuliaottino" rel="me">giuliaottino</a></li>
+      <li data-lang="pt">Jardim Botânico do Rio de Janeiro</li>
+      <li data-lang="en">Rio de Janeiro Botanical Garden</li>
+    </ul>
+  </section>
+  <section class="person" id="domingos-cardoso">
+    <h2>Domingos Cardoso</h2>
+    <p class="role" data-lang="pt">Coautor e orientador do mestrado.</p>
+    <p class="role" data-lang="en">Co-author and master's supervisor.</p>
+    <ul>
+      <li>ORCID <a href="https://orcid.org/0000-0001-7072-2656">0000-0001-7072-2656</a></li>
+      <li>DBOSlab · <a href="https://github.com/DBOSlab">github.com/DBOSlab</a></li>
+      <li data-lang="pt">Jardim Botânico do Rio de Janeiro</li>
+      <li data-lang="en">Rio de Janeiro Botanical Garden</li>
+    </ul>
+  </section>
+</div>
+```
+
+## [Apoio]{data-lang=pt}[Funding]{data-lang=en} {#apoio}
+
+[Este trabalho teve apoio do CNPq e da CAPES.]{data-lang=pt}[This work was supported by CNPq and CAPES.]{data-lang=en}
+
+## [Dados de exemplo]{data-lang=pt}[Example data]{data-lang=en} {#dados}
+
+::: {data-lang="pt"}
+Os conjuntos `RUS01` (parcela de 1 ha na REBIO Augusto Ruschi, Espírito Santo, no padrão do ForestPlots.net) e `TUM` (Programa MONITORA, PARNA Montanhas do Tumucumaque, Amapá) acompanham o pacote. Os nomes da equipe de campo que aparecem nas planilhas são o crédito da coleta.
+:::
+::: {data-lang="en"}
+The `RUS01` (a 1-ha plot in the REBIO Augusto Ruschi, Espírito Santo, in the ForestPlots.net layout) and `TUM` (MONITORA programme, PARNA Montanhas do Tumucumaque, Amapá) datasets ship with the package. The names of the field team that appear in the spreadsheets are the credit for the collection.
+:::
+
+## [Como citar]{data-lang=pt}[How to cite]{data-lang=en} {#citar}
+
+{{< include /citar/_bib.md >}}
+
+[Mais formatos em [Como citar]({{LINK:cite}}).]{data-lang=pt}[More formats under [How to cite]({{LINK:cite}}).]{data-lang=en}

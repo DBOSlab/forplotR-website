@@ -95,3 +95,11 @@ organizations:
   dboslab:
     name: "DBOSlab"
     url: "https://github.com/DBOSlab"
+
+# Artigo que descreve o forplotR. Enquanto doi estiver vazio, a página "Como
+# citar" diz que o DOI aparecerá quando o artigo for publicado ({{DOI}}).
+paper:
+  doi: null               # ex.: "10.1111/xxxx" (sem https://doi.org/)
+  title: null
+  journal: null
+  year: null

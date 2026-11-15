@@ -23,8 +23,9 @@ local function strip_raw(text)
     local s, e, tag = text:find('<(%w+)[^>]-%sdata%-lang="' .. other .. '"[^>]->', pos)
     if not s then break end
     table.insert(out, text:sub(pos, s - 1))
-    -- elemento vazio/autocontido
-    if text:sub(e - 1, e) == '/>' then
+    -- elemento vazio (sem fechamento) ou autocontido
+    local void = { img = true, br = true, hr = true, input = true, source = true, meta = true, link = true, wbr = true }
+    if text:sub(e - 1, e) == '/>' or void[tag:lower()] then
       pos = e + 1
     else
       local depth, i = 1, e + 1

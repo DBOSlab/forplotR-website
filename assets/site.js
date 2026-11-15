@@ -103,6 +103,29 @@
     box.appendChild(b);
   });
 
+  // ---------- exemplos ao vivo: carregados só quando a pessoa pede ----------
+  // <figure class="live"> com um link [data-live-src]; sem JavaScript o link
+  // abre o arquivo. O iframe não tem allow-same-origin: o exemplo não lê o site.
+  document.querySelectorAll('[data-live-src]').forEach(function (a) {
+    a.addEventListener('click', function (e) {
+      var box = a.closest('.live');
+      if (!box || box.querySelector('iframe')) return;
+      e.preventDefault();
+      var f = document.createElement('iframe');
+      f.src = a.getAttribute('href');
+      f.title = a.getAttribute('data-title') || a.textContent;
+      f.setAttribute('sandbox', 'allow-scripts allow-popups allow-downloads');
+      f.setAttribute('loading', 'lazy');
+      var stage = box.querySelector('.live-stage') || box;
+      stage.innerHTML = '';
+      stage.appendChild(f);
+      a.textContent = a.getAttribute('data-opened') || a.textContent;
+      a.removeAttribute('data-live-src');
+      a.setAttribute('target', '_blank');
+      a.setAttribute('rel', 'noopener');
+    });
+  });
+
   // ---------- atalhos de teclado ----------
   document.addEventListener('keydown', function (e) {
     if (e.ctrlKey || e.metaKey || e.altKey) return;

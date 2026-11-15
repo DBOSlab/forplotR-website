@@ -144,6 +144,10 @@ software_node <- function(lang) {
     funder = lapply(unlist(sw$funders), function(f) list("@type" = "Organization", name = f)),
     sourceOrganization = list("@id" = id_org("dboslab")),
     subjectOf = if (thesis_ok) list("@id" = id_thesis),
+    citation = if (exists("paper_ok") && paper_ok) compact(list("@type" = "ScholarlyArticle", name = pp$title,
+                 isPartOf = if (has(pp$journal)) list("@type" = "Periodical", name = pp$journal),
+                 datePublished = pp$year, sameAs = paste0("https://doi.org/", pp$doi),
+                 author = list(list("@id" = id_person("ottino")), list("@id" = id_person("cardoso"))))),
     targetProduct = list(
       "@type" = "SoftwareApplication", name = sw$name,
       applicationCategory = "ScientificApplication",
@@ -176,6 +180,37 @@ author_line <- function(lang, root) {
     detail <- if (thesis_ok) sprintf(" como produto de sua dissertação de mestrado (%s, %s%s)", th$program, th$institution,
                                      if (has(th$year)) paste0(", ", th$year) else "") else " como produto de seu mestrado"
     sprintf('O forplotR foi desenvolvido por <a href="%s#giulia-c-ottino">Giulia C. Ottino</a>%s, sob orientação de <a href="%s#domingos-cardoso">Domingos Cardoso</a>, no Jardim Botânico do Rio de Janeiro (DBOSlab).', a, html_escape(detail), a)
+  }
+}
+
+# Artigo (página "Como citar"): DOI quando publicado.
+pp <- ent$paper
+paper_ok <- !is.null(pp) && has(pp$doi)
+paper_block <- function(lang) {
+  if (!paper_ok) {
+    return(if (lang == "en") "<p>The DOI of the paper describing forplotR will appear here once it is published.</p>"
+           else "<p>O DOI do artigo que descreve o forplotR aparecerá aqui quando ele for publicado.</p>")
+  }
+  ref <- sprintf("Ottino, G. C. & Cardoso, D.%s %s%s", if (has(pp$year)) paste0(" (", pp$year, ").") else "",
+                 if (has(pp$title)) paste0(html_escape(pp$title), ". ") else "",
+                 if (has(pp$journal)) paste0("<em>", html_escape(pp$journal), "</em>. ") else "")
+  sprintf('<div class="cite-box">%s<a href="https://doi.org/%s">https://doi.org/%s</a></div>', ref, pp$doi, pp$doi)
+}
+
+# Detalhes da dissertação na página de autoria (só com os dados preenchidos).
+thesis_block <- function(lang) {
+  if (!thesis_ok) return("")
+  adv <- P[[th$advisor]]$name
+  co <- if (has(th$co_advisor)) P[[th$co_advisor]]$name else NULL
+  link <- function(x) if (has(th$url)) sprintf('<a href="%s">%s</a>', th$url, x) else x
+  if (lang == "en") {
+    sprintf('<div class="thesis" id="dissertacao"><p class="thesis-label">Master\'s dissertation</p><p>%s. %s, %s%s. Supervisor: %s%s.</p></div>',
+            link(html_escape(th$title)), html_escape(th$program), html_escape(th$institution),
+            if (has(th$year)) paste0(", ", th$year) else "", adv, if (!is.null(co)) paste0("; co-supervisor: ", co) else "")
+  } else {
+    sprintf('<div class="thesis" id="dissertacao"><p class="thesis-label">Dissertação de mestrado</p><p>%s. %s, %s%s. Orientação: %s%s.</p></div>',
+            link(html_escape(th$title)), html_escape(th$program), html_escape(th$institution),
+            if (has(th$year)) paste0(", ", th$year) else "", adv, if (!is.null(co)) paste0("; coorientação: ", co) else "")
   }
 }
 
@@ -308,13 +343,15 @@ for (i in seq_len(nrow(pages))) {
   alt <- alt_of(row$id, row$lang)
   alt_href <- if (!is.null(alt)) paste0(root, alt$clean) else if (row$lang == "en") root else paste0(root, "en/")
   if (identical(alt_href, "./")) alt_href <- "./"
+  # num link Markdown o Pandoc codifica as chaves dos marcadores (%7B%7BROOT%7D%7D)
+  h <- gsub("%7B%7B([A-Z_]+|LINK:[A-Za-z0-9_-]+)%7D%7D", "{{\\1}}", h, perl = TRUE)
   h <- gsub("{{ROOT}}", root, h, fixed = TRUE)
   h <- gsub("{{LANGROOT}}", langroot, h, fixed = TRUE)
   h <- gsub("{{ALT_URL}}", alt_href, h, fixed = TRUE)
   h <- gsub("{{AUTHOR_LINE}}", author_line(row$lang, root), h, fixed = TRUE)
+  h <- gsub("<p>{{THESIS_BLOCK}}</p>", thesis_block(row$lang), h, fixed = TRUE)
+  h <- gsub("<p>{{PAPER_BLOCK}}</p>", paper_block(row$lang), h, fixed = TRUE)
   # {{LINK:id}}: endereço relativo da página com esse page-id, na língua da página
-  # (num link Markdown o Pandoc codifica as chaves: %7B%7BLINK:id%7D%7D)
-  h <- gsub("%7B%7B(LINK:[A-Za-z0-9_-]+)%7D%7D", "{{\\1}}", h, perl = TRUE)
   for (lk in unique(regmatches(h, gregexpr("\\{\\{LINK:[A-Za-z0-9_-]+\\}\\}", h, perl = TRUE))[[1]])) {
     tid <- sub("^\\{\\{LINK:(.*)\\}\\}$", "\\1", lk)
     tgt <- page_of(tid, row$lang)
