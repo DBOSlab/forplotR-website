@@ -73,8 +73,10 @@ jobs:
         run: Rscript scripts/build_pure_r_binary.R _pkg webr/repo "${R_WASM_VERSION}"
 
       # zip: usado pelo motor local (extrair o ZIP de fotos e gerar "Baixar tudo").
+      # sf,raster: declarados pelo leaflet, nunca carregados pelo forplotR; fora do
+      # espelho junto com o que só eles puxam (terra, sp, s2, units...): ~40 MB a menos.
       - name: Espelhar dependências wasm (MD5 conferido)
-        run: Rscript scripts/mirror_webr_deps.R webr/repo "${R_WASM_VERSION}" zip
+        run: Rscript scripts/mirror_webr_deps.R webr/repo "${R_WASM_VERSION}" zip sf,raster
 
       - name: Motor local (código R e formulários)
         run: |

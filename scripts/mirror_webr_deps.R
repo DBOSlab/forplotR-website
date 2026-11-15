@@ -1,10 +1,15 @@
 # Espelha no site as dependências wasm do forplotR ---------------------------
 #
 # Uso (no CI, depois do build do forplotR com r-wasm/actions/build-rwasm):
-#   Rscript scripts/mirror_webr_deps.R <repo_dir> <r_version> [extras]
-#   ex.: Rscript scripts/mirror_webr_deps.R webr/repo 4.6 zip
+#   Rscript scripts/mirror_webr_deps.R <repo_dir> <r_version> [extras] [prune]
+#   ex.: Rscript scripts/mirror_webr_deps.R webr/repo 4.6 zip sf,raster
 #   [extras]: pacotes adicionais (separados por vírgula) usados pelo motor
 #   local do site, além das dependências do forplotR.
+#   [prune]: pacotes declarados por alguma dependência mas nunca carregados
+#   pelo forplotR; nem eles nem o que só eles puxam são espelhados. O webR
+#   instala o resto normalmente (apenas avisa que não os encontrou).
+#   Ex.: o leaflet declara sf e raster (e, por eles, terra, sp, s2, units...),
+#   que ele só usa com objetos espaciais; o forplotR passa tabelas comuns.
 #
 # O que faz:
 #   1. lê a entrada do forplotR no PACKAGES gerado pelo rwasm em <repo_dir>;
@@ -24,6 +29,8 @@ repo_dir <- args[1]
 r_ver <- args[2]
 extras <- if (length(args) >= 3) trimws(strsplit(args[3], ",")[[1]]) else character(0)
 extras <- extras[nzchar(extras)]
+prune <- if (length(args) >= 4) trimws(strsplit(args[4], ",")[[1]]) else character(0)
+prune <- prune[nzchar(prune)]
 
 upstream <- paste0("https://repo.r-wasm.org/bin/emscripten/contrib/", r_ver)
 contrib <- file.path(repo_dir, "bin", "emscripten", "contrib", r_ver)
@@ -58,7 +65,7 @@ todo <- c(dep_names(field(local_db, "forplotR", "Depends")),
 need <- character(0)
 while (length(todo)) {
   p <- todo[1]; todo <- todo[-1]
-  if (p %in% c(need, base_pkgs, "forplotR")) next
+  if (p %in% c(need, base_pkgs, "forplotR", prune)) next
   if (!p %in% rownames(remote_db)) stop("Dependência sem binário wasm em ", upstream, ": ", p)
   need <- c(need, p)
   todo <- c(todo, dep_names(field(remote_db, p, "Depends")),
@@ -66,6 +73,7 @@ while (length(todo)) {
 }
 need <- sort(need)
 message(length(need), " dependências: ", paste(need, collapse = ", "))
+if (length(prune)) message("Fora do espelho (não carregados pelo forplotR): ", paste(prune, collapse = ", "))
 
 # Download + conferência de integridade
 for (p in need) {

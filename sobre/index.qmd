@@ -21,7 +21,7 @@ pagetitle: "Sobre — forplotR"
 ::: {data-lang="pt"}
 O site é estático (gerado com Quarto) e as ferramentas rodam **no seu navegador**: o R e o pacote **forplotR** são carregados no próprio navegador (webR, o R compilado para WebAssembly), e a planilha é processada no seu computador.
 
-1. Ao abrir uma ferramenta, o navegador baixa do próprio site o R e o forplotR. Na primeira vez são cerca de 160 MB; depois, os arquivos ficam no cache do navegador.
+1. Ao abrir uma ferramenta, o navegador baixa do próprio site o R e o forplotR. Na primeira vez são cerca de 120 MB; depois, os arquivos ficam no cache do navegador.
 2. Ao acionar **Processar**, os arquivos escolhidos são lidos na memória do navegador e a função do forplotR é executada ali mesmo.
 3. Os resultados aparecem para visualização e download e são descartados ao fechar a página.
 
@@ -30,7 +30,7 @@ O código executado é o mesmo do pacote instalado no R, na versão indicada aba
 ::: {data-lang="en"}
 The website is static (built with Quarto) and the tools run **in your browser**: R and the **forplotR** package are loaded in the browser itself (webR, R compiled to WebAssembly), and the spreadsheet is processed on your computer.
 
-1. When you open a tool, the browser downloads R and forplotR from this website. The first time this is about 160 MB; afterwards the files stay in the browser cache.
+1. When you open a tool, the browser downloads R and forplotR from this website. The first time this is about 120 MB; afterwards the files stay in the browser cache.
 2. When you press **Run**, the selected files are read into the browser's memory and the forplotR function runs right there.
 3. The results are shown for preview and download and are discarded when the page is closed.
 
