@@ -804,6 +804,11 @@
         box.appendChild(biEl('h4', { class: 'block-title' }, 'Prévia', 'Preview'));
         if (htmls.length > 1) box.appendChild(tabs);
         box.appendChild(frame);
+        if (LOCAL && st.tool === 'map') {
+          box.appendChild(biEl('p', { class: 'muted-note' },
+            'A prévia não carrega a imagem de satélite, para não revelar a localização da parcela ao provedor das imagens. No arquivo baixado, o satélite aparece ao abri-lo, e a área visualizada é enviada ao provedor.',
+            'The preview does not load satellite imagery, so that the plot location is not revealed to the imagery provider. In the downloaded file, the imagery appears when it is opened, and the area in view is sent to the provider.'));
+        }
       }
       if (imgs.length) {
         box.appendChild(biEl('h4', { class: 'block-title' }, 'Figuras', 'Figures'));
@@ -834,6 +839,14 @@
           'Mostrando ' + files.length + ' de ' + st.n_files + ' arquivos. Todos estão no ZIP.',
           'Showing ' + files.length + ' of ' + st.n_files + ' files. All are in the ZIP.'));
       }
+    } else if (st.zip) {
+      // Só há a estrutura de pastas (ex.: vouchers sem fotos): o conteúdo está no ZIP.
+      var zipActions = el('div', { class: 'result-actions' });
+      zipActions.appendChild(biEl('a', { class: 'fx-btn fx-btn-primary', href: zipUrl(st), download: LOCAL ? st.zip : null }, 'Baixar tudo (.zip)', 'Download all (.zip)'));
+      box.appendChild(zipActions);
+      box.appendChild(biEl('p', { class: 'muted-note' },
+        'O resultado é uma estrutura de pastas (' + st.n_files + ' itens), toda dentro do ZIP.',
+        'The result is a folder structure (' + st.n_files + ' items), all inside the ZIP.'));
     } else if (ok) {
       box.appendChild(biEl('p', { class: 'muted-note' }, 'Nenhum arquivo foi gerado. Veja o registro abaixo.', 'No file was produced. See the log below.'));
     }
@@ -860,9 +873,19 @@
     renderRecent();
     if (!mount) {
       if (!LOCAL) { checkHealth(); setInterval(checkHealth, 30000); }
-      else document.querySelectorAll('.api-status').forEach(function (s) {
-        setStatus(s, 'is-ok', 'roda no seu navegador', 'runs in your browser');
-      });
+      else {
+        document.querySelectorAll('.api-status').forEach(function (s) {
+          setStatus(s, 'is-ok', 'roda no seu navegador', 'runs in your browser');
+        });
+        var v = document.querySelector('.fp-versions');
+        if (v) fetch(ROOT + 'webr/engine/info.json', { cache: 'no-cache' })
+          .then(function (r) { return r.ok ? r.json() : null; })
+          .then(function (h) {
+            if (!h) return;
+            v.innerHTML = '';
+            v.appendChild(bi('No navegador: forplotR ' + h.forplotR + ' · ' + h.R + '.', 'In the browser: forplotR ' + h.forplotR + ' · ' + h.R + '.'));
+          }).catch(function () { /* sem versão */ });
+      }
       return;
     }
     var id = mount.getAttribute('data-tool');

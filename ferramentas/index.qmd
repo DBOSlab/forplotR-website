@@ -8,8 +8,8 @@ pagetitle: "Interface web — forplotR"
   <div class="fp-hero-inner">
     <p class="fp-hero-kicker">forplotR · <span data-lang="pt">interface web</span><span data-lang="en">web interface</span></p>
     <h1 class="fp-hero-title"><span data-lang="pt">Interface web</span><span data-lang="en">Web interface</span></h1>
-    <p class="fp-hero-deck" data-lang="pt">Formulários que executam as cinco funções principais do pacote no servidor do Jardim Botânico do Rio de Janeiro, sem instalação local. Todos aceitam planilhas do ForestPlots.net (ficha de campo e Query Library), de Terras Indígenas e do Programa Monitora, e podem ser testados com os conjuntos de dados de exemplo.</p>
-    <p class="fp-hero-deck" data-lang="en">Forms that run the five main package functions on the Rio de Janeiro Botanical Garden server, with no local installation. All accept ForestPlots.net spreadsheets (field sheet and Query Library), Indigenous Land sheets and Monitora Program sheets, and can be tried with the example datasets.</p>
+    <p class="fp-hero-deck" data-lang="pt">Formulários que executam as funções principais do pacote no seu navegador, sem instalação e sem enviar os dados a nenhum servidor. Todos aceitam planilhas do ForestPlots.net (ficha de campo e Query Library), de Terras Indígenas e do Programa Monitora, e podem ser testados com os conjuntos de dados de exemplo.</p>
+    <p class="fp-hero-deck" data-lang="en">Forms that run the main package functions in your browser, with no installation and without sending your data to any server. All accept ForestPlots.net spreadsheets (field sheet and Query Library), Indigenous Land sheets and Monitora Program sheets, and can be tried with the example datasets.</p>
     <div class="fp-hero-actions"><a class="fx-btn fx-btn-secondary" href="../artigos/index.html"><span data-lang="pt">Documentação do pacote em R</span><span data-lang="en">R package documentation</span></a></div>
   </div>
 </section>

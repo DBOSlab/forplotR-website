@@ -3,6 +3,16 @@
      Se o site for publicado numa subpasta (ex.: /forplotr/), use "/forplotr/v1".
      Durante o `quarto preview` o script usa http://127.0.0.1:8000/v1 automaticamente. -->
 <meta name="forplotr-api" content="/v1">
+<!-- Política de segurança: a página só fala com a própria origem. As ferramentas
+     rodam no navegador (webR) e os dados das parcelas não podem sair do computador.
+     'wasm-unsafe-eval': o R em WebAssembly; 'unsafe-eval': o htmlwidgets dos mapas
+     (new Function) nas prévias. O que impede os dados de saírem são connect-src e
+     img-src, restritos à própria origem. blob:: resultados e prévias gerados no
+     navegador. As prévias (iframes blob:) herdam esta política, então mapas abertos
+     ali não buscam imagens de satélite em terceiros. 127.0.0.1:8000 / localhost:8000
+     só servem ao modo servidor durante o desenvolvimento (backend/iniciar.R). -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval'; worker-src 'self' blob:; connect-src 'self' blob: http://127.0.0.1:8000 http://localhost:8000; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; font-src 'self' data:; frame-src 'self' blob: http://127.0.0.1:8000 http://localhost:8000; media-src 'self' data: blob:; object-src 'none'; base-uri 'self'; form-action 'none'">
+<meta name="referrer" content="same-origin">
 <meta name="color-scheme" content="light dark">
 <!-- Idioma (PT/EN) e tema (claro/escuro) aplicados antes de desenhar a página, sem "piscar".
      Preferências guardadas em localStorage: forplotR_lang ("pt" | "en") e

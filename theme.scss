@@ -16,6 +16,10 @@ $body-color: $fp-text;
 $link-color: $fp-folha;
 $link-hover-color: $fp-mata;
 
+// O tema cosmo importa a Source Sans Pro do Google Fonts; o site usa as próprias
+// fontes (pasta fonts/) e não faz requisições a terceiros.
+$web-font-path: false;
+
 $font-family-sans-serif: "Halden", system-ui, -apple-system, "Segoe UI", sans-serif;
 $font-family-monospace: "Signal", ui-monospace, "SF Mono", Consolas, monospace;
 $headings-font-family: "Source Serif 4", Georgia, "Times New Roman", serif;

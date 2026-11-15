@@ -19,22 +19,22 @@ pagetitle: "Sobre — forplotR"
 ## [Funcionamento da interface web]{data-lang=pt}[How the web interface works]{data-lang=en} {#funcionamento}
 
 ::: {data-lang="pt"}
-O site é estático (gerado com Quarto). Ao acionar **Processar**, o navegador envia a planilha ao servidor do forplotR, que:
+O site é estático (gerado com Quarto) e as ferramentas rodam **no seu navegador**: o R e o pacote **forplotR** são carregados no próprio navegador (webR, o R compilado para WebAssembly), e a planilha é processada no seu computador.
 
-1. valida os arquivos e os parâmetros e inclui o pedido em uma fila;
-2. executa a função do pacote **forplotR** em um processo R novo e isolado, com tempo limite;
-3. armazena os arquivos gerados e os disponibiliza para download e visualização.
+1. Ao abrir uma ferramenta, o navegador baixa do próprio site o R e o forplotR. Na primeira vez são cerca de 160 MB; depois, os arquivos ficam no cache do navegador.
+2. Ao acionar **Processar**, os arquivos escolhidos são lidos na memória do navegador e a função do forplotR é executada ali mesmo.
+3. Os resultados aparecem para visualização e download e são descartados ao fechar a página.
 
-O código executado no servidor é o mesmo do pacote instalado no R, na versão indicada abaixo; os resultados são idênticos.
+O código executado é o mesmo do pacote instalado no R, na versão indicada abaixo.
 :::
 ::: {data-lang="en"}
-The website is static (built with Quarto). When you press **Run**, the browser sends the spreadsheet to the forplotR server, which:
+The website is static (built with Quarto) and the tools run **in your browser**: R and the **forplotR** package are loaded in the browser itself (webR, R compiled to WebAssembly), and the spreadsheet is processed on your computer.
 
-1. validates the files and parameters and places the request in a queue;
-2. runs the **forplotR** package function in a fresh, isolated R process, with a time limit;
-3. stores the generated files and makes them available for download and preview.
+1. When you open a tool, the browser downloads R and forplotR from this website. The first time this is about 160 MB; afterwards the files stay in the browser cache.
+2. When you press **Run**, the selected files are read into the browser's memory and the forplotR function runs right there.
+3. The results are shown for preview and download and are discarded when the page is closed.
 
-The code run on the server is the same as the package installed in R, at the version shown below; the results are identical.
+The code that runs is the same as the package installed in R, at the version shown below.
 :::
 
 ```{=html}
@@ -45,19 +45,19 @@ The code run on the server is the same as the package installed in R, at the ver
 
 ::: {.fp-section}
 
-## [Dados enviados]{data-lang=pt}[Uploaded data]{data-lang=en} {#dados-enviados}
+## [Seus dados]{data-lang=pt}[Your data]{data-lang=en} {#dados-enviados}
 
 ::: {data-lang="pt"}
-- As planilhas e os resultados permanecem no servidor do JBRJ apenas pelo tempo necessário para o download e são **apagados automaticamente após 72 horas**.
-- Os dados não são compartilhados nem usados para outra finalidade.
-- O endereço de cada resultado é aleatório; apenas quem possui o link pode abri-lo.
-- Dados de Terras Indígenas e de unidades de conservação estão sujeitos aos acordos de uso de cada projeto. Em caso de dúvida, recomenda-se executar o pacote localmente.
+- As planilhas e as fotos **não são enviadas a nenhum servidor**: são processadas no seu navegador e descartadas ao fechar a página. O navegador guarda apenas as preferências de idioma e de tema.
+- Durante o processamento, o acesso à internet fica bloqueado. Por isso, a busca de exsicatas nos herbários (JABOT/REFLORA), a conferência dos limites administrativos (GADM), o cálculo automático da altitude e o cruzamento de determinações estão disponíveis apenas no pacote, no R.
+- A prévia do mapa não carrega imagens de satélite, para não revelar a localização da parcela aos provedores dessas imagens. No arquivo HTML baixado, as imagens de satélite são carregadas quando o arquivo é aberto, e a área visualizada é enviada ao provedor.
+- Dados de Terras Indígenas e de unidades de conservação estão sujeitos aos acordos de uso de cada projeto. Em caso de dúvida, recomenda-se executar o pacote localmente, no R.
 :::
 ::: {data-lang="en"}
-- Spreadsheets and results stay on the JBRJ server only as long as needed for download and are **deleted automatically after 72 hours**.
-- Data are not shared or used for any other purpose.
-- Each result address is random; only those who hold the link can open it.
-- Data from Indigenous Lands and protected areas are subject to each project's data-use agreements. If in doubt, run the package locally.
+- Spreadsheets and photos **are not sent to any server**: they are processed in your browser and discarded when the page is closed. The browser keeps only your language and theme preferences.
+- Internet access is blocked while processing. For this reason, the herbarium specimen lookup (JABOT/REFLORA), the administrative boundary check (GADM), the automatic elevation and the determination cross-check are available only in the package, in R.
+- The map preview does not load satellite imagery, so that the plot location is not revealed to imagery providers. In the downloaded HTML file, satellite imagery is loaded when the file is opened, and the area in view is sent to the provider.
+- Data from Indigenous Lands and protected areas are subject to each project's data-use agreements. If in doubt, run the package locally, in R.
 :::
 
 :::
