@@ -1,0 +1,9 @@
+---
+title: "[Como citar]{data-lang=pt}[How to cite]{data-lang=en}"
+description: "[Como citar o forplotR (Ottino & Cardoso), com BibTeX, CITATION.cff e o artigo.]{data-lang=pt}[How to cite forplotR (Ottino & Cardoso), with BibTeX, CITATION.cff and the paper.]{data-lang=en}"
+page-id: cite
+en-path: "cite"
+schema: WebPage
+---
+
+{{< include _body.qmd >}}

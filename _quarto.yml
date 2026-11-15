@@ -1,121 +1,62 @@
+# Site do forplotR --------------------------------------------------------------
+#
+# Quarto sem Bootstrap: template próprio (_tpl/page.html) e CSS com tokens
+# (assets/site.css). Cada página é escrita uma vez, nas duas línguas, num
+# _body.qmd; a página em português (/) e a em inglês (/en/) incluem o mesmo
+# corpo e o filtro _tpl/lang.lua mantém só a língua da página.
+#
+#   scripts/sync_en.R    (pré) gera as páginas em inglês a partir das portuguesas
+#   scripts/seo.R        (pós) canonical, hreflang, JSON-LD, sitemap, robots,
+#                        llms.txt e redirecionamentos dos endereços antigos
+#
+# Saída em _site/: publicada no GitHub Pages pelo workflow build-webr.yml e
+# servida pelo modo servidor (backend/plumber.R).
+
 project:
   type: website
   output-dir: _site
+  pre-render: scripts/sync_en.R
+  post-render: scripts/seo.R
   render:
     - index.qmd
-    - ferramentas/**/*.qmd
-    - artigos/*.qmd
-    - sobre/*.qmd
+    - comecar/index.qmd
+    - aplicacoes/**/index.qmd
+    - ferramentas/**/index.qmd
+    - referencia/index.qmd
+    - autoria/index.qmd
+    - citar/index.qmd
+    - sobre/index.qmd
+    - novidades/index.qmd
+    - perguntas/index.qmd
+    - en/**/index.qmd
   resources:
+    - assets/
     - js/
     - figures/
     - fonts/
-    - listings.json   # evita 404: o Quarto procura este arquivo quando há categories nos artigos
+    - exemplos/
 
-lang: pt
-language: _language.yml
+lang: pt-BR
 
 website:
   title: "forplotR"
-  description: "forplotR: pacote R de código aberto que integra dados de censos de parcelas florestais à documentação de espécimes botânicos. Documentação, tutoriais e interface web."
   site-url: "https://dboslab.github.io/forplotR-website/"
-  favicon: figures/forplotR_hex_sticker.png
-  page-navigation: true
-  search: true
-  navbar:
-    logo: figures/forplotR_hex_sticker.png
-    logo-alt: "forplotR"
-    pinned: true
-    right:
-      # Rótulos bilíngues: [PT]{data-lang=pt}[EN]{data-lang=en}. O seletor PT/EN e o botão de tema são inseridos por _includes/forplotr-after.html.
-      - text: "[Início]{data-lang=pt}[Home]{data-lang=en}"
-        href: index.qmd
-      - text: "[Documentação]{data-lang=pt}[Documentation]{data-lang=en}"
-        menu:
-          - text: "[Índice dos artigos]{data-lang=pt}[Article index]{data-lang=en}"
-            href: artigos/index.qmd
-          - text: "[Primeiros passos]{data-lang=pt}[Get started]{data-lang=en}"
-            href: artigos/comecar.qmd
-          - text: "---"
-          - text: "forplot_balance()"
-            href: artigos/forplot_balance.qmd
-          - text: "forplot_vouchers()"
-            href: artigos/forplot_vouchers.qmd
-          - text: "forplot_map()"
-            href: artigos/forplot_map.qmd
-          - text: "forplot_sheets()"
-            href: artigos/forplot_sheets.qmd
-          - text: "forplot_crossdet()"
-            href: artigos/forplot_crossdet.qmd
-          - text: "---"
-          - text: "[Perguntas frequentes]{data-lang=pt}[FAQ]{data-lang=en}"
-            href: artigos/faq.qmd
-          - text: "[Novidades]{data-lang=pt}[News]{data-lang=en}"
-            href: artigos/novidades.qmd
-      - text: "[Interface web]{data-lang=pt}[Web interface]{data-lang=en}"
-        menu:
-          - text: "[Visão geral]{data-lang=pt}[Overview]{data-lang=en}"
-            href: ferramentas/index.qmd
-          - text: "---"
-          - text: "[Relatório e balanço de coleta]{data-lang=pt}[Report and collection balance]{data-lang=en}"
-            href: ferramentas/relatorio/index.qmd
-          - text: "[Diretórios de vouchers]{data-lang=pt}[Voucher directories]{data-lang=en}"
-            href: ferramentas/vouchers/index.qmd
-          - text: "[Mapa interativo da parcela]{data-lang=pt}[Interactive plot map]{data-lang=en}"
-            href: ferramentas/mapa/index.qmd
-          - text: "[Planilha para o herbário]{data-lang=pt}[Herbarium spreadsheet]{data-lang=en}"
-            href: ferramentas/herbario/index.qmd
-          - text: "[Verificação de determinações]{data-lang=pt}[Determination cross-check]{data-lang=en}"
-            href: ferramentas/determinacoes/index.qmd
-      - text: "[Sobre]{data-lang=pt}[About]{data-lang=en}"
-        href: sobre/index.qmd
-      - icon: github
-        href: https://github.com/DBOSlab/forplotR
-        aria-label: GitHub
-
-  sidebar:
-    - id: artigos
-      title: "[Documentação]{data-lang=pt}[Documentation]{data-lang=en}"
-      style: floating
-      collapse-level: 2
-      contents:
-        - artigos/index.qmd
-        - artigos/comecar.qmd
-        - section: "[Funções]{data-lang=pt}[Functions]{data-lang=en}"
-          contents:
-            - artigos/forplot_balance.qmd
-            - artigos/forplot_vouchers.qmd
-            - artigos/forplot_map.qmd
-            - artigos/forplot_sheets.qmd
-            - artigos/forplot_crossdet.qmd
-        - section: "[Ajuda]{data-lang=pt}[Help]{data-lang=en}"
-          contents:
-            - artigos/faq.qmd
-            - artigos/novidades.qmd
-
-  page-footer:
-    left: |
-      **forplotR** · Giulia C. Ottino & Domingos Cardoso · Jardim Botânico do Rio de Janeiro · DBOSlab · [Licença MIT]{data-lang=pt}[MIT licence]{data-lang=en}
-    right:
-      - text: "[Documentação]{data-lang=pt}[Documentation]{data-lang=en}"
-        href: artigos/index.qmd
-      - text: "[Sobre e privacidade]{data-lang=pt}[About & privacy]{data-lang=en}"
-        href: sobre/index.qmd
-      - icon: github
-        href: https://github.com/DBOSlab/forplotR
+  description: "forplotR: pacote R para dados de parcelas florestais permanentes e documentação de espécimes de herbário."
 
 format:
   html:
-    theme: [cosmo, theme.scss]
-    css: styles.css
-    page-layout: full
+    theme: none
+    minimal: true
+    template: _tpl/page.html
+    filters:
+      - _tpl/lang.lua
     toc: false
-    title-block-banner: false
-    include-in-header: _includes/forplotr-head.html
-    include-after-body: _includes/forplotr-after.html
-    link-external-newwindow: true
-    highlight-style: github
-    code-copy: true
+    toc-depth: 2
+    highlight-style: none
+    link-external-newwindow: false
+    anchor-sections: false
+    code-copy: false
+    title-prefix: ""
 
 execute:
   freeze: auto

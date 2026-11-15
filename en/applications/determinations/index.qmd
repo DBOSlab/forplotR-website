@@ -1,0 +1,14 @@
+---
+# gerado por scripts/sync_en.R a partir de aplicacoes/determinacoes/index.qmd
+title: '[Conferir determinações]{data-lang=pt}[Check determinations]{data-lang=en}'
+description: '[Cruzamento das determinações de campo com os registros de um herbário
+  JABOT (Darwin Core Archive), com forplot_crossdet().]{data-lang=pt}[Cross-check
+  of field determinations against the records of a JABOT herbarium (Darwin Core Archive),
+  with forplot_crossdet().]{data-lang=en}'
+page-id: determinations
+schema: TechArticle
+kicker: forplot_crossdet()
+toc: true
+---
+
+{{< include ../../../aplicacoes/determinacoes/_body.qmd >}}

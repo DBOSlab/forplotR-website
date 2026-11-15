@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="$lang$" class="no-js$if(lang-en)$ fp-en$endif$" data-page-id="$page-id$" data-schema="$if(schema)$$schema$$else$WebPage$endif$">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>$pagetitle$</title>
+$if(description)$
+<meta name="description" content="$description$">
+$endif$
+<!--fp:seo-->
+<!-- Política de segurança: a página só fala com a própria origem. As ferramentas
+     rodam no navegador (webR) e os dados das parcelas não podem sair do computador.
+     'wasm-unsafe-eval': o R em WebAssembly; 'unsafe-eval': o htmlwidgets dos mapas
+     (new Function) nas prévias. O que impede os dados de saírem são connect-src e
+     img-src, restritos à própria origem. blob:: resultados e prévias gerados no
+     navegador; as prévias (iframes blob:) herdam esta política. 127.0.0.1:8000 e
+     localhost:8000 só servem ao modo servidor em desenvolvimento (backend/iniciar.R). -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval'; worker-src 'self' blob:; connect-src 'self' blob: http://127.0.0.1:8000 http://localhost:8000; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; font-src 'self' data:; frame-src 'self' blob: http://127.0.0.1:8000 http://localhost:8000; media-src 'self' data: blob:; object-src 'none'; base-uri 'self'; form-action 'none'">
+<meta name="referrer" content="same-origin">
+<meta name="color-scheme" content="light dark">
+<!-- Modo servidor: onde está a API ("/v1" = mesma origem). -->
+<meta name="forplotr-api" content="/v1">
+<!-- Tema aplicado antes de desenhar a página: a escolha salva (forplotR_theme)
+     ou, sem escolha, o sistema. -->
+<script>
+(function () {
+  var r = document.documentElement, t = null;
+  r.className = r.className.replace('no-js', 'js');
+  try { t = localStorage.getItem('forplotR_theme'); } catch (e) {}
+  var q = /[?&]theme=(dark|light)\b/.exec(location.search); if (q) t = q[1];
+  if (t !== 'light' && t !== 'dark') t = window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  r.setAttribute('data-theme', t);
+})();
+</script>
+<link rel="preload" href="{{ROOT}}fonts/halden.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="{{ROOT}}fonts/source-serif-4.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="{{ROOT}}assets/site.css">
+$if(tool)$
+<link rel="stylesheet" href="{{ROOT}}assets/tools.css">
+$endif$
+<!-- raiz do site, usada por js/forplotr-app.js e js/forplotr-local.js -->
+<meta name="quarto:offset" content="{{ROOT}}">
+<link rel="icon" type="image/png" href="{{ROOT}}figures/forplotR_hex_sticker.png">
+$for(header-includes)$
+$header-includes$
+$endfor$
+</head>
+<body class="$if(page-class)$$page-class$$endif$">
+$if(lang-en)$
+<a class="skip" href="#content">Skip to content</a>
+$else$
+<a class="skip" href="#content">Pular para o conteúdo</a>
+$endif$
+
+<!-- Celular: faixa do topo com a marca e o tema (a navegação fica na barra inferior). -->
+<header class="mob-head">
+  <a class="brand" href="{{LANGROOT}}"><img src="{{ROOT}}figures/forplotR_hex_sticker.png" alt="" width="24" height="28"><span>forplotR</span></a>
+  <button type="button" class="theme-btn" data-label-dark="$if(lang-en)$Switch to dark theme$else$Usar tema escuro$endif$" data-label-light="$if(lang-en)$Switch to light theme$else$Usar tema claro$endif$">
+    <svg class="i-moon" viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 9.8A5.8 5.8 0 0 1 6.2 2.5a5.8 5.8 0 1 0 7.3 7.3Z"/></svg>
+    <svg class="i-sun" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3"/><path d="M8 1v1.5M8 13.5V15M1 8h1.5M13.5 8H15M3 3l1.1 1.1M11.9 11.9 13 13M3 13l1.1-1.1M11.9 4.1 13 3"/></svg>
+  </button>
+</header>
+<div class="shell">
+<aside class="rail" $if(lang-en)$aria-label="Site navigation"$else$aria-label="Navegação do site"$endif$>
+  <a class="brand" href="{{LANGROOT}}" $if(lang-en)$aria-label="forplotR, home"$else$aria-label="forplotR, início"$endif$>
+    <img src="{{ROOT}}figures/forplotR_hex_sticker.png" alt="" width="28" height="32">
+    <span>forplotR</span>
+  </a>
+  <nav class="site-nav">
+$if(lang-en)$
+    <ul>
+      <li><a href="{{ROOT}}en/" data-nav="home">Home</a></li>
+      <li><a href="{{ROOT}}en/get-started/" data-nav="start">Get started</a></li>
+      <li class="group"><a href="{{ROOT}}en/applications/" data-nav="apps">Applications</a>
+        <ul>
+          <li><a href="{{ROOT}}en/applications/map/" data-nav="map" style="--fn:var(--rio)">Map the plot</a></li>
+          <li><a href="{{ROOT}}en/applications/balance/" data-nav="balance" style="--fn:var(--ipe)">Collection balance</a></li>
+          <li><a href="{{ROOT}}en/applications/photos/" data-nav="photos" style="--fn:var(--folha-mark)">Organise photos</a></li>
+          <li><a href="{{ROOT}}en/applications/labels/" data-nav="labels" style="--fn:var(--urucum)">Herbarium labels</a></li>
+          <li><a href="{{ROOT}}en/applications/determinations/" data-nav="determinations" style="--fn:var(--jabuticaba)">Check determinations</a></li>
+        </ul>
+      </li>
+      <li><a href="{{ROOT}}en/tools/" data-nav="tools">Run in the browser</a></li>
+      <li><a href="{{ROOT}}en/reference/" data-nav="reference">Reference</a></li>
+      <li><a href="{{ROOT}}en/authors/" data-nav="authors">Authors</a></li>
+      <li><a href="{{ROOT}}en/cite/" data-nav="cite">Cite</a></li>
+      <li><a href="{{ROOT}}en/about/" data-nav="about">About &amp; privacy</a></li>
+    </ul>
+$else$
+    <ul>
+      <li><a href="{{ROOT}}" data-nav="home">Início</a></li>
+      <li><a href="{{ROOT}}comecar/" data-nav="start">Começar</a></li>
+      <li class="group"><a href="{{ROOT}}aplicacoes/" data-nav="apps">Aplicações</a>
+        <ul>
+          <li><a href="{{ROOT}}aplicacoes/mapa/" data-nav="map" style="--fn:var(--rio)">Mapear a parcela</a></li>
+          <li><a href="{{ROOT}}aplicacoes/balanco/" data-nav="balance" style="--fn:var(--ipe)">Balanço de coleta</a></li>
+          <li><a href="{{ROOT}}aplicacoes/fotos/" data-nav="photos" style="--fn:var(--folha-mark)">Organizar as fotos</a></li>
+          <li><a href="{{ROOT}}aplicacoes/etiquetas/" data-nav="labels" style="--fn:var(--urucum)">Etiquetas de herbário</a></li>
+          <li><a href="{{ROOT}}aplicacoes/determinacoes/" data-nav="determinations" style="--fn:var(--jabuticaba)">Conferir determinações</a></li>
+        </ul>
+      </li>
+      <li><a href="{{ROOT}}ferramentas/" data-nav="tools">Rodar no navegador</a></li>
+      <li><a href="{{ROOT}}referencia/" data-nav="reference">Referência</a></li>
+      <li><a href="{{ROOT}}autoria/" data-nav="authors">Autoria</a></li>
+      <li><a href="{{ROOT}}citar/" data-nav="cite">Como citar</a></li>
+      <li><a href="{{ROOT}}sobre/" data-nav="about">Sobre e privacidade</a></li>
+    </ul>
+$endif$
+  </nav>
+$if(toc)$
+  <div class="toc">
+    <svg class="arc" viewBox="0 0 36 36" aria-hidden="true"><circle class="arc-track" cx="18" cy="18" r="15"/><circle class="arc-fill" cx="18" cy="18" r="15"/></svg>
+    <p class="toc-title">$if(lang-en)$On this page$else$Nesta página$endif$</p>
+    $table-of-contents$
+  </div>
+$endif$
+  <div class="prefs">
+    <a class="lang-switch" href="{{ALT_URL}}" hreflang="$if(lang-en)$pt-BR$else$en$endif$" lang="$if(lang-en)$pt-BR$else$en$endif$" data-set-lang="$if(lang-en)$pt$else$en$endif$">$if(lang-en)$Português$else$English$endif$</a>
+    <button type="button" class="theme-btn" data-label-dark="$if(lang-en)$Switch to dark theme$else$Usar tema escuro$endif$" data-label-light="$if(lang-en)$Switch to light theme$else$Usar tema claro$endif$">
+      <svg class="i-moon" viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 9.8A5.8 5.8 0 0 1 6.2 2.5a5.8 5.8 0 1 0 7.3 7.3Z"/></svg>
+      <svg class="i-sun" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3"/><path d="M8 1v1.5M8 13.5V15M1 8h1.5M13.5 8H15M3 3l1.1 1.1M11.9 11.9 13 13M3 13l1.1-1.1M11.9 4.1 13 3"/></svg>
+    </button>
+  </div>
+</aside>
+
+<main id="content" tabindex="-1">
+$if(hide-title)$
+$else$
+<header class="page-head">
+$if(kicker)$
+  <p class="kicker">$kicker$</p>
+$endif$
+  <h1>$title$</h1>
+$if(subtitle)$
+  <p class="deck">$subtitle$</p>
+$endif$
+</header>
+$endif$
+$body$
+</main>
+</div>
+
+<footer class="site-foot">
+  <div class="foot-inner">
+    <p class="foot-auth">{{AUTHOR_LINE}}</p>
+    <p class="foot-meta">
+$if(lang-en)$
+      <a href="{{ROOT}}en/authors/">Authors</a> · <a href="{{ROOT}}en/cite/">Cite</a> · <a href="{{ROOT}}en/news/">News</a> · <a href="{{ROOT}}en/faq/">FAQ</a> · <a href="https://github.com/DBOSlab/forplotR">GitHub</a> · MIT licence
+$else$
+      <a href="{{ROOT}}autoria/">Autoria</a> · <a href="{{ROOT}}citar/">Como citar</a> · <a href="{{ROOT}}novidades/">Novidades</a> · <a href="{{ROOT}}perguntas/">Perguntas frequentes</a> · <a href="https://github.com/DBOSlab/forplotR">GitHub</a> · Licença MIT
+$endif$
+    </p>
+  </div>
+</footer>
+
+<!-- Celular: barra inferior compacta. Funciona sem JavaScript (<details>). -->
+<nav class="bottom-bar" $if(lang-en)$aria-label="Quick navigation"$else$aria-label="Navegação rápida"$endif$>
+$if(lang-en)$
+  <a href="{{ROOT}}en/" data-nav="home">Home</a>
+  <a href="{{ROOT}}en/applications/" data-nav="apps">Applications</a>
+  <a href="{{ROOT}}en/tools/" data-nav="tools">Browser</a>
+  <details class="more"><summary>Menu</summary>
+    <div class="more-panel">
+      <a href="{{ROOT}}en/get-started/">Get started</a>
+      <a href="{{ROOT}}en/applications/map/">Map the plot</a>
+      <a href="{{ROOT}}en/applications/balance/">Collection balance</a>
+      <a href="{{ROOT}}en/applications/photos/">Organise photos</a>
+      <a href="{{ROOT}}en/applications/labels/">Herbarium labels</a>
+      <a href="{{ROOT}}en/applications/determinations/">Check determinations</a>
+      <a href="{{ROOT}}en/reference/">Reference</a>
+      <a href="{{ROOT}}en/authors/">Authors</a>
+      <a href="{{ROOT}}en/cite/">Cite</a>
+      <a href="{{ROOT}}en/about/">About &amp; privacy</a>
+      <a href="{{ALT_URL}}" hreflang="pt-BR" lang="pt-BR" data-set-lang="pt">Português</a>
+    </div>
+  </details>
+$else$
+  <a href="{{ROOT}}" data-nav="home">Início</a>
+  <a href="{{ROOT}}aplicacoes/" data-nav="apps">Aplicações</a>
+  <a href="{{ROOT}}ferramentas/" data-nav="tools">Navegador</a>
+  <details class="more"><summary>Menu</summary>
+    <div class="more-panel">
+      <a href="{{ROOT}}comecar/">Começar</a>
+      <a href="{{ROOT}}aplicacoes/mapa/">Mapear a parcela</a>
+      <a href="{{ROOT}}aplicacoes/balanco/">Balanço de coleta</a>
+      <a href="{{ROOT}}aplicacoes/fotos/">Organizar as fotos</a>
+      <a href="{{ROOT}}aplicacoes/etiquetas/">Etiquetas de herbário</a>
+      <a href="{{ROOT}}aplicacoes/determinacoes/">Conferir determinações</a>
+      <a href="{{ROOT}}referencia/">Referência</a>
+      <a href="{{ROOT}}autoria/">Autoria</a>
+      <a href="{{ROOT}}citar/">Como citar</a>
+      <a href="{{ROOT}}sobre/">Sobre e privacidade</a>
+      <a href="{{ALT_URL}}" hreflang="en" lang="en" data-set-lang="en">English</a>
+    </div>
+  </details>
+$endif$
+</nav>
+
+<script src="{{ROOT}}assets/site.js" defer></script>
+$for(include-after)$
+$include-after$
+$endfor$
+</body>
+</html>

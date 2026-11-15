@@ -1,0 +1,11 @@
+---
+title: "[Mapear a parcela]{data-lang=pt}[Map the plot]{data-lang=en}"
+description: "[Mapa interativo da parcela com forplot_map(): cada árvore marcada na sua posição, fotos dos vouchers e filtros por família, espécie e situação de coleta.]{data-lang=pt}[Interactive plot map with forplot_map(): every tagged tree at its position, voucher photos and filters by family, species and collection status.]{data-lang=en}"
+page-id: map
+en-path: "applications/map"
+schema: TechArticle
+kicker: "forplot_map()"
+toc: true
+---
+
+{{< include _body.qmd >}}

@@ -1,0 +1,10 @@
+---
+title: "[Começar]{data-lang=pt}[Get started]{data-lang=en}"
+description: "[Formatos aceitos pelo forplotR (ForestPlots.net e MONITORA), colunas esperadas e os conjuntos de exemplo RUS01 e TUM.]{data-lang=pt}[Formats accepted by forplotR (ForestPlots.net and MONITORA), expected columns and the RUS01 and TUM example datasets.]{data-lang=en}"
+page-id: start
+en-path: "get-started"
+schema: TechArticle
+toc: true
+---
+
+{{< include _body.qmd >}}

@@ -1,59 +1,12 @@
 ---
-title: "Planilha para o herbário"
-pagetitle: "Planilha para o herbário — forplotR"
+title: "[Planilha do herbário no navegador]{data-lang=pt}[Herbarium spreadsheet in the browser]{data-lang=en}"
+description: "[Formulário que roda forplot_sheets() no seu navegador (webR), sem enviar os dados.]{data-lang=pt}[Form that runs forplot_sheets() in your browser (webR), without sending the data.]{data-lang=en}"
+page-id: tool-labels
+en-path: "tools/herbarium"
+schema: WebPage
+hide-title: true
+tool: true
+page-class: tool
 ---
 
-```{=html}
-<section class="fp-hero" style="--fn:var(--urucum)">
-  <div class="fp-hero-inner">
-    <p class="fp-hero-kicker"><span class="fn-mark"></span>forplotR::forplot_sheets()</p>
-    <h1 class="fp-hero-title"><span data-lang="pt">Planilha para o herbário</span><span data-lang="en">Herbarium spreadsheet</span></h1>
-    <p class="fp-hero-deck" data-lang="pt">Preenchimento da planilha de entrada do JABOT ou do BRAHMS com os indivíduos coletados e as notas descritivas da etiqueta.</p>
-    <p class="fp-hero-deck" data-lang="en">Fills the JABOT or BRAHMS input spreadsheet with the collected individuals and the descriptive label notes.</p>
-    <div class="fp-hero-actions"><a class="fx-btn fx-btn-primary" href="#ferramenta"><span data-lang="pt">Ir ao formulário</span><span data-lang="en">Go to the form</span></a><a class="fx-btn fx-btn-secondary" href="../../artigos/forplot_sheets.html"><span data-lang="pt">Documentação da função</span><span data-lang="en">Function documentation</span></a></div>
-  </div>
-</section>
-```
-
-::: {.fp-section}
-
-## [Procedimento]{data-lang=pt}[Procedure]{data-lang=en} {#procedimento}
-
-::: {data-lang="pt"}
-1. Envie a planilha da parcela (ForestPlots.net ou Programa Monitora).
-2. Informe estado, município, coordenadas e altitude da parcela. No navegador a altitude é obrigatória; no pacote, no R, ela pode ser estimada a partir de um modelo digital de elevação global de baixa resolução.
-3. Envie o modelo do herbário ou deixe o campo em branco para usar um modelo com as colunas padrão do formato selecionado.
-
-As notas de etiqueta são redigidas a partir do DAP, dos códigos RAINFOR (ex.: “com casca solta”, “copa exposta à luz”) e da posição do indivíduo na parcela, em português, inglês ou espanhol.
-:::
-::: {data-lang="en"}
-1. Upload the plot spreadsheet (ForestPlots.net or Monitora Program).
-2. Enter the state, municipality, coordinates and elevation of the plot. In the browser the elevation is required; in the package, in R, it can be estimated from a low-resolution global digital elevation model.
-3. Upload the herbarium template, or leave the field empty to use a template with the default columns of the selected layout.
-
-Label notes are written from the DBH, the RAINFOR codes (e.g. “with loose bark”, “crown exposed to light”) and the position of the individual in the plot, in Portuguese, English or Spanish.
-:::
-
-```{=html}
-<div id="ferramenta" class="fp-tool-app" data-tool="sheets"></div>
-```
-
-:::
-
-::: {.fp-section}
-
-## [Saídas]{data-lang=pt}[Outputs]{data-lang=en} {#saidas}
-
-::: {data-lang="pt"}
-- **Planilha XLSX** no formato do herbário, com uma linha por indivíduo coletado: família, gênero, epíteto, coletor, número, data, localidade, coordenadas, altitude e notas.
-:::
-::: {data-lang="en"}
-- **XLSX spreadsheet** in the herbarium layout, with one row per collected individual: family, genus, epithet, collector, number, date, locality, coordinates, elevation and notes.
-:::
-
-:::
-
-```{=html}
-<script src="../../js/forplotr-local.js"></script>
-<script src="../../js/forplotr-app.js"></script>
-```
+{{< include _body.qmd >}}

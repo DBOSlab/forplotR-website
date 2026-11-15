@@ -1,0 +1,65 @@
+
+```{=html}
+<section class="fp-hero">
+  <div class="fp-hero-inner">
+    <p class="fp-hero-kicker">forplotR · <span data-lang="pt">interface web</span><span data-lang="en">web interface</span></p>
+    <h1 class="fp-hero-title"><span data-lang="pt">Interface web</span><span data-lang="en">Web interface</span></h1>
+    <p class="fp-hero-deck" data-lang="pt">Formulários que executam as funções principais do pacote no seu navegador, sem instalação e sem enviar os dados a nenhum servidor. Todos aceitam planilhas do ForestPlots.net (ficha de campo e Query Library), de Terras Indígenas e do Programa Monitora, e podem ser testados com os conjuntos de dados de exemplo.</p>
+    <p class="fp-hero-deck" data-lang="en">Forms that run the main package functions in your browser, with no installation and without sending your data to any server. All accept ForestPlots.net spreadsheets (field sheet and Query Library), Indigenous Land sheets and Monitora Program sheets, and can be tried with the example datasets.</p>
+    <div class="fp-hero-actions"><a class="fx-btn fx-btn-secondary" href="{{LINK:apps}}"><span data-lang="pt">Documentação do pacote em R</span><span data-lang="en">R package documentation</span></a></div>
+  </div>
+</section>
+```
+
+::: {.fp-section}
+
+## [Ferramentas disponíveis]{data-lang=pt}[Available tools]{data-lang=en} {#ferramentas-disponiveis}
+
+::: {data-lang="pt"}
+| Etapa | Ferramenta | Função | Saídas |
+|---|---|---|---|
+| Planejamento de campo e cobertura de coleta | [Relatório e balanço de coleta]({{LINK:tool-balance}}) | `forplot_balance()` | HTML, PDF, PNG, XLSX |
+| Organização das imagens dos vouchers | [Diretórios de vouchers]({{LINK:tool-photos}}) | `forplot_vouchers()` | ZIP |
+| Visualização espacial | [Mapa interativo da parcela]({{LINK:tool-map}}) | `forplot_map()` | HTML |
+| Documentação de herbário | [Planilha para o herbário]({{LINK:tool-labels}}) | `forplot_sheets()` | XLSX (JABOT/BRAHMS) |
+| Verificação taxonômica | [Verificação de determinações]({{LINK:tool-determinations}}) | `forplot_crossdet()` | XLSX |
+
+Cada formulário chama a mesma função do pacote, com os mesmos argumentos; os resultados são idênticos aos obtidos no R com a versão indicada em [Sobre]({{LINK:about}}). Para lotes de parcelas e para registrar os parâmetros de cada análise, recomenda-se o uso do pacote diretamente no R.
+:::
+
+::: {data-lang="en"}
+| Step | Tool | Function | Outputs |
+|---|---|---|---|
+| Field planning and collection coverage | [Report and collection balance]({{LINK:tool-balance}}) | `forplot_balance()` | HTML, PDF, PNG, XLSX |
+| Organising voucher images | [Voucher directories]({{LINK:tool-photos}}) | `forplot_vouchers()` | ZIP |
+| Spatial visualisation | [Interactive plot map]({{LINK:tool-map}}) | `forplot_map()` | HTML |
+| Herbarium documentation | [Herbarium spreadsheet]({{LINK:tool-labels}}) | `forplot_sheets()` | XLSX (JABOT/BRAHMS) |
+| Taxonomic verification | [Determination cross-check]({{LINK:tool-determinations}}) | `forplot_crossdet()` | XLSX |
+
+Each form calls the same package function with the same arguments; results are identical to those obtained in R with the version shown under [About]({{LINK:about}}). For batches of plots, and to keep a record of the parameters of each analysis, use the package directly in R.
+:::
+
+:::
+
+::: {.fp-section}
+
+## [Processamentos recentes]{data-lang=pt}[Recent jobs]{data-lang=en} {#processamentos-recentes}
+
+::: {data-lang="pt"}
+Os resultados ficam disponíveis por 72 horas e são listados apenas no navegador em que foram gerados.
+:::
+::: {data-lang="en"}
+Results are available for 72 hours and are listed only in the browser where they were produced.
+:::
+
+```{=html}
+<p><span class="api-status"></span></p>
+<div class="fp-recent"></div>
+```
+
+:::
+
+```{=html}
+<script src="{{ROOT}}js/forplotr-local.js"></script>
+<script src="{{ROOT}}js/forplotr-app.js"></script>
+```

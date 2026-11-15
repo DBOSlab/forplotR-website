@@ -1,0 +1,9 @@
+---
+title: "[Aplicações]{data-lang=pt}[Applications]{data-lang=en}"
+description: "[O que o forplotR faz, da planilha da parcela às exsicatas: mapa, balanço de coleta, fotos dos vouchers, etiquetas de herbário e cruzamento de determinações.]{data-lang=pt}[What forplotR does, from the plot spreadsheet to the herbarium specimens: map, collection balance, voucher photos, herbarium labels and determination cross-checks.]{data-lang=en}"
+page-id: apps
+en-path: "applications"
+schema: CollectionPage
+---
+
+{{< include _body.qmd >}}

@@ -1,0 +1,97 @@
+# Grafo de entidades do site (SEO e GEO) ---------------------------------------
+#
+# Fonte única dos fatos sobre o forplotR, a autoria e as instituições. O script
+# scripts/seo.R lê este arquivo depois da renderização e gera, em cada página,
+# o JSON-LD (schema.org), as meta tags de citação e de compartilhamento, e os
+# arquivos sitemap.xml, robots.txt, llms.txt e llms-full.txt.
+#
+# Regras:
+# - só fatos verificáveis; campo desconhecido fica vazio (null) e o script o omite;
+# - nada de e-mail ou outro dado de contato pessoal;
+# - os nomes aparecem sempre na mesma forma, para que buscadores e modelos de
+#   linguagem reconheçam a mesma pessoa em todas as páginas (e no ORCID).
+
+site:
+  url: "https://dboslab.github.io/forplotR-website/"
+  name: "forplotR"
+  image: "figures/forplotR_hex_sticker.png"
+  locale_pt: "pt_BR"
+  locale_en: "en"
+
+software:
+  name: "forplotR"
+  alternate_name: "forplotR R package"
+  version: "1.0.0"
+  license: "https://opensource.org/licenses/MIT"
+  code_repository: "https://github.com/DBOSlab/forplotR"
+  issue_tracker: "https://github.com/DBOSlab/forplotR/issues"
+  programming_language: "R"
+  runtime: "R (>= 4.1.0); webR (R em WebAssembly) no navegador"
+  date_published: "2025"
+  keywords: ["R", "forest plots", "parcelas florestais permanentes", "ForestPlots.net",
+             "MONITORA", "herbário", "herbarium", "vouchers", "exsicatas", "JABOT",
+             "BRAHMS", "Darwin Core", "webR", "Mata Atlântica", "Amazônia"]
+  description_pt: >-
+    Pacote R que integra os dados de censos de parcelas florestais permanentes
+    (ForestPlots.net e programa MONITORA) à documentação dos espécimes botânicos:
+    mapa interativo da parcela, balanço de coleta, organização das fotos dos
+    vouchers, planilhas de etiquetas de herbário (JABOT, BRAHMS) e cruzamento das
+    determinações de campo com o herbário.
+  description_en: >-
+    R package that links permanent forest plot census data (ForestPlots.net and
+    the Brazilian MONITORA programme) to the documentation of botanical
+    specimens: interactive plot maps, collection-balance reports, voucher photo
+    organisation, herbarium label spreadsheets (JABOT, BRAHMS) and cross-checks of
+    field determinations against herbarium records.
+  funders: ["CNPq", "CAPES"]
+
+# Autoria. O forplotR é produto do mestrado de Giulia C. Ottino.
+people:
+  ottino:
+    name: "Giulia C. Ottino"
+    given: "Giulia C."
+    family: "Ottino"
+    orcid: "https://orcid.org/0009-0001-4352-1733"
+    role_pt: "autora e mantenedora; desenvolveu o forplotR no mestrado"
+    role_en: "author and maintainer; developed forplotR during her master's degree"
+    affiliation: jbrj
+    same_as:
+      - "https://orcid.org/0009-0001-4352-1733"
+      - "https://github.com/giuliaottino"
+    lattes: null          # URL do currículo Lattes
+  cardoso:
+    name: "Domingos Cardoso"
+    given: "Domingos"
+    family: "Cardoso"
+    orcid: "https://orcid.org/0000-0001-7072-2656"
+    role_pt: "coautor e orientador do mestrado"
+    role_en: "co-author and master's supervisor"
+    affiliation: jbrj
+    same_as:
+      - "https://orcid.org/0000-0001-7072-2656"
+    lattes: null
+
+# Dissertação de mestrado de que o forplotR é produto. Enquanto title, program
+# e institution estiverem vazios, o script não publica o nó Thesis nem a frase
+# sobre o mestrado com detalhes (só "desenvolvido no mestrado de Giulia C. Ottino").
+thesis:
+  title: null             # título da dissertação
+  degree_pt: "Mestrado"
+  degree_en: "Master's degree"
+  program: null           # ex.: "Programa de Pós-Graduação em Botânica"
+  institution: null       # ex.: "Escola Nacional de Botânica Tropical, JBRJ"
+  institution_url: null
+  year: null              # ano da defesa (ou previsto)
+  url: null               # repositório da dissertação
+  author: ottino
+  advisor: cardoso
+  co_advisor: null
+
+organizations:
+  jbrj:
+    name: "Instituto de Pesquisas Jardim Botânico do Rio de Janeiro"
+    alternate_name: "JBRJ"
+    url: "https://www.gov.br/jbrj/"
+  dboslab:
+    name: "DBOSlab"
+    url: "https://github.com/DBOSlab"

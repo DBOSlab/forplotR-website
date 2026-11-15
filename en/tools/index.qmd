@@ -1,0 +1,14 @@
+---
+# gerado por scripts/sync_en.R a partir de ferramentas/index.qmd
+title: '[Rodar no navegador]{data-lang=pt}[Run in the browser]{data-lang=en}'
+description: '[As funções do forplotR no navegador (webR), sem instalar o R e sem
+  enviar os dados das parcelas.]{data-lang=pt}[The forplotR functions in the browser
+  (webR), without installing R and without sending the plot data.]{data-lang=en}'
+page-id: tools
+schema: CollectionPage
+hide-title: true
+tool: true
+page-class: tool
+---
+
+{{< include ../../ferramentas/_body.qmd >}}

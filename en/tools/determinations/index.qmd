@@ -1,0 +1,14 @@
+---
+# gerado por scripts/sync_en.R a partir de ferramentas/determinacoes/index.qmd
+title: '[Conferir determinações]{data-lang=pt}[Check determinations]{data-lang=en}'
+description: '[Formulário que roda forplot_crossdet() no seu navegador (webR), sem
+  enviar os dados.]{data-lang=pt}[Form that runs forplot_crossdet() in your browser
+  (webR), without sending the data.]{data-lang=en}'
+page-id: tool-determinations
+schema: WebPage
+hide-title: true
+tool: true
+page-class: tool
+---
+
+{{< include ../../../ferramentas/determinacoes/_body.qmd >}}

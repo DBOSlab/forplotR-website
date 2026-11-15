@@ -1,0 +1,11 @@
+---
+title: "[Organizar as fotos]{data-lang=pt}[Organise the photos]{data-lang=en}"
+description: "[Pastas de imagens dos vouchers organizadas por família, gênero e voucher, com forplot_vouchers().]{data-lang=pt}[Voucher image folders organised by family, genus and voucher, with forplot_vouchers().]{data-lang=en}"
+page-id: photos
+en-path: "applications/photos"
+schema: TechArticle
+kicker: "forplot_vouchers()"
+toc: true
+---
+
+{{< include _body.qmd >}}

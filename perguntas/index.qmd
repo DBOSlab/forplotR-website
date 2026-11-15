@@ -1,0 +1,9 @@
+---
+title: "[Perguntas frequentes]{data-lang=pt}[Frequently asked questions]{data-lang=en}"
+description: "[Respostas curtas sobre o forplotR: formatos, dados, navegador, privacidade e citação.]{data-lang=pt}[Short answers about forplotR: formats, data, browser, privacy and citation.]{data-lang=en}"
+page-id: faq
+en-path: "faq"
+schema: FAQPage
+---
+
+{{< include _body.qmd >}}

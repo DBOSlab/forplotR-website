@@ -1,0 +1,13 @@
+---
+# gerado por scripts/sync_en.R a partir de aplicacoes/etiquetas/index.qmd
+title: '[Etiquetas para o herbário]{data-lang=pt}[Herbarium labels]{data-lang=en}'
+description: '[Planilhas de etiquetas de herbário (JABOT, BRAHMS) a partir da planilha
+  de campo, com forplot_sheets().]{data-lang=pt}[Herbarium label spreadsheets (JABOT,
+  BRAHMS) from the field spreadsheet, with forplot_sheets().]{data-lang=en}'
+page-id: labels
+schema: TechArticle
+kicker: forplot_sheets()
+toc: true
+---
+
+{{< include ../../../aplicacoes/etiquetas/_body.qmd >}}
