@@ -155,16 +155,16 @@ TOOLS <- list(
       "e planilha-resumo. Saídas em HTML interativo, PDF e XLSX."),
     eta = "1 a 5 minutos (PDF leva mais)",
     example = TRUE,
-    local = FALSE,
-    local_note = paste(
-      "O relatório ainda não roda no navegador: a geração do HTML está sendo",
-      "adaptada. Por enquanto, use o pacote forplotR no R."),
+    # No navegador não há LaTeX: relatório HTML (que pode ser impresso em PDF
+    # pelo próprio navegador), PNGs e XLSX.
+    local_fixed = list(render_pdf = FALSE),
     fields = flatten_fields(
       f_fp_file(), f_example(), f_input_type(), f_language(), f_station(multiple = TRUE),
       f_geometry(),
-      fld("render_html", "Gerar relatório HTML interativo", "bool", default = TRUE),
+      fld("render_html", "Gerar relatório HTML interativo", "bool", default = TRUE,
+          local = list(help = "Para ter um PDF, abra o relatório e use Imprimir > Salvar como PDF.")),
       fld("render_pdf", "Gerar relatório PDF", "bool", default = FALSE,
-          help = "Exige LaTeX no servidor e leva alguns minutos a mais."),
+          help = "Exige LaTeX no servidor e leva alguns minutos a mais.", local = FALSE),
       fld("write_xlsx", "Gerar planilha de balanço (XLSX)", "bool", default = TRUE,
           help = "Não disponível para MONITORA."),
       fld("highlight_palms", "Destacar palmeiras (Arecaceae)", "bool", default = TRUE,

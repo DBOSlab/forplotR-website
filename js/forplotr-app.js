@@ -175,7 +175,8 @@
     'O cruzamento precisa baixar os dados do herbário (JABOT) pela internet, o que não é feito no modo navegador. Use o pacote forplotR no R.':
       'The cross-check needs to download herbarium data (JABOT) from the internet, which the browser mode does not do. Use the forplotR package in R.',
     'Acesso à rede desativado: no navegador, os dados não saem do seu computador.': 'Network access disabled: in the browser, your data never leave your computer.',
-    'Arquivo enviado em local inválido.': 'Uploaded file in an invalid location.'
+    'Arquivo enviado em local inválido.': 'Uploaded file in an invalid location.',
+    'Para ter um PDF, abra o relatório e use Imprimir > Salvar como PDF.': 'For a PDF, open the report and use Print > Save as PDF.'
   };
   // mensagens do servidor com partes variáveis
   var SERVER_EN_RX = [
@@ -804,6 +805,11 @@
         box.appendChild(biEl('h4', { class: 'block-title' }, 'Prévia', 'Preview'));
         if (htmls.length > 1) box.appendChild(tabs);
         box.appendChild(frame);
+        if (LOCAL && st.tool === 'balance') {
+          box.appendChild(biEl('p', { class: 'muted-note' },
+            'Para ter o relatório em PDF, baixe o arquivo HTML, abra-o no navegador e use Imprimir > Salvar como PDF.',
+            'To get the report as a PDF, download the HTML file, open it in your browser and use Print > Save as PDF.'));
+        }
         if (LOCAL && st.tool === 'map') {
           box.appendChild(biEl('p', { class: 'muted-note' },
             'A prévia não carrega a imagem de satélite, para não revelar a localização da parcela ao provedor das imagens. No arquivo baixado, o satélite aparece ao abri-lo, e a área visualizada é enviada ao provedor.',

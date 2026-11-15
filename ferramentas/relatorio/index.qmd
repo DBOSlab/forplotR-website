@@ -22,14 +22,14 @@ pagetitle: "Relatório e balanço de coleta — forplotR"
 ::: {data-lang="pt"}
 1. Envie a planilha e selecione o formato (ForestPlots.net, Terra Indígena, Query Library ou Programa Monitora).
 2. Verifique a área da parcela e o lado da subparcela. Para o Monitora, informe a estação.
-3. Selecione as saídas. A compilação do PDF acrescenta alguns minutos ao processamento.
+3. Selecione as saídas. Com os dados de exemplo (RUS01), o processamento no navegador leva cerca de 2 minutos.
 
 Para executar sem planilha própria, marque **Usar os dados de exemplo**.
 :::
 ::: {data-lang="en"}
 1. Upload the spreadsheet and select its layout (ForestPlots.net, Indigenous Land, Query Library or Monitora Program).
 2. Check the plot area and the subplot side. For Monitora, give the station.
-3. Select the outputs. Compiling the PDF adds a few minutes to processing.
+3. Select the outputs. With the example data (RUS01), processing in the browser takes about 2 minutes.
 
 To run without your own spreadsheet, tick **Use the example data**.
 :::
@@ -46,13 +46,13 @@ To run without your own spreadsheet, tick **Use the example data**.
 
 ::: {data-lang="pt"}
 - **Relatório HTML interativo**: mapa geral e de cada subparcela, filtros por situação de coleta e checklist por família com links para cada indivíduo.
-- **Relatório PDF** com o mesmo conteúdo, para impressão e uso em campo.
+- **PDF** para impressão e uso em campo: abra o relatório HTML baixado e use Imprimir > Salvar como PDF. O pacote, no R, também gera o PDF diretamente (com LaTeX).
 - **Figuras PNG**: mapa geral, coletados, não coletados, palmeiras, subparcelas prioritárias, espécies e famílias mais abundantes.
 - **Planilha XLSX** com o percentual de coleta por subparcela e as plaquetas coletadas e não coletadas (não disponível para o Monitora).
 :::
 ::: {data-lang="en"}
 - **Interactive HTML report**: overall map and one per subplot, filters by collection status and a checklist by family linking to each individual.
-- **PDF report** with the same content, for printing and field use.
+- **PDF** for printing and field use: open the downloaded HTML report and use Print > Save as PDF. The package, in R, can also build the PDF directly (with LaTeX).
 - **PNG figures**: overall map, collected, not collected, palms, priority subplots, most abundant species and families.
 - **XLSX spreadsheet** with the collection percentage per subplot and the collected and uncollected tags (not available for Monitora).
 :::

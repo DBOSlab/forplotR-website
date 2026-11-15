@@ -70,7 +70,8 @@
         readLoop();
 
         setStage('packages');
-        await webR.installPackages(['forplotR', 'zip'], { repos: [base + 'repo/'], quiet: true });
+        // markdown: relatório do forplot_balance sem pandoc.
+        await webR.installPackages(['forplotR', 'zip', 'markdown'], { repos: [base + 'repo/'], quiet: true });
 
         setStage('engine');
         await webR.FS.mkdir(ENGINE_DIR);
