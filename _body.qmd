@@ -7,8 +7,8 @@
     <h1 data-lang="en">From the forest plot to the herbarium.</h1>
     <p class="deck" data-lang="pt">O <strong>forplotR</strong> liga a planilha do censo de uma parcela permanente às fotos dos vouchers, às etiquetas e às determinações do herbário. Em R, ou no navegador, sem enviar os dados.</p>
     <p class="deck" data-lang="en"><strong>forplotR</strong> links the census spreadsheet of a permanent plot to the voucher photos, the labels and the herbarium determinations. In R, or in the browser, without sending the data.</p>
-    <p class="byline" data-lang="pt">Desenvolvido por <a href="{{LINK:authors}}#giulia-c-ottino">Giulia C. Ottino</a> no mestrado, com <a href="{{LINK:authors}}#domingos-cardoso">Domingos Cardoso</a>, no Jardim Botânico do Rio de Janeiro.</p>
-    <p class="byline" data-lang="en">Developed by <a href="{{LINK:authors}}#giulia-c-ottino">Giulia C. Ottino</a> during her master's degree, with <a href="{{LINK:authors}}#domingos-cardoso">Domingos Cardoso</a>, at the Rio de Janeiro Botanical Garden.</p>
+    <p class="byline" data-lang="pt">Desenvolvido por <a href="{{LINK:authors}}#giulia-c-ottino">Giulia C. Ottino</a> no mestrado em Botânica da ENBT/JBRJ, com <a href="{{LINK:authors}}#domingos-cardoso">Domingos Cardoso</a>, no Jardim Botânico do Rio de Janeiro.</p>
+    <p class="byline" data-lang="en">Developed by <a href="{{LINK:authors}}#giulia-c-ottino">Giulia C. Ottino</a> during her master's degree in Botany at ENBT/JBRJ, with <a href="{{LINK:authors}}#domingos-cardoso">Domingos Cardoso</a>, at the Rio de Janeiro Botanical Garden.</p>
     <div class="actions">
       <a class="btn btn-primary" href="{{LINK:start}}"><span data-lang="pt">Começar</span><span data-lang="en">Get started</span></a>
       <a class="btn" href="{{LINK:tools}}"><span data-lang="pt">Rodar no navegador</span><span data-lang="en">Run in the browser</span></a>
@@ -140,7 +140,7 @@ Plot data are often sensitive: tree identities and measurements, frequently in p
 ## [Autoria]{data-lang=pt}[Authors]{data-lang=en} {#autoria}
 
 ::: {.statement}
-[O forplotR foi desenvolvido por **Giulia C. Ottino** como produto de seu mestrado, sob orientação de **Domingos Cardoso**, no Instituto de Pesquisas Jardim Botânico do Rio de Janeiro (DBOSlab). Código aberto, licença MIT.]{data-lang=pt}[forplotR was developed by **Giulia C. Ottino** as the product of her master's degree, supervised by **Domingos Cardoso**, at the Rio de Janeiro Botanical Garden Research Institute (DBOSlab). Open source, MIT licence.]{data-lang=en}
+[O forplotR foi desenvolvido por **Giulia C. Ottino** como produto de seu mestrado em Botânica na Escola Nacional de Botânica Tropical (ENBT/JBRJ), sob orientação de **Domingos Cardoso**, no Instituto de Pesquisas Jardim Botânico do Rio de Janeiro (DBOSlab). Código aberto, licença MIT.]{data-lang=pt}[forplotR was developed by **Giulia C. Ottino** as the product of her master's degree in Botany at the National School of Tropical Botany (ENBT/JBRJ), supervised by **Domingos Cardoso**, at the Rio de Janeiro Botanical Garden Research Institute (DBOSlab). Open source, MIT licence.]{data-lang=en}
 :::
 
 [[Autoria]({{LINK:authors}}) · [Como citar]({{LINK:cite}}) · [Código no GitHub](https://github.com/DBOSlab/forplotR)]{data-lang=pt}[[Authors]({{LINK:authors}}) · [How to cite]({{LINK:cite}}) · [Source on GitHub](https://github.com/DBOSlab/forplotR)]{data-lang=en}

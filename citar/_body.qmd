@@ -17,6 +17,6 @@ If forplotR helped your work, please cite the package. The citation comes from t
 
 ## [Autoria]{data-lang=pt}[Authorship]{data-lang=en} {#autoria}
 
-[O forplotR foi desenvolvido por Giulia C. Ottino como produto de seu mestrado, sob orientação de Domingos Cardoso, no Jardim Botânico do Rio de Janeiro. Veja [Autoria]({{LINK:authors}}).]{data-lang=pt}[forplotR was developed by Giulia C. Ottino as the product of her master's degree, supervised by Domingos Cardoso, at the Rio de Janeiro Botanical Garden. See [Authors]({{LINK:authors}}).]{data-lang=en}
+[O forplotR foi desenvolvido por Giulia C. Ottino como produto de seu mestrado em Botânica na Escola Nacional de Botânica Tropical (ENBT/JBRJ), sob orientação de Domingos Cardoso, no Jardim Botânico do Rio de Janeiro. Veja [Autoria]({{LINK:authors}}).]{data-lang=pt}[forplotR was developed by Giulia C. Ottino as the product of her master's degree in Botany at the National School of Tropical Botany (ENBT/JBRJ), supervised by Domingos Cardoso, at the Rio de Janeiro Botanical Garden. See [Authors]({{LINK:authors}}).]{data-lang=en}
 
 [Este trabalho teve apoio do CNPq e da CAPES.]{data-lang=pt}[This work was supported by CNPq and CAPES.]{data-lang=en}

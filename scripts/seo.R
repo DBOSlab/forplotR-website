@@ -115,16 +115,21 @@ person_node <- function(k, lang) {
     name = p$name, givenName = p$given, familyName = p$family,
     description = if (lang == "en") p$role_en else p$role_pt,
     identifier = if (has(p$orcid)) list("@type" = "PropertyValue", propertyID = "ORCID", value = sub(".*orcid.org/", "", p$orcid), url = p$orcid),
+    alternateName = unique(c(p$full_name, unlist(p$citation_names))),
     sameAs = unique(c(unlist(p$same_as), if (has(p$lattes)) p$lattes)),
     affiliation = if (has(p$affiliation)) list("@id" = id_org(p$affiliation)),
+    alumniOf = if (has(p$alumni_of)) list("@id" = id_org(p$alumni_of)),
     url = paste0(base, if (lang == "en") "en/authors/" else "autoria/")
   ))
 }
 org_node <- function(k) {
   o <- O[[k]]
-  compact(list("@type" = "Organization", "@id" = id_org(k), name = o$name,
-               alternateName = o$alternate_name, url = o$url))
+  compact(list("@type" = if (k == "enbt") "CollegeOrUniversity" else "Organization", "@id" = id_org(k), name = o$name,
+               alternateName = o$alternate_name, url = o$url,
+               parentOrganization = if (has(o$parent)) list("@id" = id_org(o$parent))))
 }
+inst <- function(lang) if (lang == "en" && has(th$institution_en)) th$institution_en else th$institution
+prog <- function(lang) if (lang == "en" && has(th$program_en)) th$program_en else th$program
 compact <- function(x) x[!vapply(x, function(v) is.null(v) || (length(v) == 1 && is.atomic(v) && (is.na(v) || identical(v, ""))) || length(v) == 0, logical(1))]
 
 software_node <- function(lang) {
@@ -160,26 +165,29 @@ thesis_node <- function(lang) {
   if (!thesis_ok) return(NULL)
   compact(list(
     "@type" = "Thesis", "@id" = id_thesis, name = th$title,
-    inSupportOf = paste0(if (lang == "en") th$degree_en else th$degree_pt, " — ", th$program),
+    inSupportOf = if (lang == "en") th$degree_en else th$degree_pt,
+    inLanguage = "pt-BR",
     author = list("@id" = id_person(th$author)),
     contributor = compact(list(list("@id" = id_person(th$advisor)),
                                if (has(th$co_advisor)) list("@id" = id_person(th$co_advisor)))),
-    sourceOrganization = compact(list("@type" = "Organization", name = th$institution, url = th$institution_url)),
-    dateCreated = th$year, url = th$url, about = list("@id" = id_sw)
+    sourceOrganization = list("@id" = id_org("enbt")),
+    funder = if (has(th$scholarship)) list("@type" = "Organization", name = th$scholarship),
+    keywords = if (has(th$keywords)) paste(unlist(th$keywords), collapse = ", "),
+    dateCreated = th$year, url = th$url, about = list("@id" = id_sw),
+    workExample = list("@id" = id_sw)
   ))
 }
 
 # Frase de autoria do rodapé (texto visível: é o que buscadores e assistentes leem).
 author_line <- function(lang, root) {
   a <- paste0(root, if (lang == "en") "en/authors/" else "autoria/")
+  yr <- if (thesis_ok && has(th$year)) paste0(", ", th$year) else ""
   if (lang == "en") {
-    detail <- if (thesis_ok) sprintf(" as part of her master's dissertation (%s, %s%s)", th$program, th$institution,
-                                     if (has(th$year)) paste0(", ", th$year) else "") else " during her master's degree"
-    sprintf('forplotR was developed by <a href="%s#giulia-c-ottino">Giulia C. Ottino</a>%s, supervised by <a href="%s#domingos-cardoso">Domingos Cardoso</a>, at the Rio de Janeiro Botanical Garden (DBOSlab).', a, html_escape(detail), a)
+    detail <- if (thesis_ok) sprintf(' as the product of her <a href="%s#dissertacao">master\'s degree in Botany</a> at the National School of Tropical Botany (ENBT/JBRJ%s)', a, yr) else " during her master's degree"
+    sprintf('forplotR was developed by <a href="%s#giulia-c-ottino">Giulia C. Ottino</a>%s, supervised by <a href="%s#domingos-cardoso">Domingos Cardoso</a>, at the Rio de Janeiro Botanical Garden (DBOSlab).', a, detail, a)
   } else {
-    detail <- if (thesis_ok) sprintf(" como produto de sua dissertação de mestrado (%s, %s%s)", th$program, th$institution,
-                                     if (has(th$year)) paste0(", ", th$year) else "") else " como produto de seu mestrado"
-    sprintf('O forplotR foi desenvolvido por <a href="%s#giulia-c-ottino">Giulia C. Ottino</a>%s, sob orientação de <a href="%s#domingos-cardoso">Domingos Cardoso</a>, no Jardim Botânico do Rio de Janeiro (DBOSlab).', a, html_escape(detail), a)
+    detail <- if (thesis_ok) sprintf(' como produto de seu <a href="%s#dissertacao">mestrado em Botânica</a> na Escola Nacional de Botânica Tropical (ENBT/JBRJ%s)', a, yr) else " como produto de seu mestrado"
+    sprintf('O forplotR foi desenvolvido por <a href="%s#giulia-c-ottino">Giulia C. Ottino</a>%s, sob orientação de <a href="%s#domingos-cardoso">Domingos Cardoso</a>, no Jardim Botânico do Rio de Janeiro (DBOSlab).', a, detail, a)
   }
 }
 
@@ -203,14 +211,20 @@ thesis_block <- function(lang) {
   adv <- P[[th$advisor]]$name
   co <- if (has(th$co_advisor)) P[[th$co_advisor]]$name else NULL
   link <- function(x) if (has(th$url)) sprintf('<a href="%s">%s</a>', th$url, x) else x
+  yr <- if (has(th$year)) paste0(", ", th$year) else ""
+  lat <- if (has(P[[th$author]]$lattes)) P[[th$author]]$lattes else NULL
   if (lang == "en") {
-    sprintf('<div class="thesis" id="dissertacao"><p class="thesis-label">Master\'s dissertation</p><p>%s. %s, %s%s. Supervisor: %s%s.</p></div>',
-            link(html_escape(th$title)), html_escape(th$program), html_escape(th$institution),
-            if (has(th$year)) paste0(", ", th$year) else "", adv, if (!is.null(co)) paste0("; co-supervisor: ", co) else "")
+    sprintf('<div class="thesis" id="dissertacao"><p class="thesis-label">Master\'s dissertation (in Portuguese)</p><p class="thesis-title">%s</p><p>Giulia Cavalcanti Ottino. %s, %s%s. Supervisor: %s%s.%s%s</p></div>',
+            link(html_escape(th$title)), html_escape(prog("en")), html_escape(inst("en")), yr, adv,
+            if (!is.null(co)) paste0("; co-supervisor: ", co) else "",
+            if (has(th$scholarship)) paste0(" ", th$scholarship, " scholarship.") else "",
+            if (!is.null(lat)) sprintf(' <a href="%s">Lattes CV</a>.', lat) else "")
   } else {
-    sprintf('<div class="thesis" id="dissertacao"><p class="thesis-label">Dissertação de mestrado</p><p>%s. %s, %s%s. Orientação: %s%s.</p></div>',
-            link(html_escape(th$title)), html_escape(th$program), html_escape(th$institution),
-            if (has(th$year)) paste0(", ", th$year) else "", adv, if (!is.null(co)) paste0("; coorientação: ", co) else "")
+    sprintf('<div class="thesis" id="dissertacao"><p class="thesis-label">Dissertação de mestrado</p><p class="thesis-title">%s</p><p>Giulia Cavalcanti Ottino. %s, %s%s. Orientação: %s%s.%s%s</p></div>',
+            link(html_escape(th$title)), html_escape(prog("pt")), html_escape(inst("pt")), yr, adv,
+            if (!is.null(co)) paste0("; coorientação: ", co) else "",
+            if (has(th$scholarship)) paste0(" Bolsa ", th$scholarship, ".") else "",
+            if (!is.null(lat)) sprintf(' <a href="%s">Currículo Lattes</a>.', lat) else "")
   }
 }
 
@@ -274,11 +288,12 @@ graph_for <- function(row, h) {
     software_node(row$lang),
     person_node("ottino", row$lang),
     person_node("cardoso", row$lang),
-    org_node("jbrj"), org_node("dboslab"),
+    org_node("jbrj"), org_node("dboslab"), org_node("enbt"),
     page_node(row, h)
   )
   t <- thesis_node(row$lang)
   if (!is.null(t)) g <- c(g, list(t))
+  if (thesis_ok && has(th$co_advisor)) g <- c(g, list(person_node(th$co_advisor, row$lang)))
   list("@context" = "https://schema.org", "@graph" = g)
 }
 
@@ -463,8 +478,8 @@ lst <- function(lang, ids) {
 }
 core_ids <- c("home", "start", "apps", "map", "balance", "photos", "labels", "determinations", "tools", "reference")
 meta_ids <- c("authors", "cite", "about", "faq", "news")
-thesis_txt_en <- if (thesis_ok) sprintf("as the product of her master's dissertation \"%s\" (%s, %s%s)", th$title, th$program, th$institution, if (has(th$year)) paste0(", ", th$year) else "") else "as the product of her master's degree"
-thesis_txt_pt <- if (thesis_ok) sprintf("como produto de sua dissertação de mestrado \"%s\" (%s, %s%s)", th$title, th$program, th$institution, if (has(th$year)) paste0(", ", th$year) else "") else "como produto de seu mestrado"
+thesis_txt_en <- if (thesis_ok) sprintf("as the product of her master's degree in Botany at the National School of Tropical Botany (ENBT), Rio de Janeiro Botanical Garden Research Institute (dissertation, in Portuguese: \"%s\", %s; supervisor Domingos Cardoso, co-supervisor Pedro Lage Viana; CAPES scholarship)", th$title, th$year) else "as the product of her master's degree"
+thesis_txt_pt <- if (thesis_ok) sprintf("como produto de seu mestrado em Botânica na Escola Nacional de Botânica Tropical (ENBT/JBRJ), com a dissertação \"%s\" (%s; orientação de Domingos Cardoso, coorientação de Pedro Lage Viana; bolsa CAPES)", th$title, th$year) else "como produto de seu mestrado"
 llms <- c(
   "# forplotR",
   "",

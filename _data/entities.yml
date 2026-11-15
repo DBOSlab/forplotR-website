@@ -49,52 +49,84 @@ software:
 people:
   ottino:
     name: "Giulia C. Ottino"
+    full_name: "Giulia Cavalcanti Ottino"       # como no Lattes
+    citation_names: ["G.C. Ottino", "G. Cavalcanti Ottino", "Ottino, Giulia Cavalcanti"]
     given: "Giulia C."
     family: "Ottino"
     orcid: "https://orcid.org/0009-0001-4352-1733"
-    role_pt: "autora e mantenedora; desenvolveu o forplotR no mestrado"
-    role_en: "author and maintainer; developed forplotR during her master's degree"
+    role_pt: "autora e mantenedora; desenvolveu o forplotR como produto de seu mestrado em Botânica (ENBT/JBRJ)"
+    role_en: "author and maintainer; developed forplotR as the product of her master's degree in Botany (ENBT/JBRJ)"
     affiliation: jbrj
+    alumni_of: enbt
+    github: "https://github.com/giuliaottino"
     same_as:
       - "https://orcid.org/0009-0001-4352-1733"
+      - "http://lattes.cnpq.br/0819473317412079"
       - "https://github.com/giuliaottino"
-    lattes: null          # URL do currículo Lattes
+    lattes: "http://lattes.cnpq.br/0819473317412079"
   cardoso:
     name: "Domingos Cardoso"
+    full_name: "Domingos Benício Oliveira Silva Cardoso"
     given: "Domingos"
     family: "Cardoso"
     orcid: "https://orcid.org/0000-0001-7072-2656"
     role_pt: "coautor e orientador do mestrado"
     role_en: "co-author and master's supervisor"
     affiliation: jbrj
+    github: "https://github.com/DBOSlab"
     same_as:
       - "https://orcid.org/0000-0001-7072-2656"
+      - "https://github.com/DBOSlab"
+    lattes: null
+  viana:
+    name: "Pedro Lage Viana"
+    given: "Pedro Lage"
+    family: "Viana"
+    role_pt: "coorientador do mestrado"
+    role_en: "master's co-supervisor"
+    same_as: []
     lattes: null
 
 # Dissertação de mestrado de que o forplotR é produto. Enquanto title, program
 # e institution estiverem vazios, o script não publica o nó Thesis nem a frase
 # sobre o mestrado com detalhes (só "desenvolvido no mestrado de Giulia C. Ottino").
 thesis:
-  title: null             # título da dissertação
-  degree_pt: "Mestrado"
-  degree_en: "Master's degree"
-  program: null           # ex.: "Programa de Pós-Graduação em Botânica"
-  institution: null       # ex.: "Escola Nacional de Botânica Tropical, JBRJ"
+  # Fonte: currículo Lattes de Giulia Cavalcanti Ottino (atualizado em 09/03/2026).
+  title: "Da organização de dados à revelação de espécies inéditas: Contribuições de parcelas permanentes para o conhecimento da Mata Atlântica"
+  degree_pt: "Mestrado Acadêmico em Botânica"
+  degree_en: "Master's degree (MSc) in Botany"
+  program: "Mestrado Acadêmico em Botânica"
+  program_en: "Master's programme in Botany"
+  institution: "Escola Nacional de Botânica Tropical (ENBT), Instituto de Pesquisas Jardim Botânico do Rio de Janeiro"
+  institution_en: "National School of Tropical Botany (ENBT), Rio de Janeiro Botanical Garden Research Institute"
   institution_url: null
-  year: null              # ano da defesa (ou previsto)
-  url: null               # repositório da dissertação
+  year: "2026"
+  url: null               # repositório da dissertação, quando houver
+  scholarship: "CAPES"
+  keywords: ["Aplicação", "Espécie nova", "flora neotropical", "material testemunho"]
   author: ottino
   advisor: cardoso
-  co_advisor: null
+  co_advisor: viana
 
 organizations:
   jbrj:
     name: "Instituto de Pesquisas Jardim Botânico do Rio de Janeiro"
     alternate_name: "JBRJ"
     url: "https://www.gov.br/jbrj/"
+  enbt:
+    name: "Escola Nacional de Botânica Tropical"
+    alternate_name: "ENBT"
+    parent: jbrj
+    url: null
   dboslab:
     name: "DBOSlab"
     url: "https://github.com/DBOSlab"
+
+# Código-fonte (links do GitHub mostrados na página de autoria e no JSON-LD)
+repos:
+  package: "https://github.com/DBOSlab/forplotR"
+  website: "https://github.com/DBOSlab/forplotR-website"
+  issues: "https://github.com/DBOSlab/forplotR/issues"
 
 # Artigo que descreve o forplotR. Enquanto doi estiver vazio, a página "Como
 # citar" diz que o DOI aparecerá quando o artigo for publicado ({{DOI}}).

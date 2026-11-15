@@ -1,7 +1,7 @@
 ---
 title: "forplotR"
 pagetitle: "[forplotR: da parcela florestal ao herbário (pacote R)]{data-lang=pt}[forplotR: from forest plot to herbarium (R package)]{data-lang=en}"
-description: "[Pacote R para parcelas florestais permanentes e herbários, desenvolvido por Giulia C. Ottino no mestrado, com Domingos Cardoso.]{data-lang=pt}[R package for permanent forest plots and herbaria, developed by Giulia C. Ottino during her master's degree, with Domingos Cardoso.]{data-lang=en}"
+description: "[Pacote R para parcelas florestais permanentes e herbários, desenvolvido por Giulia C. Ottino no mestrado em Botânica (ENBT/JBRJ), com Domingos Cardoso.]{data-lang=pt}[R package for permanent forest plots and herbaria, developed by Giulia C. Ottino during her master's degree in Botany (ENBT/JBRJ), with Domingos Cardoso.]{data-lang=en}"
 page-id: home
 en-path: ""
 schema: WebPage

@@ -45,7 +45,7 @@ $for(header-includes)$
 $header-includes$
 $endfor$
 </head>
-<body class="$if(page-class)$$page-class$$endif$">
+<body class="$if(page-class)$$page-class$$endif$$if(hide-title)$ no-title$endif$">
 $if(lang-en)$
 <a class="skip" href="#content">Skip to content</a>
 $else$
@@ -126,16 +126,13 @@ $endif$
 <main id="content" tabindex="-1">
 $if(hide-title)$
 $else$
-<header class="page-head">
 $if(kicker)$
-  <p class="kicker">$kicker$</p>
+<p class="kicker page-kicker">$kicker$</p>
 $endif$
-  <h1>$title$</h1>
-$if(subtitle)$
-  <p class="deck">$subtitle$</p>
+<h1 class="page-title">$title$</h1>
 $endif$
-</header>
-$endif$
+<!-- O título da página é o bloco #title-block-header que o Quarto põe no início
+     do corpo (estilizado em site.css); páginas com hide-title têm cabeçalho próprio. -->
 $body$
 </main>
 </div>
@@ -145,9 +142,9 @@ $body$
     <p class="foot-auth">{{AUTHOR_LINE}}</p>
     <p class="foot-meta">
 $if(lang-en)$
-      <a href="{{ROOT}}en/authors/">Authors</a> · <a href="{{ROOT}}en/cite/">Cite</a> · <a href="{{ROOT}}en/news/">News</a> · <a href="{{ROOT}}en/faq/">FAQ</a> · <a href="https://github.com/DBOSlab/forplotR">GitHub</a> · MIT licence
+      <a href="{{ROOT}}en/authors/">Authors</a> · <a href="{{ROOT}}en/cite/">Cite</a> · <a href="{{ROOT}}en/news/">News</a> · <a href="{{ROOT}}en/faq/">FAQ</a> · <a href="https://github.com/DBOSlab/forplotR">GitHub</a> · <a href="https://github.com/DBOSlab/forplotR-website">site source</a> · MIT licence
 $else$
-      <a href="{{ROOT}}autoria/">Autoria</a> · <a href="{{ROOT}}citar/">Como citar</a> · <a href="{{ROOT}}novidades/">Novidades</a> · <a href="{{ROOT}}perguntas/">Perguntas frequentes</a> · <a href="https://github.com/DBOSlab/forplotR">GitHub</a> · Licença MIT
+      <a href="{{ROOT}}autoria/">Autoria</a> · <a href="{{ROOT}}citar/">Como citar</a> · <a href="{{ROOT}}novidades/">Novidades</a> · <a href="{{ROOT}}perguntas/">Perguntas frequentes</a> · <a href="https://github.com/DBOSlab/forplotR">GitHub</a> · <a href="https://github.com/DBOSlab/forplotR-website">código do site</a> · Licença MIT
 $endif$
     </p>
   </div>
