@@ -58,9 +58,9 @@
   --ipe-tint:#FCF2D2; --folha-tint:#E6F2E8; --rio-tint:#DDEEF3; --urucum-tint:#FAE4D8; --jabuticaba-tint:#F1E3EE;
   --ipe-ink:#7A5800; --folha-ink:#1F6B47; --rio-ink:#124B61; --urucum-ink:#8E3416; --jabuticaba-ink:#4A1F44;
   --ok:#2F7D52; --warn:#9A6B00; --bad:#A33A1F; --bad-bg:#FBEBE5; --bad-rule:#EBC4B7;
-  --hero-bg:#0E3B2C; --hero-text:#F4F1E8; --hero-muted:rgba(244,241,232,.74); --hero-faint:rgba(244,241,232,.52); --hero-rule:rgba(244,241,232,.16);
+  --hero-bg:#0E3B2C; --hero-text:#F4F1E8; --hero-muted:rgba(244,241,232,.74); --hero-faint:rgba(244,241,232,.62); --hero-rule:rgba(244,241,232,.16);
   --code-bg:#F4EFE3; --code-text:#1D2A22; --code-inline-bg:rgba(14,59,44,.07); --code-inline:#0E3B2C;
-  --tk-kw:#6A2E61; --tk-fn:#1F6B47; --tk-str:#9A3B17; --tk-num:#124B61; --tk-com:#7A847C; --tk-op:#5B675E; --tk-arg:#3B5A47;
+  --tk-kw:#6A2E61; --tk-fn:#1F6B47; --tk-str:#9A3B17; --tk-num:#124B61; --tk-com:#616B64; --tk-op:#5B675E; --tk-arg:#3B5A47;
   --shadow-pop:0 1px 2px rgba(20,33,26,.06),0 8px 24px rgba(20,33,26,.08);
 }
 /* tema escuro: mesma paleta, com o verde-mata como fundo */
@@ -77,7 +77,7 @@
   --ipe-tint:rgba(233,180,37,.14); --folha-tint:rgba(93,181,133,.14); --rio-tint:rgba(98,179,210,.14); --urucum-tint:rgba(233,132,94,.14); --jabuticaba-tint:rgba(197,139,186,.16);
   --ipe-ink:#F0CB62; --folha-ink:#9ED8B4; --rio-ink:#9CD2E6; --urucum-ink:#F3AB8E; --jabuticaba-ink:#DDB3D5;
   --ok:#7ACB9A; --warn:#E9C05A; --bad:#F29A7C; --bad-bg:rgba(242,154,124,.12); --bad-rule:rgba(242,154,124,.36);
-  --hero-bg:#072018; --hero-text:#F4F1E8; --hero-muted:rgba(244,241,232,.76); --hero-faint:rgba(244,241,232,.56); --hero-rule:rgba(244,241,232,.14);
+  --hero-bg:#072018; --hero-text:#F4F1E8; --hero-muted:rgba(244,241,232,.76); --hero-faint:rgba(244,241,232,.62); --hero-rule:rgba(244,241,232,.14);
   --code-bg:#082219; --code-text:#E2EBE4; --code-inline-bg:rgba(158,216,180,.12); --code-inline:#C7EBD3;
   --tk-kw:#DDB3D5; --tk-fn:#9ED8B4; --tk-str:#F3AB8E; --tk-num:#9CD2E6; --tk-com:#83998A; --tk-op:#A9BDB0; --tk-arg:#CFE0D4;
   --shadow-pop:0 1px 2px rgba(0,0,0,.35),0 8px 24px rgba(0,0,0,.3);
@@ -104,6 +104,55 @@
 @media (max-width:991.98px){ #quarto-sidebar.show,#quarto-sidebar.collapsing{background-color:var(--bg)!important;}
   #quarto-header .navbar-collapse{background:var(--bg); border-top:1px solid var(--rule); padding:var(--s2) 0;} }
 .text-muted{color:var(--muted)!important;}
+
+/* Regra de superfície: o Bootstrap é compilado com as cores do tema claro e o Quarto
+   grava o papel (#FBF8F1) e o fundo de código (#F1EBDD) fixos em vários componentes.
+   Cada um é religado aqui aos tokens, sempre com fundo E texto juntos, para que no
+   tema escuro nenhum texto claro fique sobre fundo claro. Conferido com a auditoria
+   de contraste (WCAG AA) nas páginas renderizadas, nos dois temas. */
+table,.table,
+.page-columns .column-page table,.page-columns .column-page-inset table,.page-columns .column-page-left table,
+.page-columns .column-page-inset-left table,.page-columns .column-page-inset-right figcaption table,
+.page-columns .column-page-right figcaption table,.page-columns .column-body-outset table,
+.page-columns .column-body-outset-left table,.page-columns .column-body-outset-right table,
+.page-columns .column-screen table,.page-columns .column-screen-inset table,.page-columns .column-screen-left table,
+.page-columns .column-screen-right table,.page-columns .column-screen-inset-left table,
+.page-columns .column-screen-inset-right table{background:transparent!important; color:var(--text);}
+.table{--bs-table-bg:transparent; --bs-table-color:var(--text);
+  --bs-table-striped-bg:var(--surface-2); --bs-table-striped-color:var(--text);
+  --bs-table-hover-bg:var(--surface-2); --bs-table-hover-color:var(--text-strong);
+  --bs-table-active-bg:var(--surface-2); --bs-table-active-color:var(--text-strong);
+  --bs-table-border-color:var(--rule);}
+.tableFloatingHeaderOriginal{background-color:var(--bg)!important; color:var(--text)!important;}
+/* código inline fora dos blocos (títulos, links, navegação entre páginas) */
+code:not(pre code):not(.sourceCode){background-color:var(--code-inline-bg); color:var(--code-inline);}
+kbd{background-color:var(--text-strong); color:var(--bg);}
+.img-thumbnail{background-color:var(--surface); border-color:var(--rule);}
+.form-control:focus,.form-select:focus{background-color:var(--surface); color:var(--text-strong);}
+.form-floating > .form-control ~ label::after,.form-floating > .form-select ~ label::after{background-color:var(--surface)!important;}
+/* menu lateral recolhido e barra secundária (telas estreitas) */
+nav.quarto-secondary-nav,.quarto-banner nav.quarto-secondary-nav,
+div.sidebar.sidebar-navigation.rollup.quarto-sidebar-toggle-contents,nav.sidebar.sidebar-navigation:not(.rollup){
+  background-color:var(--bg)!important; color:var(--text)!important; border-color:var(--rule)!important;}
+nav.quarto-secondary-nav .quarto-page-breadcrumbs,nav.quarto-secondary-nav .breadcrumb-item,
+nav.quarto-secondary-nav .breadcrumb-item a,nav.quarto-secondary-nav h1{color:var(--muted)!important;}
+/* resultados da busca */
+.aa-DetachedOverlay li.aa-Item[aria-selected="false"] .search-item,#quarto-search-results li.aa-Item[aria-selected="false"] .search-item,
+.aa-DetachedOverlay .aa-Item .search-item,#quarto-search-results .aa-Item .search-item,
+.aa-DetachedOverlay .aa-Item .search-result-doc:not(.document-selectable) .search-result-title-container,
+#quarto-search-results .aa-Item .search-result-doc:not(.document-selectable) .search-result-title-container{
+  background-color:var(--surface)!important; color:var(--text)!important; border-color:var(--rule)!important;}
+.aa-DetachedOverlay li.aa-Item[aria-selected="true"] .search-item,#quarto-search-results li.aa-Item[aria-selected="true"] .search-item{
+  background-color:var(--surface-2)!important; color:var(--text-strong)!important;}
+/* o Quarto pinta o item selecionado de verde-primário e o texto dos resultados em
+   #26342B fixo; aqui o selecionado é só uma superfície um pouco mais escura */
+li.aa-Item[aria-selected="true"] .search-result-title-container,li.aa-Item[aria-selected="true"] .search-item.search-result-more{
+  background-color:var(--surface-2)!important; color:var(--text-strong)!important;}
+.aa-Item .search-result-title,.aa-Item .search-result-text,.aa-Item .search-result-more{color:var(--text)!important;}
+.aa-Item .search-result-section,.aa-Item .search-result-crumbs,.aa-Item .search-result-crumbs a{color:var(--muted)!important;}
+li.aa-Item[aria-selected="true"] .search-result-title{color:var(--text-strong)!important;}
+li.aa-Item[aria-selected="true"] .search-item *:not(mark):not(.search-match){background-color:transparent!important;}
+.aa-SourceHeader .search-result-header{background-color:var(--surface-2)!important; color:var(--muted)!important;}
 
 /* ---------- 2. Base e tipografia ---------- */
 html{scroll-behavior:smooth; -webkit-text-size-adjust:100%;}
@@ -351,7 +400,7 @@ main.content > section.level2{margin:0;}
 .hx-tools code{font:400 13px/1.4 var(--font-mono); color:var(--muted); background:transparent; padding:0;}
 .hx-tools .arrow{color:var(--muted); transition:transform var(--fast) var(--ease), color var(--fast) var(--ease);}
 .hx-tools a:hover .arrow{transform:translateX(2px); color:var(--text-strong);}
-.hx-sub{font:600 13px/1.4 var(--font-body); color:var(--muted); margin:var(--s6) 0 var(--s3);}
+.hx-sub{font:600 13px/1.4 var(--font-body); color:var(--muted); opacity:1; margin:var(--s6) 0 var(--s3);}
 
 /* autoria e citação */
 .hx-credits{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:var(--s5); margin:0 0 var(--s6); padding:0; list-style:none;}
@@ -406,7 +455,7 @@ main.content > section.level2{margin:0;}
   font:400 15px/1.4 var(--font-body);
   transition:border-color var(--fast) var(--ease), box-shadow var(--fast) var(--ease), background-color var(--fast) var(--ease);}
 .tool-form textarea{height:auto; min-height:104px; padding:var(--s2) var(--s3); resize:vertical; font-family:var(--font-mono); font-size:13px; line-height:1.6;}
-.tool-form input::placeholder,.tool-form textarea::placeholder{color:var(--faint);}
+.tool-form input::placeholder,.tool-form textarea::placeholder{color:var(--muted); opacity:1;}
 .tool-form input:hover,.tool-form select:hover,.tool-form textarea:hover{border-color:var(--rule-hover);}
 .tool-form input:focus,.tool-form select:focus,.tool-form textarea:focus{outline:0; border-color:var(--accent-line); box-shadow:0 0 0 3px var(--focus-ring);}
 .tool-form [aria-invalid="true"],.file-drop.is-invalid{border-color:var(--bad)!important;}
@@ -543,7 +592,7 @@ main.content > section.level2{margin:0;}
 .sidebar-navigation .sidebar-link{color:var(--muted)!important; border-radius:0; padding:var(--s1) var(--s3)!important; border-left:1px solid var(--rule); transition:color var(--fast) var(--ease), border-color var(--fast) var(--ease);}
 .sidebar-navigation .sidebar-link:hover{color:var(--text-strong)!important; border-left-color:var(--rule-hover);}
 .sidebar-navigation .sidebar-link.active{color:var(--text-strong)!important; font-weight:600; background:transparent; border-left:2px solid var(--accent-line);}
-.sidebar-item-section > .sidebar-item-container .sidebar-item-text,.sidebar-item-section > .sidebar-item-container .menu-text{font:600 12px/1.4 var(--font-body)!important; letter-spacing:.06em; text-transform:uppercase; color:var(--faint)!important;}
+.sidebar-item-section > .sidebar-item-container .sidebar-item-text,.sidebar-item-section > .sidebar-item-container .menu-text{font:600 12px/1.4 var(--font-body)!important; letter-spacing:.06em; text-transform:uppercase; color:var(--muted)!important;}
 .sidebar-item-section > .sidebar-item-container > a{border-left:0!important;}
 .sidebar-title{font-family:var(--font-display); color:var(--text-strong);}
 #quarto-sidebar .sidebar-item-toggle{color:var(--faint);}
@@ -551,7 +600,7 @@ main.content > section.level2{margin:0;}
 #TOC .nav-link,#TOC a{font-size:14px; color:var(--muted)!important; border-left:1px solid var(--rule)!important; transition:color var(--fast) var(--ease);}
 #TOC .nav-link:hover,#TOC a:hover{color:var(--text-strong)!important;}
 #TOC .nav-link.active,#TOC a.active{color:var(--text-strong)!important; border-left:2px solid var(--accent-line)!important;}
-#toc-title{font:600 12px/1.4 var(--font-body)!important; letter-spacing:.06em; text-transform:uppercase; color:var(--faint)!important;}
+#toc-title{font:600 12px/1.4 var(--font-body)!important; letter-spacing:.06em; text-transform:uppercase; color:var(--muted)!important;}
 .page-navigation{margin-top:var(--s8); border-top:1px solid var(--rule); padding-top:var(--s5);}
 .nav-page a,.page-navigation a{color:var(--text-strong)!important; text-decoration:none;}
 .nav-page{border:1px solid var(--rule); border-radius:var(--r3); padding:var(--s3) var(--s4); background:var(--surface); transition:border-color var(--fast) var(--ease);}
@@ -571,7 +620,7 @@ main.content > section.level2{margin:0;}
 /* código inline: o Bootstrap do Quarto pinta p/li/td code com fundo claro fixo */
 p code:not(.sourceCode),li code:not(.sourceCode),td code:not(.sourceCode),dd code:not(.sourceCode),figcaption code{
   background-color:var(--code-inline-bg)!important; color:var(--code-inline)!important; padding:1px 4px!important; border-radius:var(--r1);}
-nav p code:not(.sourceCode),nav li code:not(.sourceCode),.hx-index li code:not(.sourceCode),.hx-tools li code:not(.sourceCode){background-color:transparent!important; padding:0!important; color:inherit!important;}
+.nav-page code,nav p code:not(.sourceCode),nav li code:not(.sourceCode),.hx-index li code:not(.sourceCode),.hx-tools li code:not(.sourceCode){background-color:transparent!important; padding:0!important; color:inherit!important;}
 /* texto sem token (identificadores) herda a cor do tema, não a do realce "github" */
 div.sourceCode code span{color:var(--code-text);}
 code,kbd,pre,samp{font-family:var(--font-mono);}
@@ -592,7 +641,13 @@ div.sourceCode code span.al,div.sourceCode code span.er,div.sourceCode code span
 .code-copy-button{opacity:.55; transition:opacity var(--fast) var(--ease);}
 .code-copy-button:hover,.code-copy-button:focus-visible{opacity:1;}
 .code-copy-button > .bi::before{color:var(--muted)!important;}
-.tippy-box{background:var(--text-strong)!important; color:var(--bg)!important; border-radius:var(--r2)!important; font-size:13px!important;}
+.tippy-box{background:var(--text-strong)!important; color:var(--bg)!important; border-color:var(--text-strong)!important; border-radius:var(--r2)!important; font-size:13px!important;}
+.tippy-box .tippy-content,.tippy-box .tippy-content a{color:var(--bg)!important;}
+.tippy-box > .tippy-backdrop{background-color:var(--text-strong)!important;}
+.tippy-box[data-placement^=top] > .tippy-arrow::before{border-top-color:var(--text-strong)!important;}
+.tippy-box[data-placement^=bottom] > .tippy-arrow::before{border-bottom-color:var(--text-strong)!important;}
+.tippy-box[data-placement^=left] > .tippy-arrow::before{border-left-color:var(--text-strong)!important;}
+.tippy-box[data-placement^=right] > .tippy-arrow::before{border-right-color:var(--text-strong)!important;}
 
 /* ---------- 11. Rodapé ---------- */
 .nav-footer{background:var(--bg)!important; border-top:1px solid var(--rule)!important; color:var(--muted)!important; font-size:14px; padding:var(--s6) var(--gutter)!important; min-height:auto;}
