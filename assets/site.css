@@ -319,3 +319,12 @@ html.no-js .needs-js{display:none!important;}
   main a[href^="http"]::after{content:" (" attr(href) ")"; font-size:11px; color:#333; overflow-wrap:anywhere;}
   *,*::before,*::after{animation:none!important; transition:none!important;}
 }
+
+/* referência gerada dos .Rd (scripts/build_reference.R) */
+.rd-title{font:400 19px/1.5 var(--font-display); color:var(--text-strong); margin:0 auto var(--s2);}
+.rd{margin:var(--s4) auto var(--s8); max-width:var(--content);}
+.rd h4{font:600 13px/1.4 var(--font-body); letter-spacing:.06em; text-transform:uppercase; color:var(--muted); margin:var(--s6) 0 var(--s2);}
+.rd pre{margin:var(--s3) 0; border:1px solid var(--rule); border-radius:var(--r3); background:var(--code-bg);}
+.rd table{font-size:15px;}
+.rd td:first-child{white-space:nowrap; padding-right:var(--s4);}
+.rd td:first-child code{font-weight:500;}

@@ -1,0 +1,49 @@
+{
+  "families": 42,
+  "voucher_folders": 937,
+  "sample": [
+    {
+      "family": "Annonaceae",
+      "genera": [
+        {
+          "name": "Anaxagorea",
+          "vouchers": "GCO1125_Tree#125",
+          "more": 0
+        },
+        {
+          "name": "Annona",
+          "vouchers": ["GCO1819_Tree#819", "GCO1863_Tree#863", "GCO1874_Tree#874"],
+          "more": 0
+        }
+      ],
+      "more": 4
+    },
+    {
+      "family": "Aptandraceae",
+      "genera": [
+        {
+          "name": "Cathedra",
+          "vouchers": ["GCO1146_Tree#146", "GCO1301_Tree#301", "GCO1580_Tree#580"],
+          "more": 2
+        },
+        {
+          "name": "Indet",
+          "vouchers": "GCO1492_Tree#492",
+          "more": 0
+        }
+      ],
+      "more": 0
+    },
+    {
+      "family": "Aquifoliaceae",
+      "genera": [
+        {
+          "name": "Ilex",
+          "vouchers": ["GCO1134_Tree#134", "GCO1249_Tree#249", "GCO1543_Tree#543"],
+          "more": 2
+        }
+      ],
+      "more": 0
+    }
+  ]
+}
