@@ -17,5 +17,5 @@ backend/pkg/*
 /_freeze/
 /.forplotr-sha
 
-# dependências do empacotamento dos panoramas (tools/panorama)
+# dependências do empacotamento dos panoramas (_tools/panorama)
 node_modules/
