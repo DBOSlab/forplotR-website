@@ -17,10 +17,10 @@ It is an open-source R package (MIT licence), with a web app, to manage the bota
 ```
 
 ::: {data-lang="pt"}
-Giulia C. Ottino, como produto de seu mestrado em Botânica na Escola Nacional de Botânica Tropical (ENBT/JBRJ), sob orientação de Domingos Cardoso, no Instituto de Pesquisas Jardim Botânico do Rio de Janeiro (DBOSlab). Os dois são os autores do pacote. Veja [Autoria]({{LINK:authors}}).
+Giulia C. Ottino, como produto de seu mestrado em Botânica na Escola Nacional de Botânica Tropical (ENBT/JBRJ), sob orientação de Domingos Cardoso e coorientação de Pedro Lage Viana (Instituto Nacional da Mata Atlântica, INMA), no Instituto de Pesquisas Jardim Botânico do Rio de Janeiro (DBOSlab). Giulia e Domingos são os autores do pacote. Veja [Autoria]({{LINK:authors}}).
 :::
 ::: {data-lang="en"}
-Giulia C. Ottino, as the product of her master's degree in Botany at the National School of Tropical Botany (ENBT/JBRJ), supervised by Domingos Cardoso, at the Rio de Janeiro Botanical Garden Research Institute (DBOSlab). Both are the authors of the package. See [Authors]({{LINK:authors}}).
+Giulia C. Ottino, as the product of her master's degree in Botany at the National School of Tropical Botany (ENBT/JBRJ), supervised by Domingos Cardoso and co-supervised by Pedro Lage Viana (Instituto Nacional da Mata Atlântica, INMA), at the Rio de Janeiro Botanical Garden Research Institute (DBOSlab). Giulia and Domingos are the authors of the package. See [Authors]({{LINK:authors}}).
 :::
 
 ```{=html}

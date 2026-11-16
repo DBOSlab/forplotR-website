@@ -60,10 +60,10 @@ When citing results produced in the browser, also give the forplotR version show
 ## [Autoria e código-fonte]{data-lang=pt}[Authorship and source code]{data-lang=en} {#autoria}
 
 ::: {data-lang="pt"}
-O forplotR foi desenvolvido por **Giulia C. Ottino** como produto de seu mestrado em Botânica na Escola Nacional de Botânica Tropical (ENBT/JBRJ), sob orientação de **Domingos Cardoso** (DBOSlab); detalhes em [Autoria]({{LINK:authors}}). O código do [pacote](https://github.com/DBOSlab/forplotR) e do [site](https://github.com/DBOSlab/forplotR-website) está no GitHub sob licença MIT; erros e sugestões pelas [issues do repositório](https://github.com/DBOSlab/forplotR/issues).
+O forplotR foi desenvolvido por **Giulia C. Ottino** como produto de seu mestrado em Botânica na Escola Nacional de Botânica Tropical (ENBT/JBRJ), sob orientação de **Domingos Cardoso** (DBOSlab) e coorientação de **Pedro Lage Viana** (INMA); detalhes em [Autoria]({{LINK:authors}}). O código do [pacote](https://github.com/DBOSlab/forplotR) e do [site](https://github.com/DBOSlab/forplotR-website) está no GitHub sob licença MIT; erros e sugestões pelas [issues do repositório](https://github.com/DBOSlab/forplotR/issues).
 :::
 ::: {data-lang="en"}
-forplotR was developed by **Giulia C. Ottino** as the product of her master's degree in Botany at the National School of Tropical Botany (ENBT/JBRJ), supervised by **Domingos Cardoso** (DBOSlab); details under [Authors]({{LINK:authors}}). The code of the [package](https://github.com/DBOSlab/forplotR) and of the [site](https://github.com/DBOSlab/forplotR-website) is on GitHub under the MIT licence; bugs and suggestions through the [repository issues](https://github.com/DBOSlab/forplotR/issues).
+forplotR was developed by **Giulia C. Ottino** as the product of her master's degree in Botany at the National School of Tropical Botany (ENBT/JBRJ), supervised by **Domingos Cardoso** (DBOSlab) and co-supervised by **Pedro Lage Viana** (INMA); details under [Authors]({{LINK:authors}}). The code of the [package](https://github.com/DBOSlab/forplotR) and of the [site](https://github.com/DBOSlab/forplotR-website) is on GitHub under the MIT licence; bugs and suggestions through the [repository issues](https://github.com/DBOSlab/forplotR/issues).
 :::
 
 ```{=html}
