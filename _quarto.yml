@@ -40,6 +40,8 @@ project:
     - "!_tools/"
 
 lang: en
+# idioma padrão inglês; pt/_metadata.yml muda para português (lang-en: false)
+lang-en: true
 
 website:
   title: "forplotR"

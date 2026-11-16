@@ -192,8 +192,9 @@
    com espaço para a prévia do mapa e do relatório. */
 .tool-shell{grid-template-columns:minmax(0,1fr)!important; gap:var(--s6);}
 .tool-card{padding:clamp(16px,3vw,32px); border-radius:10px;}
-.wizard{gap:var(--s6);}
-.step{display:grid; gap:var(--s4); padding-bottom:var(--s6); border-bottom:1px solid var(--rule);}
+.wizard{gap:var(--s6); grid-template-columns:minmax(0,1fr);}
+.step{display:grid; grid-template-columns:minmax(0,1fr); gap:var(--s4); padding-bottom:var(--s6); border-bottom:1px solid var(--rule); min-width:0;}
+.tool-card,.result-panel,.job-box{min-width:0;}
 .step-head{display:flex; align-items:center; gap:var(--s3); margin:0; font:600 19px/1.3 var(--font-display); color:var(--text-strong);}
 .step-n{flex:none; display:grid; place-content:center; width:28px; height:28px; border-radius:50%; background:var(--accent); color:var(--on-accent); font:600 14px/1 var(--font-body);}
 .step > .form-field,.step .plot-inputs{max-width:640px;}
@@ -349,5 +350,8 @@
   .run-bar .fx-btn{min-width:120px;}
   .report-frame{height:70vh; min-height:360px;}
   .tile dd{font-size:22px;}
+  .tiles{grid-template-columns:repeat(2,minmax(0,1fr)); gap:var(--s2);}
+  .tile{padding:var(--s2) var(--s3);}
 }
 @media (prefers-reduced-motion: reduce){ .switch-track,.switch-track::after,.layout-card,.src-card{transition:none;} }
+.res-summary .muted-note{font-size:13.5px; line-height:1.5; max-width:70ch;}
