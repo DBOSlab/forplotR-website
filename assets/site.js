@@ -126,6 +126,31 @@
     });
   });
 
+  // ---------- panoramas 3D ----------
+  // O SVG estático já está na página. O 3D (assets/panorama.js, Three.js
+  // empacotado) só é carregado com WebGL, sem prefers-reduced-motion, e depois
+  // da primeira interação ou de alguns segundos.
+  (function () {
+    if (!document.querySelector('figure.panorama[data-pano]')) return;
+    if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    try {
+      var c = document.createElement('canvas');
+      if (!(c.getContext('webgl2') || c.getContext('webgl'))) return;
+    } catch (e) { return; }
+    var meta = document.querySelector('meta[name="quarto:offset"]');
+    var base = new URL((meta && meta.content) || './', location.href).href;
+    var done = false;
+    var evs = ['pointerdown', 'keydown', 'wheel', 'touchstart', 'scroll'];
+    function go() {
+      if (done) return;
+      done = true;
+      evs.forEach(function (ev) { window.removeEventListener(ev, go); });
+      import(base + 'assets/panorama.js').then(function (m) { return m.start(base); }).catch(function () {});
+    }
+    evs.forEach(function (ev) { window.addEventListener(ev, go, { passive: true, once: true }); });
+    setTimeout(go, 3000);
+  })();
+
   // ---------- atalhos de teclado ----------
   document.addEventListener('keydown', function (e) {
     if (e.ctrlKey || e.metaKey || e.altKey) return;

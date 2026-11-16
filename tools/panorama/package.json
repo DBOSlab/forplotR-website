@@ -1,0 +1,12 @@
+{
+  "name": "forplotr-panorama",
+  "private": true,
+  "description": "Panoramas 3D da página inicial (Three.js empacotado e auto-hospedado).",
+  "scripts": {
+    "build": "esbuild src/panorama.js --bundle --minify --format=esm --target=es2019 --legal-comments=none --outfile=../../assets/panorama.js"
+  },
+  "devDependencies": {
+    "esbuild": "0.24.0",
+    "three": "0.170.0"
+  }
+}

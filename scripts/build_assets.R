@@ -163,6 +163,7 @@ sub$y0 <- ifelse(sub$col %% 2 == 0, sub$row * 10, (geo$n_rows - sub$row - 1) * 1
 pano <- list(
   source = sprintf("forplotR %s, RUS01 (ForestPlots.net), forplot_balance()", pkg_version),
   plot = list(width = geo$plot_width_m, length = geo$plot_length_m, subplot = 10, n_subplots = geo$n_subplots),
+  n_placed = sum(is.finite(fc$draw_x) & is.finite(fc$draw_y)),   # árvores com posição; as sem D ficam fora das hastes
   trees = unname(as.list(as.data.frame(t(trees)))),
   fields = names(trees),
   subplots = unname(lapply(split(sub[, c("x0", "y0", "collected", "missing", "palms")], seq_len(nrow(sub))), function(r) unname(unlist(r))))
@@ -196,8 +197,8 @@ stems <- vapply(ord, function(i) {
 }, character(1))
 writeLines(c(
   svg_open(list(id = "pano1", text = "RUS01: a parcela em perspectiva / the plot in perspective"),
-           sprintf("Parcela RUS01 (1 ha, 100 subparcelas de 10 x 10 m): %d árvores marcadas; altura da haste proporcional ao diâmetro; %d com voucher coletado, %d sem voucher, %d palmeiras.",
-                   nrow(trees), sum(trees$c == 1 & trees$p == 0), sum(trees$c == 0 & trees$p == 0), sum(trees$p == 1))),
+           sprintf("Parcela RUS01 (1 ha, 100 subparcelas de 10 x 10 m): %d árvores com diâmetro na planilha (de %d com posição); altura da haste proporcional ao diâmetro; %d com voucher coletado, %d sem voucher, %d palmeiras.",
+                   nrow(trees), pano$n_placed, sum(trees$c == 1 & trees$p == 0), sum(trees$c == 0 & trees$p == 0), sum(trees$p == 1))),
   grid_lines(), paste0('<g class="pano-stems">', paste(stems, collapse = ""), "</g></svg>")
 ), file.path(out, "panorama", "rus01_parcela.svg"), useBytes = TRUE)
 

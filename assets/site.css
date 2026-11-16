@@ -386,3 +386,7 @@ pre.tree{margin:var(--s5) auto; border:1px solid var(--rule); border-radius:var(
 main > h1.page-title{font-size:clamp(34px,4.4vw,52px); line-height:1.08; letter-spacing:-.02em; margin-bottom:var(--s8); padding-bottom:var(--s6); border-bottom:1px solid var(--rule);}
 #title-block-header:empty{display:none;}
 main > h1.page-title + .statement,main > h1.page-title + * + .statement{border-top:0; padding-top:0; margin-top:0;}
+
+/* panoramas 3D: a tela ocupa o lugar do SVG, com a mesma proporção */
+.panorama canvas{aspect-ratio:660/470; max-height:78vh; margin:0 auto;}
+@media (prefers-reduced-motion: reduce){ .panorama canvas{display:none!important;} .panorama .static{display:block!important;} }
