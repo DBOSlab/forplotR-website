@@ -159,14 +159,16 @@
 
     // Lê o cabeçalho da planilha e sugere formato, colunas e estações (detect.R).
     // Roda só no navegador; o arquivo vai para a memória do webR e é apagado.
-    async function detect(file) {
+    // headerRow: '' = linha detectada pelo forplotR; número = linha escolhida.
+    async function detect(file, headerRow) {
       if (busy) return null;
       await init();
       busy = true;
       var p = '/home/web_user/fpdetect.xlsx';
       try {
         await webR.FS.writeFile(p, new Uint8Array(await file.arrayBuffer()));
-        return JSON.parse(await webR.evalRString('local_detect("' + p + '")'));
+        var hr = /^[0-9]{1,4}$/.test(String(headerRow || '')) ? String(headerRow) : 'NULL';
+        return JSON.parse(await webR.evalRString('local_detect("' + p + '", ' + hr + ')'));
       } finally {
         try { await webR.FS.unlink(p); } catch (e) { /* ignora */ }
         busy = false;

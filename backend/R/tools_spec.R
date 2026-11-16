@@ -93,6 +93,13 @@ f_plot_meta <- function() {
   )
 }
 
+# Linha do cabeçalho: vazio = detectada pelo forplotR (detect_header_row()).
+# No navegador vira um seletor junto da leitura da planilha (forplotr-app.js).
+f_header_row <- function() {
+  fld("header_row", "Linha do cabeçalho", "number", group = "colunas",
+      help = "Linha da planilha com os nomes das colunas. Vazio: detectada automaticamente.")
+}
+
 f_colnames <- function() {
   lab <- c(
     colname_tagno = "Coluna da plaqueta (New Tag No)",
@@ -173,6 +180,7 @@ TOOLS <- list(
           group = "avancado"),
       f_plot_meta(),
       fld("plot_census_no", "Número do censo", "text", group = "avancado"),
+      f_header_row(),
       f_colnames()
     ),
     fixed = function(ctx, params) list(dir = ctx$outputs, filename = "relatorio_parcela",
@@ -217,6 +225,7 @@ TOOLS <- list(
       fld("highlight_palms", "Destacar palmeiras (Arecaceae)", "bool", default = TRUE,
           group = "avancado"),
       f_plot_meta(),
+      f_header_row(),
       f_colnames()
     ),
     fixed = function(ctx, params) list(dir = ctx$outputs, filename = "mapa_parcela",
@@ -266,6 +275,7 @@ TOOLS <- list(
       fld("locnotes", "Notas da localidade", "text", group = "avancado"),
       f_station(multiple = FALSE),
       fld("sheet", "Aba da planilha (número)", "number", default = 1, group = "avancado"),
+      f_header_row(),
       fld("add_census_notes", "Incluir notas do censo nas observações", "bool", default = TRUE,
           group = "avancado"),
       fld("validate_locality", "Conferir se as coordenadas caem no estado", "bool",
@@ -340,7 +350,7 @@ TOOLS <- list(
     eta = "segundos",
     example = TRUE,
     fields = flatten_fields(
-      f_fp_file(), f_example(), f_input_type(), f_station(multiple = FALSE),
+      f_fp_file(), f_example(), f_input_type(), f_station(multiple = FALSE), f_header_row(),
       fld("voucher_zip", "Pasta de fotos atual (ZIP, opcional)", "file", arg = "",
           accept_ext = c("zip"),
           help = "Sem ZIP, é criada a estrutura vazia para você preencher.")
