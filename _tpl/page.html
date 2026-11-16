@@ -40,7 +40,8 @@ $if(tool)$
 $endif$
 <!-- raiz do site, usada por js/forplotr-app.js e js/forplotr-local.js -->
 <meta name="quarto:offset" content="{{ROOT}}">
-<link rel="icon" type="image/png" href="{{ROOT}}figures/forplotR_hex_sticker.png">
+<link rel="icon" type="image/png" href="{{ROOT}}figures/forplotR_hex_64.png">
+<link rel="apple-touch-icon" href="{{ROOT}}figures/forplotR_hex_192.png">
 $for(header-includes)$
 $header-includes$
 $endfor$
@@ -54,7 +55,7 @@ $endif$
 
 <!-- Celular: faixa do topo com a marca e o tema (a navegação fica na barra inferior). -->
 <header class="mob-head">
-  <a class="brand" href="{{LANGROOT}}"><img src="{{ROOT}}figures/forplotR_hex_sticker.png" alt="" width="24" height="28"><span>forplotR</span></a>
+  <a class="brand" href="{{LANGROOT}}"><img src="{{ROOT}}figures/forplotR_hex_64.png" alt="" width="24" height="26"><span>forplotR</span></a>
   <button type="button" class="search-btn icon needs-js" data-search-open aria-haspopup="dialog" aria-label="$if(lang-en)$Search$else$Buscar$endif$">
     <svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="4.5"/><path d="m10.5 10.5 3.5 3.5"/></svg>
   </button>
@@ -66,7 +67,7 @@ $endif$
 <div class="shell">
 <aside class="rail" $if(lang-en)$aria-label="Site navigation"$else$aria-label="Navegação do site"$endif$>
   <a class="brand" href="{{LANGROOT}}" $if(lang-en)$aria-label="forplotR, home"$else$aria-label="forplotR, início"$endif$>
-    <img src="{{ROOT}}figures/forplotR_hex_sticker.png" alt="" width="28" height="32">
+    <img src="{{ROOT}}figures/forplotR_hex_64.png" alt="" width="28" height="31">
     <span>forplotR</span>
   </a>
   <button type="button" class="search-btn needs-js" data-search-open aria-haspopup="dialog">

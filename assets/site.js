@@ -129,27 +129,37 @@
 
   // ---------- panoramas 3D ----------
   // O SVG estático já está na página. O 3D (assets/panorama.js, Three.js
-  // empacotado) só é carregado com WebGL, sem prefers-reduced-motion, e depois
-  // da primeira interação ou de alguns segundos.
+  // empacotado) só é carregado sem prefers-reduced-motion, com WebGL, quando um
+  // panorama chega perto da tela e depois da primeira interação ou de 3 s.
   (function () {
-    if (!document.querySelector('figure.panorama[data-pano]')) return;
+    var figs = document.querySelectorAll('figure.panorama[data-pano]');
+    if (!figs.length || !('IntersectionObserver' in window)) return;
     if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    try {
-      var c = document.createElement('canvas');
-      if (!(c.getContext('webgl2') || c.getContext('webgl'))) return;
-    } catch (e) { return; }
     var meta = document.querySelector('meta[name="quarto:offset"]');
     var base = new URL((meta && meta.content) || './', location.href).href;
-    var done = false;
+    var woke = false, near = false, done = false;
     var evs = ['pointerdown', 'keydown', 'wheel', 'touchstart', 'scroll'];
     function go() {
-      if (done) return;
+      if (done || !woke || !near) return;
       done = true;
-      evs.forEach(function (ev) { window.removeEventListener(ev, go); });
+      io.disconnect();
+      try {
+        var c = document.createElement('canvas');
+        if (!(c.getContext('webgl2') || c.getContext('webgl'))) return;
+      } catch (e) { return; }
       import(base + 'assets/panorama.js').then(function (m) { return m.start(base); }).catch(function () {});
     }
-    evs.forEach(function (ev) { window.addEventListener(ev, go, { passive: true, once: true }); });
-    setTimeout(go, 3000);
+    function wake() {
+      woke = true;
+      evs.forEach(function (ev) { window.removeEventListener(ev, wake); });
+      go();
+    }
+    var io = new IntersectionObserver(function (es) {
+      if (es.some(function (e) { return e.isIntersecting; })) { near = true; go(); }
+    }, { rootMargin: '400px 0px' });
+    figs.forEach(function (f) { io.observe(f); });
+    evs.forEach(function (ev) { window.addEventListener(ev, wake, { passive: true }); });
+    setTimeout(wake, 3000);
   })();
 
   // ---------- busca (Pagefind) ----------
