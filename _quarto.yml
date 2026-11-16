@@ -45,6 +45,8 @@ website:
   title: "forplotR"
   site-url: "https://dboslab.github.io/forplotR-website/"
   description: "forplotR: an R package and browser app to manage the botanical collections of permanent vegetation monitoring plots."
+  # a busca do site é a do Pagefind (_tools); o índice do Quarto não é usado
+  search: false
 
 format:
   html:

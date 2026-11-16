@@ -296,6 +296,31 @@ graph_for <- function(row, h) {
   t <- thesis_node(row$lang)
   if (!is.null(t)) g <- c(g, list(t))
   if (thesis_ok && has(th$co_advisor)) g <- c(g, list(person_node(th$co_advisor, row$lang)))
+  # páginas do app no navegador: WebApplication (gratuito, roda no navegador,
+  # dados ficam no computador), ligado ao pacote e à autora
+  if (row$id == "tools" || grepl("^tool-", row$id)) {
+    en <- row$lang == "en"
+    g <- c(g, list(compact(list(
+      "@type" = "WebApplication", "@id" = paste0(row$url, "#app"),
+      name = sub(" [—|–-] forplotR$", "", row$title), url = row$url,
+      description = row$description,
+      applicationCategory = "ScientificApplication",
+      applicationSubCategory = if (en) "Botanical collection management for permanent vegetation plots" else "Gestão de coleções botânicas de parcelas permanentes de vegetação",
+      operatingSystem = "Any (web browser with WebAssembly)",
+      browserRequirements = "Requires WebAssembly (webR); data are processed locally and are not uploaded.",
+      isAccessibleForFree = TRUE,
+      offers = list("@type" = "Offer", price = "0", priceCurrency = "USD"),
+      inLanguage = if (en) "en" else "pt-BR",
+      featureList = if (en) c("Reads the spreadsheet header and suggests the layout and columns",
+                              "Interactive plot map", "Collection-balance report", "Voucher photo folders",
+                              "Herbarium label spreadsheet (JABOT, BRAHMS)", "Runs locally: no data upload")
+                    else c("Lê o cabeçalho da planilha e sugere o formato e as colunas",
+                           "Mapa interativo da parcela", "Relatório de balanço de coleta", "Pastas de fotos dos vouchers",
+                           "Planilha de etiquetas do herbário (JABOT, BRAHMS)", "Roda no computador: nenhum dado é enviado"),
+      isPartOf = list("@id" = id_sw),
+      creator = list(list("@id" = id_person("ottino")), list("@id" = id_person("cardoso")))
+    ))))
+  }
   list("@context" = "https://schema.org", "@graph" = g)
 }
 
