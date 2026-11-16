@@ -32,8 +32,8 @@ $endif$
   r.setAttribute('data-theme', t);
 })();
 </script>
-<link rel="preload" href="{{ROOT}}fonts/beacon.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="{{ROOT}}fonts/vesper.woff2" as="font" type="font/woff2" crossorigin>
+<!-- Texto e títulos usam a sans-serif do sistema (--font-sans em assets/site.css):
+     nenhuma fonte de texto é baixada. -->
 <link rel="stylesheet" href="{{ROOT}}assets/site.css">
 $if(tool)$
 <link rel="stylesheet" href="{{ROOT}}assets/tools.css">

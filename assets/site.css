@@ -7,8 +7,9 @@
    Espaçamento em múltiplos de 4px (--s1 a --s10). Temas claro e escuro por
    html[data-theme]. Contraste AA conferido nos dois temas.
 
-   Tipografia (fonts/, fontzz, SIL OFL 1.1): Vesper (títulos e marca),
-   Beacon (texto e interface; distingue l, I e 1), Signal (código e rótulos).
+   Tipografia: sans-serif do sistema (na linha da Arial) em texto, interface
+   e títulos; Signal (fonts/, fontzz, SIL OFL 1.1) em código e rótulos.
+   A escolha fica só em --font-sans e --font-mono, logo abaixo.
 
    1. Fontes e tokens     5. Conteúdo (prosa, código, tabelas, notas)
    2. Base                6. Componentes (cartões, fluxo, figuras)
@@ -27,10 +28,15 @@
   --rail:248px; --measure:720px; --content:720px; --wide:1080px; --gutter:clamp(16px,4vw,48px);
   --ease:cubic-bezier(.2,.6,.2,1); --fast:120ms; --mid:200ms;
 
-  --font-display:"Vesper",system-ui,-apple-system,"Segoe UI",sans-serif;
-  --font-body:"Beacon",system-ui,-apple-system,"Segoe UI",sans-serif;
+  /* Fonte do site e do app: mude só --font-sans (texto, interface e títulos)
+     e --font-mono (código). Para voltar às fontes anteriores, use
+     --font-display:"Vesper",var(--font-sans); --font-body:"Beacon",var(--font-sans);
+     e restaure os dois <link rel="preload"> em _tpl/page.html. */
+  --font-sans:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
   --font-mono:"Signal",ui-monospace,"SF Mono",Consolas,monospace;
-  --font-brand:"Vesper",system-ui,sans-serif;
+  --font-display:var(--font-sans);
+  --font-body:var(--font-sans);
+  --font-brand:var(--font-sans);
 
   --mata:#0E3B2C; --ipe:#E9B425; --agua:#7FC8A9;
 
