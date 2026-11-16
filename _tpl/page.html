@@ -55,7 +55,7 @@ $endif$
 
 <!-- Celular: faixa do topo com a marca e o tema (a navegação fica na barra inferior). -->
 <header class="mob-head">
-  <a class="brand" href="{{LANGROOT}}"><img src="{{ROOT}}figures/forplotR_hex_64.png" alt="" width="24" height="26"><span>forplotR</span></a>
+  <a class="brand" href="{{LANGROOT}}"><img src="{{ROOT}}figures/forplotR_hex_64.png" alt="" width="28" height="31"><span>forplotR</span></a>
   <button type="button" class="search-btn icon needs-js" data-search-open aria-haspopup="dialog" aria-label="$if(lang-en)$Search$else$Buscar$endif$">
     <svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="4.5"/><path d="m10.5 10.5 3.5 3.5"/></svg>
   </button>
@@ -149,7 +149,10 @@ $body$
 
 <footer class="site-foot">
   <div class="foot-inner">
-    <p class="foot-auth">{{AUTHOR_LINE}}</p>
+    <div class="foot-brand">
+      <img src="{{ROOT}}figures/forplotR_hex_64.png" alt="" width="29" height="32" loading="lazy">
+      <p class="foot-auth">{{AUTHOR_LINE}}</p>
+    </div>
     <p class="foot-meta">
 $if(lang-en)$
       <a href="{{LINK:authors}}">Authors</a> · <a href="{{LINK:cite}}">Cite</a> · <a href="{{LINK:news}}">News</a> · <a href="{{LINK:faq}}">FAQ</a> · <a href="https://github.com/DBOSlab/forplotR">GitHub</a> · <a href="https://github.com/DBOSlab/forplotR-website">site source</a> · MIT licence
