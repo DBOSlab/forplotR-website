@@ -56,7 +56,7 @@
 
 
 /* ---------- 8. Formulários e ferramentas online ---------- */
-.fp-tool-app{margin-top:var(--s6);}
+.fp-tool-app{margin:var(--s6) auto 0; max-width:var(--wide);}
 .tool-shell{display:grid; grid-template-columns:minmax(320px,420px) minmax(0,1fr); gap:var(--s5); align-items:start;}
 .tool-card{background:var(--surface); border:1px solid var(--rule); border-radius:var(--r3); padding:var(--s5);}
 .fp-tool-head{display:flex; justify-content:space-between; align-items:center; gap:var(--s3); margin:0 0 var(--s5); padding-bottom:var(--s4); border-bottom:1px solid var(--rule); flex-wrap:wrap;}
