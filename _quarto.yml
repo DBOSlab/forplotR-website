@@ -30,6 +30,7 @@ project:
     - about/index.qmd
     - news/index.qmd
     - faq/index.qmd
+    - license/index.qmd
     - pt/**/index.qmd
   resources:
     - assets/

@@ -412,7 +412,9 @@ for (i in seq_len(nrow(pages))) {
 # o português antes (localStorage) ou se o endereço traz ?lang=pt.
 redirects <- list(
   "about.html"                                    = c("about", ""),
-  "LICENSE.html"                                  = c("about", ""),
+  "LICENSE.html"                                  = c("license", ""),
+  "LICENSE-text.html"                             = c("license", ""),
+  "license.html"                                  = c("license", ""),
   "articles/index.html"                           = c("apps", ""),
   "articles/plot_html_map_general_usage.html"     = c("map", ""),
   "articles/plot_for_balance_general_usage.html"  = c("balance", ""),

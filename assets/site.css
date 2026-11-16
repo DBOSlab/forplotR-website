@@ -417,6 +417,8 @@ pre.tree{margin:var(--s5) auto; border:1px solid var(--rule); border-radius:var(
 .thesis{margin:var(--s5) auto; padding:var(--s4) var(--s5); border-left:2px solid var(--ipe); background:var(--surface-2); max-width:var(--content);}
 .thesis-label{font:600 12px/1.4 var(--font-body); letter-spacing:.06em; text-transform:uppercase; color:var(--muted); margin-bottom:var(--s1);}
 .lead{margin-bottom:var(--s5);}
+.license-text{font-size:15px; line-height:1.6; padding:var(--s5); border:1px solid var(--rule); border-radius:var(--r3); background:var(--surface);}
+.license-text p{margin:0 0 var(--s3);} .license-text p:last-child{margin-bottom:0;}
 .person-full{font-size:14px; color:var(--muted); margin:0 0 var(--s2);}
 .thesis-title{font:500 18px/1.45 var(--font-display); color:var(--text-strong); margin-bottom:var(--s2);}
 /* título fora do bloco do Quarto (quando ele não o move) */

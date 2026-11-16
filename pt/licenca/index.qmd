@@ -1,0 +1,10 @@
+---
+title: "[Licença]{data-lang=pt}[Licence]{data-lang=en}"
+description: "[O forplotR e este site são distribuídos sob a licença MIT: texto completo.]{data-lang=pt}[forplotR and this site are distributed under the MIT licence: full text.]{data-lang=en}"
+page-id: license
+en-path: "license"
+schema: WebPage
+kicker: "MIT"
+---
+
+{{< include _body.qmd >}}
