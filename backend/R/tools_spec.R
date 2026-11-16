@@ -148,23 +148,25 @@ TOOLS <- list(
 
   balance = list(
     id = "balance", fun = "forplot_balance", chip = "Relatório",
-    title = "Relatório e balanço de coleta",
+    title = "Relatório de campo e balanço de coleta",
     description = paste(
-      "Mapas da parcela e de cada subparcela, situação de coleta (coletados,",
-      "não coletados, palmeiras), checklist, rota de subparcelas prioritárias",
-      "e planilha-resumo. Saídas em HTML interativo, PDF e XLSX."),
-    eta = "1 a 5 minutos (PDF leva mais)",
+      "Um único arquivo HTML para usar no campo (celular, sem internet) ou impresso:",
+      "resumo do balanço, grade clicável das subparcelas, mapas da parcela com a",
+      "plaqueta de cada fuste, rota de prioridade, uma página A4 por subparcela",
+      "com mapa, tabela e colunas para remedição, e florística e fitossociologia.",
+      "Também gera a planilha XLSX."),
+    eta = "1 a 2 minutos com os dados de exemplo",
     example = TRUE,
-    # No navegador não há LaTeX: relatório HTML (que pode ser impresso em PDF
-    # pelo próprio navegador), PNGs e XLSX.
+    # No navegador não há Chrome sem interface para imprimir o PDF: o relatório
+    # HTML é impresso em PDF pelo próprio navegador (Imprimir > Salvar como PDF).
     local_fixed = list(render_pdf = FALSE),
     fields = flatten_fields(
       f_fp_file(), f_example(), f_input_type(), f_language(), f_station(multiple = TRUE),
       f_geometry(),
-      fld("render_html", "Gerar relatório HTML interativo", "bool", default = TRUE,
-          local = list(help = "Para ter um PDF, abra o relatório e use Imprimir > Salvar como PDF.")),
+      fld("render_html", "Gerar relatório de campo (HTML)", "bool", default = TRUE,
+          local = list(help = "Para ter o PDF (A4), abra o relatório e use Imprimir > Salvar como PDF.")),
       fld("render_pdf", "Gerar relatório PDF", "bool", default = FALSE,
-          help = "Exige LaTeX no servidor e leva alguns minutos a mais.", local = FALSE),
+          help = "Exige Chrome, Chromium ou Edge no servidor.", local = FALSE),
       fld("write_xlsx", "Gerar planilha de balanço (XLSX)", "bool", default = TRUE,
           help = "Não disponível para MONITORA."),
       fld("highlight_palms", "Destacar palmeiras (Arecaceae)", "bool", default = TRUE,

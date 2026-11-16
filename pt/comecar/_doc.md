@@ -32,22 +32,10 @@ library(forplotR)
 ```
 
 ::: {data-lang="pt"}
-O **relatório em PDF** de `forplot_balance()` é compilado com LaTeX e requer uma distribuição TeX (TinyTeX, TeX Live ou MiKTeX). A instalação do TinyTeX pode ser feita a partir do R:
+O **relatório de campo** de `forplot_balance()` é um único arquivo HTML e não depende de pandoc nem de LaTeX. O **PDF** é o mesmo HTML impresso pelo Chrome, Chromium ou Edge instalado no computador; sem nenhum deles, o PDF é pulado com um aviso e o HTML pode ser impresso pelo navegador (Imprimir > Salvar como PDF). Se o navegador estiver num caminho fora do padrão, indique-o na variável de ambiente `FORPLOTR_CHROME`.
 :::
 ::: {data-lang="en"}
-The **PDF report** of `forplot_balance()` is compiled with LaTeX and requires a TeX distribution (TinyTeX, TeX Live or MiKTeX). TinyTeX can be installed from R:
-:::
-
-```{.r .rede}
-install.packages("tinytex")
-tinytex::install_tinytex()
-```
-
-::: {data-lang="pt"}
-O relatório HTML, as figuras e as planilhas não dependem de LaTeX; para omitir o PDF, use `render_pdf = FALSE`.
-:::
-::: {data-lang="en"}
-The HTML report, the figures and the spreadsheets do not depend on LaTeX; to skip the PDF, use `render_pdf = FALSE`.
+The **field report** of `forplot_balance()` is a single HTML file and needs neither pandoc nor LaTeX. The **PDF** is the same HTML printed by the Chrome, Chromium or Edge installed on the computer; without any of them the PDF is skipped with a warning and the HTML can be printed from the browser (Print > Save as PDF). If the browser is in a non-standard location, set the `FORPLOTR_CHROME` environment variable.
 :::
 
 ## [Formatos de entrada]{data-lang=pt}[Input layouts]{data-lang=en} {#formatos-de-entrada}

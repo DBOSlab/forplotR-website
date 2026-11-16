@@ -52,12 +52,12 @@
   // Textos do servidor (tools_spec.R, jobs.R) em inglês.
   var SERVER_EN = {
     // ferramentas
-    'Relatório e balanço de coleta': 'Report and collection balance',
+    'Relatório de campo e balanço de coleta': 'Field report and collection balance',
     'Mapa interativo da parcela': 'Interactive plot map',
     'Planilha para o herbário': 'Herbarium spreadsheet',
     'Cruzamento com o herbário': 'Determination cross-check',
     'Pastas de vouchers': 'Voucher directories',
-    '1 a 5 minutos (PDF leva mais)': '1 to 5 minutes (longer with PDF)',
+    '1 a 2 minutos com os dados de exemplo': '1 to 2 minutes with the example data',
     'menos de 1 minuto (mais, com busca em herbários)': 'under 1 minute (longer with herbarium lookup)',
     'menos de 1 minuto (mais, se a altitude for calculada)': 'under 1 minute (longer if elevation is computed)',
     'primeira vez: vários minutos (download do JABOT); depois, ~1 minuto': 'first time: several minutes (JABOT download); afterwards, about 1 minute',
@@ -100,9 +100,9 @@
     'MONITORA: coluna CAP (cm)': 'MONITORA: CBH column (cm)',
     'MONITORA: coluna da estação': 'MONITORA: station column',
     'MONITORA: coluna do ano do censo': 'MONITORA: census year column',
-    'Gerar relatório HTML interativo': 'Produce interactive HTML report',
+    'Gerar relatório de campo (HTML)': 'Produce field report (HTML)',
     'Gerar relatório PDF': 'Produce PDF report',
-    'Exige LaTeX no servidor e leva alguns minutos a mais.': 'Requires LaTeX on the server and takes a few more minutes.',
+    'Exige Chrome, Chromium ou Edge no servidor.': 'Requires Chrome, Chromium or Edge on the server.',
     'Gerar planilha de balanço (XLSX)': 'Produce balance spreadsheet (XLSX)',
     'Não disponível para MONITORA.': 'Not available for MONITORA.',
     'Destacar palmeiras (Arecaceae)': 'Highlight palms (Arecaceae)',
@@ -181,7 +181,7 @@
       'The cross-check needs to download herbarium data (JABOT) from the internet, which the browser mode does not do. Use the forplotR package in R.',
     'Acesso à rede desativado: no navegador, os dados não saem do seu computador.': 'Network access disabled: in the browser, your data never leave your computer.',
     'Arquivo enviado em local inválido.': 'Uploaded file in an invalid location.',
-    'Para ter um PDF, abra o relatório e use Imprimir > Salvar como PDF.': 'For a PDF, open the report and use Print > Save as PDF.'
+    'Para ter o PDF (A4), abra o relatório e use Imprimir > Salvar como PDF.': 'For the PDF (A4), open the report and use Print > Save as PDF.'
   };
   // mensagens do servidor com partes variáveis
   var SERVER_EN_RX = [

@@ -56,10 +56,10 @@ From the `Collected` column (or the one given in `colname_collected`). Values su
 
 
 ::: {data-lang="pt"}
-O PDF requer LaTeX. Instale com `tinytex::install_tinytex()` ou execute com `render_pdf = FALSE`. O HTML, as figuras e a planilha não dependem de LaTeX.
+O PDF é impresso pelo Chrome, Chromium ou Edge. Se nenhum deles for encontrado, o PDF é pulado com um aviso; abra o relatório HTML e use Imprimir > Salvar como PDF, ou indique o executável do navegador em `Sys.setenv(FORPLOTR_CHROME = "caminho/do/navegador")`. LaTeX não é mais necessário.
 :::
 ::: {data-lang="en"}
-The PDF requires LaTeX. Install it with `tinytex::install_tinytex()` or run with `render_pdf = FALSE`. The HTML, the figures and the spreadsheet do not depend on LaTeX.
+The PDF is printed by Chrome, Chromium or Edge. If none is found, the PDF is skipped with a warning; open the HTML report and use Print > Save as PDF, or point to the browser with `Sys.setenv(FORPLOTR_CHROME = "path/to/browser")`. LaTeX is no longer needed.
 :::
 
 ```{=html}

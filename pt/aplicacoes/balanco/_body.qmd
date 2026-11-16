@@ -56,8 +56,8 @@ In RUS01 (1 ha, {{< var rus01.subparcelas >}} subplots of 10 × 10 m), the balan
     <a data-lang="en" href="{{ROOT}}exemplos/balanco/RUS01_relatorio_en.html" data-live-src data-title="RUS01 collection-balance report" data-opened="Open in a new tab">Open the report (5.8 MB)</a>
   </div>
   <div class="live-stage">
-    <p data-lang="pt">O relatório completo do RUS01: mapas da parcela e de cada subparcela, subparcelas prioritárias e checklist. A planilha de completude está <a href="{{ROOT}}exemplos/balanco/RUS01_balanco_pt.xlsx" download>aqui (XLSX)</a>.</p>
-    <p data-lang="en">The full RUS01 report: maps of the plot and of each subplot, priority subplots and checklist. The completeness spreadsheet is <a href="{{ROOT}}exemplos/balanco/RUS01_balanco_en.xlsx" download>here (XLSX)</a>.</p>
+    <p data-lang="pt">O relatório de campo do RUS01: resumo, mapas com a plaqueta de cada fuste, rota de prioridade, uma página por subparcela e checklist. A planilha de completude está <a href="{{ROOT}}exemplos/balanco/RUS01_balanco_pt.xlsx" download>aqui (XLSX)</a>.</p>
+    <p data-lang="en">The RUS01 field report: summary, maps with the tag of every stem, priority route, one page per subplot and checklist. The completeness spreadsheet is <a href="{{ROOT}}exemplos/balanco/RUS01_balanco_en.xlsx" download>here (XLSX)</a>.</p>
   </div>
 </figure>
 ```
@@ -72,13 +72,13 @@ In RUS01 (1 ha, {{< var rus01.subparcelas >}} subplots of 10 × 10 m), the balan
 - **"Coletado" vem da coluna `Collected`.** Valores como `Sim`, `Yes`, `Coletado`, `1` ou `x` contam como coletado; célula vazia conta como não coletado. Confira a coluna antes de usar o balanço para decidir a campanha.
 - **O balanço não conhece a floresta.** Indivíduos que não estão na planilha não aparecem; a completude é relativa ao censo.
 - **As palmeiras ficam à parte** (`highlight_palms = TRUE`), porque muitas vezes não são coletadas pelo mesmo protocolo.
-- **O PDF precisa de LaTeX.** O HTML não precisa de pandoc nem de LaTeX; dele se imprime em PDF pelo navegador.
+- **O PDF é o próprio HTML impresso.** No R, `render_pdf = TRUE` usa o Chrome, o Chromium ou o Edge instalado; sem nenhum deles, o PDF é pulado com um aviso e o HTML pode ser impresso pelo navegador.
 :::
 ::: {data-lang="en"}
 - **"Collected" comes from the `Collected` column.** Values such as `Sim`, `Yes`, `Coletado`, `1` or `x` count as collected; an empty cell counts as not collected. Check the column before using the balance to decide the campaign.
 - **The balance does not know the forest.** Individuals that are not in the spreadsheet do not appear; completeness is relative to the census.
 - **Palms are kept apart** (`highlight_palms = TRUE`), because they are often not collected under the same protocol.
-- **The PDF needs LaTeX.** The HTML needs neither pandoc nor LaTeX, and can be printed to PDF from the browser.
+- **The PDF is the HTML, printed.** In R, `render_pdf = TRUE` uses the installed Chrome, Chromium or Edge; without any of them the PDF is skipped with a warning and the HTML can be printed from the browser.
 :::
 
 ## [No navegador]{data-lang=pt}[In the browser]{data-lang=en} {#no-navegador}
