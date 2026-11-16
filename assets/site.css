@@ -197,7 +197,8 @@ html[lang="en"] pre.rede::before{content:"uses the network";}
 pre.offline,pre.rede{position:relative; padding-top:var(--s7)!important;}
 .copy-btn{position:absolute; bottom:var(--s2); right:var(--s2); height:28px; padding:0 var(--s2); border:1px solid var(--rule-strong); border-radius:var(--r2);
   background:var(--surface); color:var(--muted); font:500 12px/1 var(--font-body); cursor:pointer; opacity:0; transition:opacity var(--fast) var(--ease);}
-div.sourceCode:hover .copy-btn,.copy-btn:focus-visible,.copy-btn.is-done{opacity:1;}
+.code-wrap{position:relative;}
+div.sourceCode:hover .copy-btn,.code-wrap:hover .copy-btn,.copy-btn:focus-visible,.copy-btn.is-done{opacity:1;}
 @media (hover:none){ .copy-btn{opacity:1;} }
 
 /* tabelas */

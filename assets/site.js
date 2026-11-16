@@ -82,9 +82,19 @@
 
   // ---------- copiar código ----------
   var T = EN ? { copy: 'Copy', done: 'Copied', label: 'Copy code' } : { copy: 'Copiar', done: 'Copiado', label: 'Copiar o código' };
-  document.querySelectorAll('div.sourceCode').forEach(function (box) {
-    var pre = box.querySelector('pre');
-    if (!pre || box.querySelector('.copy-btn')) return;
+  // Sem realce de sintaxe o Quarto gera <pre><code> sem div.sourceCode; o botão
+  // fica num invólucro ao lado do <pre> para não entrar no texto copiado.
+  document.querySelectorAll('main pre > code').forEach(function (code) {
+    var pre = code.parentElement;
+    if (pre.classList.contains('tree')) return;
+    var box = pre.parentElement;
+    if (!box.classList.contains('sourceCode') && !box.classList.contains('code-wrap')) {
+      box = document.createElement('div');
+      box.className = 'code-wrap';
+      pre.parentNode.insertBefore(box, pre);
+      box.appendChild(pre);
+    }
+    if (box.querySelector('.copy-btn')) return;
     var b = document.createElement('button');
     b.type = 'button'; b.className = 'copy-btn'; b.textContent = T.copy; b.setAttribute('aria-label', T.label);
     b.addEventListener('click', function () {
