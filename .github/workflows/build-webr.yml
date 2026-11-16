@@ -4,7 +4,8 @@
 #   - o forplotR (R puro) em binário para o webR, a partir do ref escolhido;
 #   - todas as dependências wasm espelhadas na própria origem (MD5 conferido);
 #   - o runtime do webR em versão fixa (sha256 conferido);
-#   - o motor local (backend/webr/engine.R + núcleo comum) e os formulários.
+#   - o motor local (backend/webr/engine.R + núcleo comum) e os formulários;
+#   - as páginas PT/EN, o SEO (scripts/seo.R) e o índice de busca (Pagefind).
 #
 # Branches de teste: só o artefato "site-preview" (nada é publicado).
 #   gh run download <run-id> -n site-preview -D preview
@@ -47,6 +48,8 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
+          # histórico completo: o sitemap.xml usa a data do último commit de cada página
+          fetch-depth: 0
 
       # Ref do pacote: o informado; senão "main" no main do site; senão
       # "feat/webr" enquanto esse branch existir (testes antes do merge).
@@ -126,6 +129,11 @@ jobs:
           rm -rf webr/runtime/assets
           du -sh webr/runtime webr/repo
 
+      # yaml e jsonlite: scripts/sync_en.R (páginas EN) e scripts/seo.R (JSON-LD,
+      # sitemap, llms.txt), rodados pelo quarto render.
+      - name: Pacotes R dos scripts do site
+        run: Rscript -e 'for (p in c("yaml", "jsonlite")) if (!requireNamespace(p, quietly = TRUE)) install.packages(p)'
+
       - name: Instalar Quarto
         uses: quarto-dev/quarto-actions/setup@8a96df13519ee81fd526f2dfca5962811136661b # v2.2.0
 
@@ -135,6 +143,19 @@ jobs:
           git -C _pkg rev-parse HEAD > .forplotr-sha
           rm -rf _pkg
           quarto render
+
+      # Busca do site: o Pagefind indexa o _site renderizado (um índice por idioma).
+      # Os panoramas (assets/panorama.js) já vêm empacotados no repositório.
+      - name: Instalar Node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: "22"
+
+      - name: Índice de busca (Pagefind)
+        run: |
+          npm ci --prefix _tools --no-audit --no-fund
+          npm run search --prefix _tools
+          du -sh _site/pagefind
 
       - name: Montar o site
         env:

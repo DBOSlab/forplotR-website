@@ -1,19 +1,25 @@
 # forplotR online
 
-Site em **Quarto** que roda as funções do pacote
-[forplotR](https://github.com/DBOSlab/forplotR) **no navegador de quem acessa**
-(webR, o R compilado para WebAssembly), sem servidor e sem enviar os dados das
-parcelas a lugar nenhum, e os **artigos/tutoriais** de cada função. O servidor R
-(Plumber + fila) continua disponível como modo alternativo.
+Site do pacote R [forplotR](https://github.com/DBOSlab/forplotR), em **Quarto**,
+organizado pelas aplicações do pacote, em **português (`/`) e inglês (`/en/`)**.
+As funções também rodam **no navegador de quem acessa** (webR, o R compilado
+para WebAssembly), sem servidor e sem enviar os dados das parcelas a lugar
+nenhum. O servidor R (Plumber e fila) continua disponível como modo alternativo.
 
-Visual: identidade tropical sobre base científica. Tipografia fontzz (SIL OFL 1.1,
-em `fonts/`): Folio (títulos), Halden (texto) e Signal (código). Paleta verde-mata,
-ipê-amarelo, urucum, rio e jabuticaba sobre papel de herbário; cada função tem uma
-cor fixa. A figura da abertura (`figures/rus01_stem_map.svg`) é o mapa de fustes
-real da parcela RUS01. Botão PT/EN no menu.
-Exemplos de código: um argumento por linha, um espaço em torno de `=`, sem alinhar.
+O forplotR foi desenvolvido por Giulia C. Ottino como produto de seu mestrado em
+Botânica na Escola Nacional de Botânica Tropical (ENBT/JBRJ), sob orientação de
+Domingos Cardoso (DBOSlab).
 
-| Página | Função | Saídas | No navegador |
+Visual: Quarto sem Bootstrap (template próprio em `_tpl/page.html`, CSS com
+tokens em `assets/site.css`). Tipografia fontzz (SIL OFL 1.1, em `fonts/`):
+Folio (títulos), Halden (texto) e Signal (código). Paleta verde-mata, ipê,
+urucum, rio e jabuticaba sobre papel de herbário, com tema claro e escuro e
+contraste AA. Todo exemplo (mapa, relatório, figuras, planilhas, árvore de
+pastas, panoramas e números do texto) é gerado pelo próprio pacote sobre os
+conjuntos `RUS01` e `TUM`. Exemplos de código: um argumento por linha, com os
+rótulos "roda offline" (`{.r .offline}`) e "usa rede" (`{.r .rede}`).
+
+| Ferramenta no navegador | Função | Saídas | No navegador |
 | --- | --- | --- | --- |
 | `ferramentas/relatorio/` | `forplot_balance()` | relatório HTML/PDF, mapas PNG, balanço XLSX | sim (PDF pela impressão do navegador) |
 | `ferramentas/mapa/` | `forplot_map()` | mapa HTML interativo | sim (sem busca em herbários) |
@@ -24,94 +30,132 @@ Exemplos de código: um argumento por linha, um espaço em torno de `=`, sem ali
 ## Estrutura
 
 ```
-_quarto.yml               site: navbar, rodapé, tema
-_language.yml             textos da interface do Quarto
-_includes/
-  forplotr-head.html      política de segurança (CSP), motor/API + fontes
-  forplotr-after.html     botão PT/EN, animações, abas dos diagramas
-theme.scss                cores e fontes (Bootstrap)
-styles.css                visual do site, das ferramentas e dos artigos
-index.qmd                 página inicial (seções fx-section, textos PT/EN)
-artigos/
-  _metadata.yml           layout comum dos artigos (barra lateral + sumário)
-  index.qmd               cartões de todos os tutoriais
-  comecar.qmd             instalação, formatos de planilha, colunas
-  forplot_balance.qmd     um artigo por função, com argumentos e saídas
-  forplot_map.qmd
-  forplot_sheets.qmd
-  forplot_crossdet.qmd
-  forplot_vouchers.qmd
-  faq.qmd, novidades.qmd
-listings.json             vazio; evita um 404 do Quarto por causa das categories
-ferramentas/
-  index.qmd               visão geral
-  relatorio/index.qmd     uma pasta por ferramenta: texto em Markdown + o
-  mapa/index.qmd            ponto onde o formulário aparece
-  herbario/index.qmd
-  determinacoes/index.qmd
-  vouchers/index.qmd
-sobre/index.qmd           como funciona, privacidade, como citar
-figures/                  logos e fundo
-js/forplotr-app.js        formulários e resultados (escolhe o motor)
-js/forplotr-local.js      motor local: webR no navegador
-backend/
-  R/tools_spec.R          campos de cada ferramenta (fonte única, dos dois motores)
-  R/core_params.R         núcleo comum: campos do formulário -> argumentos
-  R/core_run.R            núcleo comum: execução e organização das saídas
-  R/config.R              configuração e utilidades
-  webr/engine.R           motor local (roda dentro do webR)
-  iniciar.R               modo servidor: site + API + 2 workers
-  plumber.R               rotas /v1/... e o site estático (_site/)
-  worker.R, run_api.R     modo servidor em produção
-  R/inputs.R, R/jobs.R    modo servidor: uploads, fila, limpeza
-  Dockerfile, nginx-jbrj.conf
-docker-compose.yml        servidor do JBRJ
-.github/workflows/build-webr.yml   build do site com o webR (prévia; no main, Pages)
-scripts/build_pure_r_binary.R      binário do forplotR para o webR
-scripts/mirror_webr_deps.R         espelha as dependências wasm (MD5 conferido)
-scripts/export_local_tools.R       formulários do modo navegador (JSON)
-webr-dev/index.html       página interna de teste de fumaça do webR (só nas prévias)
-scripts/smoke.sh          teste de ponta a ponta
-scripts/mock_server.py    API falsa para mexer no visual sem R
+_quarto.yml                site: páginas, recursos, filtros e scripts de build
+_tpl/page.html             template HTML (sem Bootstrap): CSP, navegação, rodapé
+_tpl/lang.lua              filtro: uma fonte bilíngue, uma página por idioma
+_data/entities.yml         fatos de autoria, dissertação, instituições e software (SEO/GEO)
+_variables.yml             números do texto ({{< var rus01.arvores >}}), gerados
+assets/site.css, site.js   visual e comportamento comuns (tema, índice, cópia, busca)
+assets/tools.css           visual dos formulários das ferramentas
+assets/panorama.js         panoramas 3D (Three.js empacotado, gerado em _tools/)
+index.qmd + _body.qmd      página inicial
+comecar/                   instalação e formatos de planilha
+aplicacoes/                uma pasta por aplicação: mapa, balanco, fotos,
+                           etiquetas, determinacoes (index.qmd + _body.qmd + _doc.md)
+ferramentas/               as ferramentas no navegador (formulário + texto)
+referencia/                referência das funções (gerada do Rd do pacote)
+autoria/, citar/           autoria (mestrado, ORCID, Lattes, GitHub) e citação
+perguntas/, novidades/     perguntas frequentes e NEWS do pacote
+sobre/                     como funciona, privacidade
+en/                        páginas EN geradas por scripts/sync_en.R (não editar)
+exemplos/                  saídas reais do pacote (mapa, relatório, planilhas, panoramas)
+figures/, fonts/           imagens e fontes
+js/forplotr-app.js         formulários e resultados (escolhe o motor)
+js/forplotr-local.js       motor local: webR no navegador
+_tools/                    Node: empacotamento dos panoramas e índice de busca
+scripts/
+  sync_en.R                pre-render: páginas EN a partir das PT
+  seo.R                    post-render: JSON-LD, meta tags, sitemap, robots, llms.txt,
+                           redirecionamentos das URLs antigas
+  build_assets.R           exemplos, panoramas e _variables.yml (roda o pacote)
+  build_reference.R        referência, NEWS e citação a partir do pacote instalado
+  build_pure_r_binary.R    binário do forplotR para o webR
+  mirror_webr_deps.R       espelha as dependências wasm (MD5 conferido)
+  export_local_tools.R     formulários do modo navegador (JSON)
+  smoke.sh                 teste de ponta a ponta do modo servidor
+  mock_server.py           API falsa para mexer no visual sem R
+backend/                   motores: webR (webr/engine.R) e servidor (Plumber)
+.github/workflows/build-webr.yml   build e publicação no GitHub Pages
+webr-dev/index.html        teste de fumaça do webR (só nas prévias)
 ```
 
-### Textos em português e inglês
+### Como as páginas são feitas
 
-O botão **PT/EN** fica no menu e a escolha é lembrada pelo navegador. Qualquer
-elemento com `data-lang="pt"` ou `data-lang="en"` só aparece no idioma escolhido:
+Cada página em português é uma pasta com `index.qmd` (só o cabeçalho) e
+`_body.qmd` (o texto). O cabeçalho é bilíngue e diz onde fica a versão em inglês:
 
-```html
-<h2 data-lang="pt">Ferramentas</h2><h2 data-lang="en">Tools</h2>
+```yaml
+---
+title: "[Balanço de coleta]{data-lang=pt}[Collection balance]{data-lang=en}"
+description: "[...]{data-lang=pt}[...]{data-lang=en}"
+page-id: balance                 # usado nos links {{LINK:balance}}
+en-path: "applications/balance"  # gera en/applications/balance/
+schema: TechArticle              # tipo do nó JSON-LD da página
+kicker: "forplot_balance()"
+toc: true
+---
+
+{{< include _body.qmd >}}
 ```
 
-Em Markdown e no `_quarto.yml`: `[Artigos]{data-lang=pt}[Articles]{data-lang=en}`.
-A página inicial e o menu estão nos dois idiomas; os artigos e as ferramentas,
-em português (com um aviso em inglês apontando para a documentação do pacote).
+No texto, cada trecho vem nos dois idiomas, e o filtro `_tpl/lang.lua` deixa só
+o da página:
 
-### Artigos
+```markdown
+[Coletadas]{data-lang=pt}[Collected]{data-lang=en}
 
-Cada artigo é um `.qmd` comum em `artigos/`. Para criar um novo, copie um
-existente, mude o cabeçalho (`title`, `subtitle`, `description`, `categories`)
-e acrescente o arquivo na `sidebar` do `_quarto.yml` e no cartão de
-`artigos/index.qmd`. Os blocos de código são só texto (```` ```r ````), então
-o site renderiza sem precisar do R.
+::: {data-lang="pt"}
+Parágrafo em português.
+:::
+::: {data-lang="en"}
+Paragraph in English.
+:::
+```
 
-### O que fica no Quarto e o que fica no R
+Use sempre `{#id}` explícito nos títulos (os ids automáticos misturariam os
+idiomas). Links internos: `{{LINK:page-id}}`, resolvido pelo `scripts/seo.R`
+para a página no mesmo idioma. Inclusões aninhadas usam caminhos a partir da
+raiz do projeto (`{{< include /aplicacoes/mapa/_doc.md >}}`).
 
-- **Tudo o que é texto e página** (títulos, explicações, cartões, navbar,
-  rodapé, cores) está nos `.qmd`, `_quarto.yml`, `theme.scss` e `styles.css`.
-  Edite e rode `quarto render` (ou `quarto preview`).
-- **O formulário** de cada ferramenta é montado pelo `js/forplotr-app.js` a partir
-  de `backend/R/tools_spec.R`. Assim, os campos, os valores padrão e a validação
-  no servidor nunca ficam diferentes. Para mudar um rótulo ou uma ajuda de um
-  campo, ou expor um novo argumento de uma função, edite a linha `fld(...)` lá.
-- Em qualquer página, estes elementos ganham vida pelo script:
+As URLs antigas (`artigos/*.html`) continuam funcionando: o `scripts/seo.R`
+grava páginas de redirecionamento que respeitam o idioma escolhido.
+
+### Construir o site
+
+```bash
+quarto render                    # sync_en.R antes, seo.R depois (pacotes yaml e jsonlite)
+npm ci --prefix _tools           # uma vez
+npm run search --prefix _tools   # índice de busca (Pagefind) em _site/pagefind/
+```
+
+Sem o índice, o site funciona e o diálogo de busca avisa que ela não está disponível.
+
+**Regenerar os exemplos** (precisa do forplotR instalado; uns 5 minutos):
+
+```bash
+Rscript scripts/build_assets.R      # exemplos/, panoramas, _variables.yml
+Rscript scripts/build_reference.R   # referencia/_rd.md, novidades/_news.md, citar/
+```
+
+**Panoramas 3D**: o código está em `_tools/panorama/src/panorama.js` e o pacote
+gerado (`assets/panorama.js`, ~123 KB gz) fica no repositório, então o build do
+site não precisa de Node para eles. Depois de mudar o código:
+`npm run panorama --prefix _tools`. O `site.js` só carrega o 3D com WebGL, sem
+`prefers-reduced-motion`, e depois da primeira interação ou de 3 s; sem isso,
+na impressão ou sem JavaScript, fica o SVG estático gerado em R.
+
+**SEO e GEO**: os fatos sobre autoria, dissertação, instituições e software
+ficam em `_data/entities.yml` (fonte única). O `scripts/seo.R` gera em cada
+página o canonical, os hreflang PT/EN, Open Graph, as meta `citation_*` e o
+JSON-LD (`SoftwareSourceCode`, `Person`, `Thesis`, organizações, página e
+trilha), além de `sitemap.xml`, `robots.txt`, `llms.txt` e `llms-full.txt`.
+Quando o artigo do pacote sair, preencha `paper.doi`; quando a dissertação
+tiver repositório, `thesis.url`.
+
+### O formulário das ferramentas
+
+**O formulário** de cada ferramenta é montado pelo `js/forplotr-app.js` a partir
+de `backend/R/tools_spec.R`. Assim, os campos, os valores padrão e a validação
+no servidor nunca ficam diferentes. Para mudar um rótulo ou uma ajuda de um
+campo, ou expor um novo argumento de uma função, edite a linha `fld(...)` lá.
+Em qualquer página com `tool: true` no cabeçalho, estes elementos ganham vida:
 
 ```html
 <div class="fp-tool-app" data-tool="balance"></div>   <!-- formulário + resultados -->
 <div class="fp-recent"></div>                          <!-- processamentos recentes -->
-<span class="api-status"></span>                       <!-- situação do servidor -->
-<script src="../../js/forplotr-app.js"></script>       <!-- caminho relativo à página -->
+<span class="api-status"></span>                       <!-- situação do motor -->
+<script src="{{ROOT}}js/forplotr-local.js"></script>
+<script src="{{ROOT}}js/forplotr-app.js"></script>
 ```
 
 `data-tool` aceita `balance`, `map`, `sheets`, `crossdet`, `vouchers`.
@@ -131,7 +175,7 @@ esconde um campo, `fld(local = list(...))` muda atributos (ex.: altitude
 obrigatória), e uma ferramenta com `local = FALSE` mostra `local_note`.
 
 **Segurança.** Os dados das parcelas não saem do computador:
-- CSP em todas as páginas (`_includes/forplotr-head.html`): conexões, imagens e
+- CSP em todas as páginas (`_tpl/page.html`): conexões, imagens e
   iframes só da própria origem (mais `blob:`/`data:`). As prévias herdam a
   política, então um mapa aberto ali não busca imagens de satélite em terceiros.
 - No R: `options(forplotR.offline = TRUE)` e `download.file`, `url()` e as
@@ -142,7 +186,8 @@ obrigatória), e uma ferramenta com `local = FALSE` mostra `local_note`.
 
 **Build** (`.github/workflows/build-webr.yml`): gera o binário do forplotR (R
 puro, portável para o webR) a partir do ref escolhido, espelha as dependências,
-baixa o runtime do webR, exporta os formulários e renderiza o site. Nos branches
+baixa o runtime do webR, exporta os formulários, renderiza o site e gera o
+índice de busca. Nos branches
 de teste publica o artefato `site-preview`; no `main`, publica no GitHub Pages
 (Settings > Pages > Source: **GitHub Actions**).
 
@@ -155,7 +200,7 @@ python -m http.server -d preview 8000     # http://127.0.0.1:8000/
 
 `http://127.0.0.1:8000/webr-dev/` mede o tempo de cada etapa (só nas prévias).
 Para usar o servidor em vez do navegador: `<meta name="forplotr-engine"
-content="http">` no `_includes/forplotr-head.html`, ou, para testar,
+content="http">` no `_tpl/page.html`, ou, para testar,
 `localStorage.FORPLOTR_ENGINE = 'http'` no console.
 
 ## Modo servidor: rodar no seu computador
@@ -216,8 +261,8 @@ bash scripts/smoke.sh http://127.0.0.1:8000
 - **Atualizar o forplotR**: troque `FORPLOTR_REF` no `docker-compose.yml` por
   uma tag e rode `docker compose up -d --build`. Ou copie o código do pacote
   para `backend/pkg/`.
-- **Site em subpasta** (ex.: `/forplotr/`): mude a meta em
-  `_includes/forplotr-head.html` para `/forplotr/v1`.
+- **Site em subpasta** (ex.: `/forplotr/`): mude a meta `forplotr-api` em
+  `_tpl/page.html` para `/forplotr/v1`.
 
 ### API
 
