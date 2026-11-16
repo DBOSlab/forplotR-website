@@ -1,0 +1,12 @@
+---
+# gerado por scripts/sync_lang.R a partir de pt/sobre/index.qmd
+title: '[Sobre e privacidade]{data-lang=pt}[About and privacy]{data-lang=en}'
+description: '[Como o forplotR roda no navegador sem enviar dados, o que fica só no
+  R, dados de Terras Indígenas e unidades de conservação, e parceiros.]{data-lang=pt}[How
+  forplotR runs in the browser without sending data, what is available only in R,
+  data from Indigenous Lands and protected areas, and partners.]{data-lang=en}'
+page-id: about
+schema: AboutPage
+---
+
+{{< include ../pt/sobre/_body.qmd >}}

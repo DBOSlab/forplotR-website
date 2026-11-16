@@ -1,0 +1,71 @@
+::: {data-lang="pt"}
+O forplotR organiza e cruza os dados de uma parcela florestal permanente, da planilha do censo até as exsicatas no herbário. Cada aplicação responde a uma pergunta de quem trabalha no campo ou na coleção, tem um exemplo que roda com os dados do pacote (`RUS01` e `TUM`) e, quando possível, uma ferramenta que faz o mesmo no navegador.
+:::
+::: {data-lang="en"}
+forplotR organises and cross-references the data of a permanent forest plot, from the census spreadsheet to the specimens in the herbarium. Each application answers a question from people working in the field or in the collection, has an example that runs with the package data (`RUS01` and `TUM`) and, where possible, a tool that does the same in the browser.
+:::
+
+```{=html}
+<ul class="app-list">
+  <li class="m-rio"><a href="{{LINK:map}}"><span class="fn-mark"></span>
+    <strong data-lang="pt">Mapear a parcela</strong><strong data-lang="en">Map the plot</strong>
+    <code>forplot_map()</code>
+    <span class="q" data-lang="pt">Onde está cada árvore marcada, e qual já tem foto ou voucher?</span>
+    <span class="q" data-lang="en">Where is each tagged tree, and which ones already have a photo or a voucher?</span></a></li>
+  <li class="m-ipe"><a href="{{LINK:balance}}"><span class="fn-mark"></span>
+    <strong data-lang="pt">Balanço de coleta</strong><strong data-lang="en">Collection balance</strong>
+    <code>forplot_balance()</code>
+    <span class="q" data-lang="pt">O que já foi coletado, e o que falta, por subparcela?</span>
+    <span class="q" data-lang="en">What has been collected, and what is missing, per subplot?</span></a></li>
+  <li class="m-folha"><a href="{{LINK:photos}}"><span class="fn-mark"></span>
+    <strong data-lang="pt">Organizar as fotos</strong><strong data-lang="en">Organise the photos</strong>
+    <code>forplot_vouchers()</code>
+    <span class="q" data-lang="pt">Como guardo as fotos dos vouchers por família e espécie?</span>
+    <span class="q" data-lang="en">How do I store the voucher photos by family and species?</span></a></li>
+  <li class="m-urucum"><a href="{{LINK:labels}}"><span class="fn-mark"></span>
+    <strong data-lang="pt">Etiquetas para o herbário</strong><strong data-lang="en">Herbarium labels</strong>
+    <code>forplot_sheets()</code>
+    <span class="q" data-lang="pt">Como passo a planilha de campo para o herbário?</span>
+    <span class="q" data-lang="en">How do I move the field spreadsheet to the herbarium?</span></a></li>
+  <li class="m-jabuticaba"><a href="{{LINK:determinations}}"><span class="fn-mark"></span>
+    <strong data-lang="pt">Conferir determinações</strong><strong data-lang="en">Check determinations</strong>
+    <code>forplot_crossdet()</code>
+    <span class="q" data-lang="pt">O nome que dei no campo bate com o do herbário?</span>
+    <span class="q" data-lang="en">Does the name I gave in the field match the herbarium's?</span></a></li>
+</ul>
+```
+
+::: {.note}
+[O forplotR **não determina espécies nem corrige determinações**. O cruzamento aponta divergências entre o campo e o herbário para alguém conferir, e o balanço mostra o que falta coletar segundo a planilha, não o que existe na floresta. A decisão continua com quem conhece as plantas.]{data-lang=pt}[forplotR **does not identify species or correct determinations**. The cross-check points out differences between field and herbarium for someone to review, and the balance shows what is missing according to the spreadsheet, not what exists in the forest. The decision stays with the people who know the plants.]{data-lang=en}
+:::
+
+## [Sequência recomendada]{data-lang=pt}[Recommended sequence]{data-lang=en} {#sequencia-recomendada}
+
+::: {data-lang="pt"}
+Para uma parcela que vai para uma nova campanha de campo:
+
+1. [Balanço de coleta]({{LINK:balance}}): ver a cobertura de coleta e quais indivíduos coletar ou revisitar;
+2. [Organizar as fotos]({{LINK:photos}}): criar as pastas e guardar as fotografias de campo;
+3. [Mapear a parcela]({{LINK:map}}): juntar a planilha, os vértices e as fotos num mapa;
+4. [Etiquetas para o herbário]({{LINK:labels}}): gerar a planilha de etiquetas;
+5. [Conferir determinações]({{LINK:determinations}}): depois do tombamento, cruzar as determinações da parcela com as do herbário.
+
+Quando a planilha muda (novas coletas, determinações revistas), basta rodar as etapas de novo: todas as saídas saem da mesma fonte.
+:::
+::: {data-lang="en"}
+For a plot heading into a new field campaign:
+
+1. [Collection balance]({{LINK:balance}}): see the collection coverage and which individuals to collect or revisit;
+2. [Organise the photos]({{LINK:photos}}): create the folders and store the field photographs;
+3. [Map the plot]({{LINK:map}}): combine the spreadsheet, the vertices and the photos in a map;
+4. [Herbarium labels]({{LINK:labels}}): produce the label spreadsheet;
+5. [Check determinations]({{LINK:determinations}}): after accession, cross-check the plot determinations with the herbarium's.
+
+When the spreadsheet changes (new collections, revised determinations), just run the steps again: every output comes from the same source.
+:::
+
+::: {.note}
+[[Nomes das funções em versões anteriores]{data-lang=pt}[Function names in earlier versions]{data-lang=en}]{.note-title}
+
+[`plot_for_balance()` é hoje `forplot_balance()`, `mk_voucher_dirs()` é `forplot_vouchers()`, `plot_html_map()` é `forplot_map()` e `fp_herb_converter()` é `forplot_sheets()`. Veja as [novidades]({{LINK:news}}).]{data-lang=pt}[`plot_for_balance()` is now `forplot_balance()`, `mk_voucher_dirs()` is `forplot_vouchers()`, `plot_html_map()` is `forplot_map()` and `fp_herb_converter()` is `forplot_sheets()`. See the [news]({{LINK:news}}).]{data-lang=en}
+:::

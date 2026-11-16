@@ -1,7 +1,21 @@
+/.quarto/
+_site/
+/data/
 .Rproj.user
 .Rhistory
 .RData
 .Ruserdata
-/.quarto/
-*.Rproj
-_freeze
+*.log
+backend/pkg/*
+!backend/pkg/.gitkeep
+.DS_Store
+
+**/*.quarto_ipynb
+
+# webR runtime e repositório wasm (gerados pelo CI)
+/webr/
+/_freeze/
+/.forplotr-sha
+
+# dependências do empacotamento dos panoramas (_tools/panorama)
+node_modules/

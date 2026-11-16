@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1200" viewBox="0 0 1800 1200" role="img" aria-label="Placeholder botanical background">
+  <defs>
+    <linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#2E3B24"/>
+      <stop offset="0.46" stop-color="#626A38"/>
+      <stop offset="1" stop-color="#A93632"/>
+    </linearGradient>
+    <pattern id="leaf" width="160" height="160" patternUnits="userSpaceOnUse">
+      <path d="M25 100 C65 15, 130 20, 140 120 C92 100, 60 118, 25 100Z" fill="rgba(255,253,247,0.09)"/>
+      <path d="M30 100 C78 84, 102 74, 137 119" fill="none" stroke="rgba(255,253,247,0.14)" stroke-width="3"/>
+    </pattern>
+  </defs>
+  <rect width="1800" height="1200" fill="url(#g)"/>
+  <rect width="1800" height="1200" fill="url(#leaf)" opacity="0.85"/>
+  <circle cx="1360" cy="260" r="320" fill="rgba(217,154,39,0.17)"/>
+  <circle cx="260" cy="990" r="360" fill="rgba(246,241,232,0.10)"/>
+</svg>

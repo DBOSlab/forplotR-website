@@ -1,0 +1,52 @@
+
+::: {data-lang="pt"}
+Relatório que sintetiza a estrutura da parcela, a composição de espécies e a cobertura de vouchers: mapas da parcela e das subparcelas, situação de coleta, checklist e subparcelas prioritárias para a próxima campanha.
+:::
+::: {data-lang="en"}
+A report summarising plot structure, species composition and voucher coverage: maps of the plot and of each subplot, collection status, checklist and the priority subplots for the next campaign.
+:::
+
+::: {.actions}
+[[Ir ao formulário](#ferramenta){.btn .btn-primary} [Documentação da função]({{LINK:balance}}){.btn}]{data-lang=pt}[[Go to the form](#ferramenta){.btn .btn-primary} [Function documentation]({{LINK:balance}}){.btn}]{data-lang=en}
+:::
+
+## [Procedimento]{data-lang=pt}[Procedure]{data-lang=en} {#procedimento}
+
+::: {data-lang="pt"}
+1. Escolha a planilha da parcela; o app sugere o formato e as colunas.
+2. Verifique a área da parcela e o lado da subparcela. Para o Monitora, informe a estação.
+3. Selecione as saídas. Com os dados de exemplo (RUS01), o processamento no navegador leva cerca de 2 minutos.
+
+Para executar sem planilha própria, marque **Usar os dados de exemplo**.
+:::
+::: {data-lang="en"}
+1. Choose the plot spreadsheet; the app suggests the layout and the columns.
+2. Check the plot area and the subplot side. For Monitora, give the station.
+3. Select the outputs. With the example data (RUS01), processing in the browser takes about 2 minutes.
+
+To run without your own spreadsheet, tick **Use the example data**.
+:::
+
+```{=html}
+<div id="ferramenta" class="fp-tool-app" data-tool="balance"></div>
+```
+
+## [Saídas]{data-lang=pt}[Outputs]{data-lang=en} {#saidas}
+
+::: {data-lang="pt"}
+- **Relatório HTML interativo**: mapa geral e de cada subparcela, filtros por situação de coleta e checklist por família com links para cada indivíduo.
+- **PDF** para impressão e uso em campo: abra o relatório HTML baixado e use Imprimir > Salvar como PDF. O pacote, no R, também gera o PDF diretamente (com LaTeX).
+- **Figuras PNG**: mapa geral, coletados, não coletados, palmeiras, subparcelas prioritárias, espécies e famílias mais abundantes.
+- **Planilha XLSX** com o percentual de coleta por subparcela e as plaquetas coletadas e não coletadas (não disponível para o Monitora).
+:::
+::: {data-lang="en"}
+- **Interactive HTML report**: overall map and one per subplot, filters by collection status and a checklist by family linking to each individual.
+- **PDF** for printing and field use: open the downloaded HTML report and use Print > Save as PDF. The package, in R, can also build the PDF directly (with LaTeX).
+- **PNG figures**: overall map, collected, not collected, palms, priority subplots, most abundant species and families.
+- **XLSX spreadsheet** with the collection percentage per subplot and the collected and uncollected tags (not available for Monitora).
+:::
+
+```{=html}
+<script src="{{ROOT}}js/forplotr-local.js"></script>
+<script src="{{ROOT}}js/forplotr-app.js"></script>
+```

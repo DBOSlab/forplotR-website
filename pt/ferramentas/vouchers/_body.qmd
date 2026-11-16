@@ -1,0 +1,44 @@
+
+::: {data-lang="pt"}
+Criação da estrutura Família/Gênero/Voucher para as imagens dos espécimes e sua reorganização quando as determinações são revisadas.
+:::
+::: {data-lang="en"}
+Creates the Family/Genus/Voucher structure for specimen images and reorganises it when determinations are revised.
+:::
+
+::: {.actions}
+[[Ir ao formulário](#ferramenta){.btn .btn-primary} [Documentação da função]({{LINK:photos}}){.btn}]{data-lang=pt}[[Go to the form](#ferramenta){.btn .btn-primary} [Function documentation]({{LINK:photos}}){.btn}]{data-lang=en}
+:::
+
+## [Procedimento]{data-lang=pt}[Procedure]{data-lang=en} {#procedimento}
+
+::: {data-lang="pt"}
+1. Envie a planilha e selecione o formato.
+2. Opcionalmente, envie o diretório de imagens atual em um arquivo ZIP. As imagens são movidas para a família e o gênero da determinação mais recente; nenhum arquivo é sobrescrito.
+
+Sem ZIP, a ferramenta devolve a estrutura vazia, pronta para receber as imagens. O mesmo ZIP pode depois ser usado na ferramenta de mapa.
+:::
+::: {data-lang="en"}
+1. Upload the spreadsheet and select its layout.
+2. Optionally, upload your current image directory as a ZIP file. Images are moved to the family and genus of the most recent determination; no file is overwritten.
+
+Without a ZIP, the tool returns the empty structure, ready to receive the images. The same ZIP can later be used in the map tool.
+:::
+
+```{=html}
+<div id="ferramenta" class="fp-tool-app" data-tool="vouchers"></div>
+```
+
+## [Saídas]{data-lang=pt}[Outputs]{data-lang=en} {#saidas}
+
+::: {data-lang="pt"}
+- **Arquivo ZIP** com o diretório `voucher_imgs/Família/Gênero/Voucher`, um subdiretório por indivíduo coletado.
+:::
+::: {data-lang="en"}
+- **ZIP file** with the `voucher_imgs/Family/Genus/Voucher` directory, one subdirectory per collected individual.
+:::
+
+```{=html}
+<script src="{{ROOT}}js/forplotr-local.js"></script>
+<script src="{{ROOT}}js/forplotr-app.js"></script>
+```

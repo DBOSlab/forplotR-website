@@ -1,0 +1,11 @@
+---
+title: "[App no navegador]{data-lang=pt}[Web app]{data-lang=en}"
+description: "[O forplotR no navegador (webR): mapa da parcela, balanço de coleta, pastas de vouchers e planilha do herbário a partir da planilha de qualquer parcela, sem instalar o R e sem enviar os dados.]{data-lang=pt}[forplotR in your browser (webR): plot map, collection balance, voucher folders and herbarium spreadsheet from the spreadsheet of any plot, without installing R and without sending the data.]{data-lang=en}"
+page-id: tools
+en-path: "tools"
+schema: CollectionPage
+tool: true
+page-class: tool
+---
+
+{{< include _body.qmd >}}

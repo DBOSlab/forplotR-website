@@ -1,0 +1,207 @@
+# Build do site com o forplotR rodando no navegador (webR) ----------------------
+#
+# Monta o site completo, com:
+#   - o forplotR (R puro) em binário para o webR, a partir do ref escolhido;
+#   - todas as dependências wasm espelhadas na própria origem (MD5 conferido);
+#   - o runtime do webR em versão fixa (sha256 conferido);
+#   - o motor local (backend/webr/engine.R + núcleo comum) e os formulários;
+#   - as páginas PT/EN, o SEO (scripts/seo.R) e o índice de busca (Pagefind).
+#
+# Branches de teste: só o artefato "site-preview" (nada é publicado).
+#   gh run download <run-id> -n site-preview -D preview
+#   python -m http.server -d preview 8000   ->  http://localhost:8000/
+# main: o mesmo build é publicado no GitHub Pages (Settings > Pages > Source:
+# "GitHub Actions").
+
+name: Build webR site
+
+on:
+  workflow_dispatch:
+    inputs:
+      forplotr_ref:
+        description: "Branch, tag ou commit do DBOSlab/forplotR (vazio: automático)"
+        required: false
+        default: ""
+  push:
+    branches: [main, feat/webr-site]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: build-webr-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  WEBR_VERSION: "0.6.0"
+  WEBR_SHA256: "04c56d16c3ad29265a2c4ffcb800ee0b72ab6dd64dd678c9c8fec81a832cb8cc"
+  # R embutido no webR 0.6.0: o binário do forplotR é gerado na mesma versão.
+  R_BUILD_VERSION: "4.6.0"
+  R_WASM_VERSION: "4.6"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Checkout do site
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          # histórico completo: o sitemap.xml usa a data do último commit de cada página
+          fetch-depth: 0
+
+      # Ref do pacote: o informado; senão "main" no main do site; senão
+      # "feat/webr" enquanto esse branch existir (testes antes do merge).
+      - name: Escolher a versão do forplotR
+        id: ref
+        env:
+          INPUT_REF: ${{ inputs.forplotr_ref }}
+        run: |
+          ref="$INPUT_REF"
+          if [ -z "$ref" ]; then
+            if [ "$GITHUB_REF" = "refs/heads/main" ]; then
+              ref=main
+            elif git ls-remote --exit-code --heads https://github.com/DBOSlab/forplotR feat/webr > /dev/null; then
+              ref=feat/webr
+            else
+              ref=main
+            fi
+          fi
+          echo "forplotR ref: $ref"
+          echo "ref=$ref" >> "$GITHUB_OUTPUT"
+
+      - name: Checkout do pacote forplotR
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: DBOSlab/forplotR
+          ref: ${{ steps.ref.outputs.ref }}
+          path: _pkg
+          persist-credentials: false
+
+      # O forplotR é R puro: o binário instalado no R 4.6 é portável para o
+      # webR (R 4.6.0). O compilador cruzado r-wasm/actions/build-rwasm não é
+      # usado porque o resolvedor dele está quebrado (r-wasm/rwasm#56).
+      - name: Instalar R ${{ env.R_BUILD_VERSION }}
+        uses: r-lib/actions/setup-r@f9a764fea8d5c63df6ef9a5c7795bf7deb5d7e05 # v2
+        with:
+          r-version: ${{ env.R_BUILD_VERSION }}
+          use-public-rspm: true
+
+      - name: Instalar dependências do forplotR
+        uses: r-lib/actions/setup-r-dependencies@f9a764fea8d5c63df6ef9a5c7795bf7deb5d7e05 # v2
+        with:
+          working-directory: _pkg
+          dependencies: '"hard"'
+
+      - name: Gerar o binário do forplotR para o webR
+        run: Rscript scripts/build_pure_r_binary.R _pkg webr/repo "${R_WASM_VERSION}"
+
+      # zip: usado pelo motor local (extrair o ZIP de fotos e gerar "Baixar tudo").
+      # markdown: relatório do forplot_balance sem pandoc.
+      # sf,raster: declarados pelo leaflet, nunca carregados pelo forplotR; fora do
+      # espelho junto com o que só eles puxam (terra, sp, s2, units...): ~40 MB a menos.
+      - name: Espelhar dependências wasm (MD5 conferido)
+        run: Rscript scripts/mirror_webr_deps.R webr/repo "${R_WASM_VERSION}" zip,markdown sf,raster
+
+      - name: Motor local (código R e formulários)
+        run: |
+          mkdir -p webr/engine
+          cp backend/R/config.R backend/R/tools_spec.R backend/R/core_params.R \
+             backend/R/core_run.R backend/webr/engine.R backend/webr/detect.R webr/engine/
+          Rscript scripts/export_local_tools.R webr/engine/tools-local.json
+          ver=$(grep -m1 '^Version:' _pkg/DESCRIPTION | awk '{print $2}')
+          printf '{"forplotR":"%s","R":"R %s (webR %s)"}\n' "$ver" "$R_BUILD_VERSION" "$WEBR_VERSION" \
+            > webr/engine/info.json
+          cat webr/engine/info.json
+          ls -la webr/engine
+
+      - name: Baixar o runtime do webR (sha256 conferido)
+        run: |
+          f="webr-${WEBR_VERSION}.tar.gz"
+          curl -fsSL -o "$f" "https://github.com/r-wasm/webr/releases/download/v${WEBR_VERSION}/$f"
+          echo "${WEBR_SHA256}  $f" | sha256sum -c -
+          mkdir -p webr/runtime
+          tar -xzf "$f" -C webr/runtime --strip-components=1
+          rm "$f"
+          # O REPL de demonstração e os source maps não são usados pelo site.
+          rm -f webr/runtime/index.html webr/runtime/repl.* webr/runtime/*.map
+          rm -rf webr/runtime/assets
+          du -sh webr/runtime webr/repo
+
+      # yaml e jsonlite: scripts/sync_en.R (páginas EN) e scripts/seo.R (JSON-LD,
+      # sitemap, llms.txt), rodados pelo quarto render.
+      - name: Pacotes R dos scripts do site
+        run: Rscript -e 'for (p in c("yaml", "jsonlite")) if (!requireNamespace(p, quietly = TRUE)) install.packages(p)'
+
+      - name: Instalar Quarto
+        uses: quarto-dev/quarto-actions/setup@8a96df13519ee81fd526f2dfca5962811136661b # v2.2.0
+
+      - name: Renderizar o site
+        run: |
+          # O código-fonte do pacote não faz parte do site.
+          git -C _pkg rev-parse HEAD > .forplotr-sha
+          rm -rf _pkg
+          quarto render
+
+      # Busca do site: o Pagefind indexa o _site renderizado (um índice por idioma).
+      # Os panoramas (assets/panorama.js) já vêm empacotados no repositório.
+      - name: Instalar Node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: "22"
+
+      - name: Índice de busca (Pagefind)
+        run: |
+          npm ci --prefix _tools --no-audit --no-fund
+          npm run search --prefix _tools
+          du -sh _site/pagefind
+
+      - name: Montar o site
+        env:
+          FORPLOTR_REF: ${{ steps.ref.outputs.ref }}
+        run: |
+          # O Quarto copia parte de webr/ por conta própria; substitui pelo conjunto completo.
+          rm -rf _site/webr _site/webr-dev _site/_pkg
+          cp -r webr _site/webr
+          # A página de teste de fumaça só vai para as prévias, não para o site publicado.
+          if [ "$GITHUB_REF" != "refs/heads/main" ]; then cp -r webr-dev _site/webr-dev; fi
+          {
+            echo "forplotR ref: ${FORPLOTR_REF} ($(cat .forplotr-sha))"
+            echo "site commit:  ${GITHUB_SHA}"
+            echo "webR:         ${WEBR_VERSION}"
+          } > _site/webr/BUILD-INFO.txt
+          cat _site/webr/BUILD-INFO.txt
+          du -sh _site
+
+      - name: Publicar artefato site-preview
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: site-preview
+          path: _site
+          retention-days: 7
+          if-no-files-found: error
+
+      - name: Preparar publicação no GitHub Pages
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: _site
+
+  deploy:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    concurrency:
+      group: pages
+      cancel-in-progress: false
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - name: Publicar no GitHub Pages
+        id: deploy
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1

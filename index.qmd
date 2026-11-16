@@ -1,129 +1,19 @@
 ---
-format:
-  html:
-    toc: true
-    page-layout: custom
-execute:
-  echo: false
-  eval: true
-  freeze: auto
-  cache: false
-  warning: false
-  message: false
-  include: true
-  # ENABLE inline R code evaluation
-  inline: true
-resources:
-  - figures/
+# gerado por scripts/sync_lang.R a partir de pt/index.qmd
+title: forplotR
+pagetitle: '[forplotR: do censo da parcela à coleção do herbário (pacote R e app no
+  navegador)]{data-lang=pt}[forplotR: from plot census to herbarium collection (R
+  package and web app)]{data-lang=en}'
+description: '[Pacote R e app no navegador para gerir as coleções botânicas de parcelas
+  permanentes de monitoramento da vegetação: mapa, balanço de coleta, fotos dos vouchers,
+  etiquetas de herbário e cruzamento de determinações. Desenvolvido por Giulia C.
+  Ottino no mestrado em Botânica (ENBT/JBRJ).]{data-lang=pt}[R package and web app
+  to manage the botanical collections of permanent vegetation monitoring plots: plot
+  map, collection balance, voucher photos, herbarium labels and determination cross-checks.
+  Developed by Giulia C. Ottino during her master''s degree in Botany (ENBT/JBRJ).]{data-lang=en}'
+page-id: home
+schema: WebPage
+hide-title: true
 ---
 
-
-
-<style>
-  .floating-logos {
-    position: fixed;
-    top: 60px;
-    right: 450px;
-    width: 165px;
-    opacity: 100;
-    z-index: 1;
-  }
-
-  .floating-logos img {
-    display: block;
-    width: 100%;
-    margin-bottom: 12px;
-    border-radius: 4px;
-  }
-</style>
-
-<div class="floating-logos">
-  <img src='/figures/forplotR_hex_sticker.png' alt='forplotR hex sticker'>
-</div>
-
-::: whitebox
-::: {style="padding-left: 100px; padding-right: 50px; display: inline-block;"}
-
-::: {layout-ncol="2"}
-
-::: {style="text-align: left;"}
-
-\
-`forplotR` helps you turn raw forest-plot censuses into shareable, verifiable outputs, bridging the everyday reality of field sheets with the long-term value of *voucher-based taxonomy* and herbarium archiving.
-\
-\
-Forest plot monitoring depends on specimen vouchers: they anchor the taxonomic identity of censused stems, make species lists auditable, and strengthen downstream science (from biodiversity discovery to carbon and dynamics estimates). Yet, transforming raw stem tables into coherent, curator-ready materials is often slow, manual, and error-prone (cleaning, voucher tracking, folder organization, label metadata, map products, and iterative updates after new identifications).
-\
-\
-The package `forplotR` streamlines this workflow as a modular toolbox that automates key curatorial steps. So, plot teams can generate outputs that are reproducible, traceable, and scalable across monitoring initiatives.
-\
-\
-What you get (typical outputs):\
- (i) *Herbarium-ready spreadsheets* for label generation and database ingestion (e.g., JABOT/BRAHMS-style templates)\
- (ii)*Organized voucher folders* (family/genus/voucher IDs) that stay aligned with taxonomic updates\
- (iii)*Plot and subplot stem maps* to plan field campaigns and track voucher coverage\
- (iv) *Interactive HTML maps* (Leaflet) linking stems to *voucher codes, images, and digitized specimens*\
-\
-The workflow connects field inventories to herbarium archives across *ForestPlots.net* and Brazil’s *Monitora* maltese-cross protocols.
-\
-\
-
-## The ForestPlot.net context
-
-*ForestPlots.net* is a collaborative infrastructure for measuring and understanding tropical forests, integrating long-term plot datasets across multiple networks while allowing partners to retain control over their data. Its core data model is a stem-level census table, where each row represents an individual with measurements (e.g., DBH), identification, a unique tag, and local x–y coordinates within the plot.
-\
-\
-Because ForestPlots.net emphasizes standardized, long-term monitoring, the value of a census increases dramatically when it is paired with well-documented vouchers deposited in herbaria. `forplotR` leverages the standardized stem-table structure to support the practical tasks that often block this integration: cleaning and validating census tables, tracking voucher status, producing campaign reports and stem maps, organizing images, and generating shareable interactive maps.
-\
-\
-
-## The Monitora program context
-
-Brazil’s *National Biodiversity Monitoring Program (Monitora)* generates biodiversity information from protected areas to support management effectiveness, indicators, and assessments over time. In its forest component, vegetation is surveyed using permanent maltese-cross plots (0.4 ha) designed to sample local environmental heterogeneity through four orthogonal arms.
-\
-\
-Monitora datasets are also stem-level tables (station/census, measurements, identification, stem number, x–y position, voucher status). `forplotR` is explicitly designed to support this structure and plot geometry. So, teams can iterate efficiently across field campaigns, update identifications and voucher coverage, and export curator-ready products without rebuilding the workflow each time.
-\
-\
-
-## How `forplotR` fits into your workflow
-
-A typical run progresses from *data validation → reporting → voucher organization → mapping → herbarium export*. Outputs are written to *date-stamped folders*, making each run *traceable and reproducible*.
-\
-\
-Core functions:\
-`plot_for_balance()` — creates a *PDF field-campaign report* (stem maps + checklist + voucher coverage; supports multi-census balances like recruitment/mortality when available)\
-`mk_voucher_dirs()` — builds/maintains *taxonomically structured voucher directories*, and reorganizes them automatically after taxonomic updates\
-`plot_html_map()` — generates a *self-contained interactive HTML map* with stem popups, optional voucher image carousels, and links to digitized specimens when available\
-`fp_herb_converter()` — exports a *herbarium-ready spreadsheet* for label generation and collection database workflows
-\
-\
-Together, these outputs provide a practical pathway to operationalize the synergy between *field ecology, taxonomy, and long-term monitoring*, turning plot censuses into curated, verifiable biodiversity evidence.
-\
-\
-:::
-::: {style="display: flex; gap: 16px; justify-content: center; align-items: center;"}
-:::
-:::
-:::
-:::
-
-::: mainbox
-::: {style="padding-left: 100px; padding-right: 100px; display: inline-block;"}
-::: {layout-ncol="2"}
-::: {style="text-align: center;"}
-### [Get Started](/get-started/index.qmd)
-
-Welcome new users! Start learning how to install `forplotR`
-:::
-
-::: {style="text-align: center;"}
-### [Articles](/articles/index.qmd)
-
-"How-to" articles to help you learn how to use `forplotR`
-:::
-:::
-:::
-:::
-
-:::
+{{< include pt/_body.qmd >}}

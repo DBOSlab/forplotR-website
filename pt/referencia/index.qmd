@@ -1,0 +1,10 @@
+---
+title: "[Referência]{data-lang=pt}[Reference]{data-lang=en}"
+description: "[Referência das funções e dos dados do forplotR, gerada da documentação do pacote.]{data-lang=pt}[Reference for the forplotR functions and datasets, generated from the package documentation.]{data-lang=en}"
+page-id: reference
+en-path: "reference"
+schema: TechArticle
+toc: true
+---
+
+{{< include _body.qmd >}}

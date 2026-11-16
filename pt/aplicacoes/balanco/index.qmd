@@ -1,0 +1,11 @@
+---
+title: "[Balanço de coleta]{data-lang=pt}[Collection balance]{data-lang=en}"
+description: "[O que já foi coletado e o que falta, por parcela e subparcela, com forplot_balance(): mapas, relatório e planilha de completude.]{data-lang=pt}[What has been collected and what is missing, per plot and subplot, with forplot_balance(): maps, report and completeness spreadsheet.]{data-lang=en}"
+page-id: balance
+en-path: "applications/balance"
+schema: TechArticle
+kicker: "forplot_balance()"
+toc: true
+---
+
+{{< include _body.qmd >}}

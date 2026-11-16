@@ -1,0 +1,56 @@
+
+::: {data-lang="pt"}
+As funções do pacote no seu navegador, sem instalar nada e sem enviar os dados a nenhum servidor. Escolha a planilha da parcela: o app lê o cabeçalho, sugere o formato e as colunas, e mostra o resultado com prévia e download. Dá para testar com os dados de exemplo.
+:::
+::: {data-lang="en"}
+The package functions in your browser, with nothing to install and no data sent to any server. Choose the plot spreadsheet: the app reads its header, suggests the layout and the columns, and shows the result with a preview and downloads. You can try it with the example data.
+:::
+
+::: {.actions}
+[[Documentação do pacote em R]({{LINK:apps}}){.btn}]{data-lang=pt}[[R package documentation]({{LINK:apps}}){.btn}]{data-lang=en}
+:::
+
+## [Ferramentas disponíveis]{data-lang=pt}[Available tools]{data-lang=en} {#ferramentas-disponiveis}
+
+::: {data-lang="pt"}
+| Etapa | Ferramenta | Função | Saídas |
+|---|---|---|---|
+| Planejamento de campo e cobertura de coleta | [Relatório e balanço de coleta]({{LINK:tool-balance}}) | `forplot_balance()` | HTML, PDF, PNG, XLSX |
+| Organização das imagens dos vouchers | [Diretórios de vouchers]({{LINK:tool-photos}}) | `forplot_vouchers()` | ZIP |
+| Visualização espacial | [Mapa interativo da parcela]({{LINK:tool-map}}) | `forplot_map()` | HTML |
+| Documentação de herbário | [Planilha para o herbário]({{LINK:tool-labels}}) | `forplot_sheets()` | XLSX (JABOT/BRAHMS) |
+| Cruzamento com o herbário | [Cruzamento de determinações]({{LINK:tool-determinations}}) | `forplot_crossdet()` | XLSX (só no R ou no modo servidor: usa rede) |
+
+Cada formulário chama a mesma função do pacote, com os mesmos argumentos; os resultados são idênticos aos obtidos no R com a versão indicada em [Sobre]({{LINK:about}}). Para lotes de parcelas e para registrar os parâmetros de cada análise, recomenda-se o uso do pacote diretamente no R.
+:::
+
+::: {data-lang="en"}
+| Step | Tool | Function | Outputs |
+|---|---|---|---|
+| Field planning and collection coverage | [Report and collection balance]({{LINK:tool-balance}}) | `forplot_balance()` | HTML, PDF, PNG, XLSX |
+| Organising voucher images | [Voucher directories]({{LINK:tool-photos}}) | `forplot_vouchers()` | ZIP |
+| Spatial visualisation | [Interactive plot map]({{LINK:tool-map}}) | `forplot_map()` | HTML |
+| Herbarium documentation | [Herbarium spreadsheet]({{LINK:tool-labels}}) | `forplot_sheets()` | XLSX (JABOT/BRAHMS) |
+| Herbarium cross-check | [Determination cross-check]({{LINK:tool-determinations}}) | `forplot_crossdet()` | XLSX (R or server mode only: needs the network) |
+
+Each form calls the same package function with the same arguments; results are identical to those obtained in R with the version shown under [About]({{LINK:about}}). For batches of plots, and to keep a record of the parameters of each analysis, use the package directly in R.
+:::
+
+## [Processamentos recentes]{data-lang=pt}[Recent jobs]{data-lang=en} {#processamentos-recentes}
+
+::: {data-lang="pt"}
+No navegador, os resultados ficam só na página e somem quando ela é fechada. No modo servidor (`backend/`, na sua máquina), os processamentos ficam disponíveis por 72 horas e são listados aqui, apenas no navegador em que foram gerados.
+:::
+::: {data-lang="en"}
+In the browser, results live only in the page and are gone when it is closed. In server mode (`backend/`, on your own machine), jobs are kept for 72 hours and listed here, only in the browser where they were produced.
+:::
+
+```{=html}
+<p><span class="api-status"></span></p>
+<div class="fp-recent"></div>
+```
+
+```{=html}
+<script src="{{ROOT}}js/forplotr-local.js"></script>
+<script src="{{ROOT}}js/forplotr-app.js"></script>
+```

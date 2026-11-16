@@ -1,0 +1,10 @@
+---
+title: "[Novidades]{data-lang=pt}[News]{data-lang=en}"
+description: "[O que mudou em cada versão do forplotR.]{data-lang=pt}[What changed in each forplotR release.]{data-lang=en}"
+page-id: news
+en-path: "news"
+schema: WebPage
+toc: true
+---
+
+{{< include _body.qmd >}}

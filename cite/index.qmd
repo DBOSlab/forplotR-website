@@ -1,0 +1,11 @@
+---
+# gerado por scripts/sync_lang.R a partir de pt/citar/index.qmd
+title: '[Como citar]{data-lang=pt}[How to cite]{data-lang=en}'
+description: '[Como citar o forplotR (Ottino & Cardoso), com BibTeX, CITATION.cff
+  e o artigo.]{data-lang=pt}[How to cite forplotR (Ottino & Cardoso), with BibTeX,
+  CITATION.cff and the paper.]{data-lang=en}'
+page-id: cite
+schema: WebPage
+---
+
+{{< include ../pt/citar/_body.qmd >}}

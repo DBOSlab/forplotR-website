@@ -1,0 +1,46 @@
+
+::: {data-lang="pt"}
+Mapa Leaflet em um único arquivo HTML, com a posição de cada indivíduo, filtros por família, espécie e situação de coleta, imagens dos vouchers e links para exsicatas digitalizadas.
+:::
+::: {data-lang="en"}
+A Leaflet map in a single HTML file, with the position of each individual, filters by family, species and collection status, voucher images and links to digitised specimens.
+:::
+
+::: {.actions}
+[[Ir ao formulário](#ferramenta){.btn .btn-primary} [Documentação da função]({{LINK:map}}){.btn}]{data-lang=pt}[[Go to the form](#ferramenta){.btn .btn-primary} [Function documentation]({{LINK:map}}){.btn}]{data-lang=en}
+:::
+
+## [Procedimento]{data-lang=pt}[Procedure]{data-lang=en} {#procedimento}
+
+::: {data-lang="pt"}
+1. Envie a planilha e selecione o formato.
+2. Informe as coordenadas em graus decimais, uma linha por ponto (`latitude; longitude`):
+    - parcelas retangulares: os **quatro vértices**, na ordem (0, 0), (0, comprimento), (largura, 0), (largura, comprimento), como no desenho do formulário;
+    - estações do MONITORA: **um ponto**, o centro da estação.
+3. Opcionalmente, envie um arquivo ZIP com as imagens (um diretório por voucher). A consulta às exsicatas dos herbários usa a internet e está disponível apenas no pacote, no R.
+:::
+::: {data-lang="en"}
+1. Upload the spreadsheet and select its layout.
+2. Enter the coordinates in decimal degrees, one line per point (`latitude; longitude`):
+    - rectangular plots: the **four vertices**, in the order (0, 0), (0, length), (width, 0), (width, length), as in the form diagram;
+    - MONITORA stations: **one point**, the centre of the station.
+3. Optionally, upload a ZIP file with the images (one directory per voucher). The herbarium specimen lookup uses the internet and is available only in the package, in R.
+:::
+
+```{=html}
+<div id="ferramenta" class="fp-tool-app" data-tool="map"></div>
+```
+
+## [Saídas]{data-lang=pt}[Outputs]{data-lang=en} {#saidas}
+
+::: {data-lang="pt"}
+- **Arquivo HTML autocontido**, que abre em qualquer navegador (apenas as imagens de satélite requerem conexão): camadas de satélite e de ruas, grade de subparcelas, filtros, busca, carrossel de imagens e link para a exsicata no JABOT/REFLORA.
+:::
+::: {data-lang="en"}
+- **Self-contained HTML file** that opens in any browser (only the satellite imagery needs a connection): satellite and street layers, subplot grid, filters, search, image carousel and a link to the specimen in JABOT/REFLORA.
+:::
+
+```{=html}
+<script src="{{ROOT}}js/forplotr-local.js"></script>
+<script src="{{ROOT}}js/forplotr-app.js"></script>
+```

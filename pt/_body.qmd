@@ -1,0 +1,148 @@
+```{=html}
+<header class="home-hero full">
+  <div class="home-hero-inner">
+    <p class="kicker" data-lang="pt">Pacote R e app no navegador · parcelas permanentes · coleções botânicas</p>
+    <p class="kicker" data-lang="en">R package and web app · permanent vegetation plots · botanical collections</p>
+    <h1 data-lang="pt">Do censo da parcela à coleção do herbário.</h1>
+    <h1 data-lang="en">From plot census to herbarium collection.</h1>
+    <p class="deck" data-lang="pt">O <strong>forplotR</strong> liga a planilha do censo de uma parcela permanente de vegetação aos seus espécimes-testemunho: onde está cada árvore, o que já foi coletado, o que ainda falta e como os nomes de campo se comparam com os do herbário. Em R ou no navegador; os dados ficam no seu computador.</p>
+    <p class="deck" data-lang="en"><strong>forplotR</strong> links the census spreadsheet of a permanent vegetation plot to its voucher specimens: where each tree stands, what has been collected, what is still missing, and how field names compare with herbarium records. In R or in your browser; your data stay on your computer.</p>
+    <p class="byline" data-lang="pt">Desenvolvido por <a href="{{LINK:authors}}#giulia-c-ottino">Giulia C. Ottino</a> no mestrado em Botânica da ENBT/JBRJ, com <a href="{{LINK:authors}}#domingos-cardoso">Domingos Cardoso</a>, no Jardim Botânico do Rio de Janeiro.</p>
+    <p class="byline" data-lang="en">Developed by <a href="{{LINK:authors}}#giulia-c-ottino">Giulia C. Ottino</a> during her master's degree in Botany at ENBT/JBRJ, with <a href="{{LINK:authors}}#domingos-cardoso">Domingos Cardoso</a>, at the Rio de Janeiro Botanical Garden.</p>
+    <div class="actions">
+      <a class="btn btn-primary" href="{{LINK:start}}"><span data-lang="pt">Começar</span><span data-lang="en">Get started</span></a>
+      <a class="btn" href="{{LINK:tools}}"><span data-lang="pt">Abrir o app no navegador</span><span data-lang="en">Open the web app</span></a>
+    </div>
+    <p class="works-with" data-lang="pt">Para qualquer parcela dividida em subparcelas: fichas e exportações do ForestPlots.net, fichas de Terras Indígenas, o protocolo MONITORA e outras tabelas cujas colunas possam ser indicadas. <a href="{{LINK:formats}}">Dados aceitos</a></p>
+    <p class="works-with" data-lang="en">For any plot divided into subplots: ForestPlots.net sheets and exports, Indigenous Land field sheets, the MONITORA protocol and other tables whose columns can be mapped. <a href="{{LINK:formats}}">Supported data</a></p>
+  </div>
+</header>
+```
+
+## [1. A parcela]{data-lang=pt}[1. The plot]{data-lang=en} {#parcela}
+
+::: {data-lang="pt"}
+Um censo de parcela permanente é uma planilha: cada árvore com plaqueta, a subparcela onde está, a posição x–y, o diâmetro, a família e, quando foi coletada, o código do voucher. No `RUS01`, que vem no pacote, é **1 hectare na REBIO Augusto Ruschi (ES), dividido em {{< var rus01.subparcelas >}} subparcelas de 10 × 10 m, com {{< var rus01.arvores >}} árvores de {{< var rus01.familias >}} famílias.**
+:::
+::: {data-lang="en"}
+A permanent plot census is a spreadsheet: each tagged tree, the subplot it is in, its x–y position, its diameter, its family and, when collected, the voucher code. In `RUS01`, which ships with the package, it is **1 hectare in the REBIO Augusto Ruschi (Espírito Santo, Brazil), divided into {{< var rus01.subparcelas >}} subplots of 10 × 10 m, with {{< var rus01.arvores >}} trees from {{< var rus01.familias >}} families.**
+:::
+
+```{=html}
+<figure class="panorama wide" data-pano="parcela">
+  <div class="static">
+{{< include /exemplos/panorama/rus01_parcela.svg >}}
+  </div>
+  <figcaption>
+    <span data-lang="pt">Cada haste é uma árvore do RUS01 na sua posição; a altura acompanha o diâmetro. <span class="key col">com voucher</span> <span class="key unc">sem voucher</span> <span class="key palm">palmeira</span></span>
+    <span data-lang="en">Each stem is a RUS01 tree at its position; the height follows the diameter. <span class="key col">with voucher</span> <span class="key unc">without voucher</span> <span class="key palm">palm</span></span>
+    <span class="src">forplotR {{< var forplotr.versao >}} · RUS01</span>
+  </figcaption>
+</figure>
+```
+
+## [2. Mapear]{data-lang=pt}[2. Map]{data-lang=en} {#mapear}
+
+::: {data-lang="pt"}
+`forplot_map()` converte as coordenadas locais em latitude e longitude a partir dos vértices da parcela e grava um mapa interativo num único arquivo HTML, com filtros por família, espécie e situação de coleta, e as fotos de cada voucher.
+:::
+::: {data-lang="en"}
+`forplot_map()` converts the local coordinates to latitude and longitude from the plot vertices and writes an interactive map into a single HTML file, with filters by family, species and collection status, and the photos of each voucher.
+:::
+
+```{.r .offline}
+forplot_map(
+  "RUS01.xlsx",
+  vertex_coords = vertices,
+  voucher_imgs = "voucher_imgs"
+)
+```
+
+[[Ver o mapa real do RUS01 →]({{LINK:map}}#exemplo)]{data-lang=pt}[[See the real RUS01 map →]({{LINK:map}}#exemplo)]{data-lang=en}
+
+## [3. O balanço de coleta]{data-lang=pt}[3. The collection balance]{data-lang=en} {#balanco}
+
+::: {data-lang="pt"}
+`forplot_balance()` mostra, subparcela por subparcela, o que já tem voucher e o que falta, segundo a planilha. No RUS01: **{{< var rus01.coletadas >}} indivíduos com voucher, {{< var rus01.nao_coletadas >}} sem**, e {{< var rus01.palmeiras >}} palmeiras tratadas à parte.
+:::
+::: {data-lang="en"}
+`forplot_balance()` shows, subplot by subplot, what already has a voucher and what is missing, according to the spreadsheet. In RUS01: **{{< var rus01.coletadas >}} individuals with a voucher, {{< var rus01.nao_coletadas >}} without**, and {{< var rus01.palmeiras >}} palms treated separately.
+:::
+
+```{=html}
+<figure class="panorama wide" data-pano="balanco">
+  <div class="static">
+{{< include /exemplos/panorama/rus01_balanco.svg >}}
+  </div>
+  <figcaption>
+    <span data-lang="pt">Uma coluna por subparcela: <span class="key col">com voucher</span> embaixo, <span class="key unc">sem voucher</span> em cima.</span>
+    <span data-lang="en">One column per subplot: <span class="key col">with voucher</span> below, <span class="key unc">without voucher</span> on top.</span>
+    <span class="src">forplot_balance() · RUS01</span>
+  </figcaption>
+</figure>
+```
+
+[[O relatório completo →]({{LINK:balance}}#exemplo)]{data-lang=pt}[[The full report →]({{LINK:balance}}#exemplo)]{data-lang=en}
+
+## [4. Organizar as fotos]{data-lang=pt}[4. Organise the photos]{data-lang=en} {#fotos}
+
+::: {data-lang="pt"}
+`forplot_vouchers()` cria uma pasta por indivíduo coletado, em Família/Gênero, e move as fotos quando uma determinação muda na planilha. O começo da árvore do RUS01:
+:::
+::: {data-lang="en"}
+`forplot_vouchers()` creates one folder per collected individual, in Family/Genus, and moves the photos when a determination changes in the spreadsheet. The beginning of the RUS01 tree:
+:::
+
+```{.tree}
+{{< include /exemplos/fotos/rus01_arvore.txt >}}
+```
+
+## [5. Etiquetar para o herbário]{data-lang=pt}[5. Labels for the herbarium]{data-lang=en} {#etiquetas}
+
+::: {data-lang="pt"}
+`forplot_sheets()` preenche a planilha de importação do herbário (JABOT, BRAHMS ou modelo próprio), com uma nota de etiqueta montada a partir dos códigos de campo. Com o RUS01 saem {{< var rus01.etiquetas >}} etiquetas; a primeira nota, tal como gravada:
+:::
+::: {data-lang="en"}
+`forplot_sheets()` fills the herbarium import spreadsheet (JABOT, BRAHMS or a custom template), with a label note built from the field codes. RUS01 yields {{< var rus01.etiquetas >}} labels; the first note (here with `language = "pt"`), exactly as written:
+:::
+
+::: {.label-note}
+{{< include /exemplos/etiquetas/rus01_nota1.txt >}}
+:::
+
+## [6. Conferir as determinações]{data-lang=pt}[6. Check the determinations]{data-lang=en} {#determinacoes}
+
+::: {data-lang="pt"}
+Depois do tombamento, `forplot_crossdet()` cruza a planilha com os registros de um herbário do JABOT e classifica cada voucher. Ele aponta onde o campo e o herbário divergem; quem decide o nome é quem conhece as plantas.
+:::
+::: {data-lang="en"}
+After accession, `forplot_crossdet()` cross-references the spreadsheet with the records of a JABOT herbarium and classifies each voucher. It points out where field and herbarium differ; the name is decided by the people who know the plants.
+:::
+
+| [Classe]{data-lang=pt}[Class]{data-lang=en} | [Significado]{data-lang=pt}[Meaning]{data-lang=en} |
+|---|---|
+| `same_determination` | [Parcela e herbário concordam]{data-lang=pt}[Plot and herbarium agree]{data-lang=en} |
+| `different_determination` | [Determinações divergentes]{data-lang=pt}[Different determinations]{data-lang=en} |
+| `inventory_indet_herbarium_det` | [Indeterminado na parcela, determinado no herbário]{data-lang=pt}[Undetermined in the plot, determined in the herbarium]{data-lang=en} |
+| `inventory_det_herbarium_indet` | [Determinado na parcela, indeterminado no herbário]{data-lang=pt}[Determined in the plot, undetermined in the herbarium]{data-lang=en} |
+
+## [7. No navegador, sem enviar os dados]{data-lang=pt}[7. In the browser, without sending the data]{data-lang=en} {#navegador}
+
+::: {data-lang="pt"}
+Os dados de parcelas costumam ser sensíveis: identidade e medidas de árvores, muitas vezes em unidades de conservação e Terras Indígenas. Por isso as ferramentas do site carregam o R e o forplotR **no seu navegador** (webR). As planilhas e as fotos não saem do seu computador, e o R roda com a internet bloqueada.
+:::
+::: {data-lang="en"}
+Plot data are often sensitive: tree identities and measurements, frequently in protected areas and Indigenous Lands. That is why the site's tools load R and forplotR **in your browser** (webR). Spreadsheets and photos never leave your computer, and R runs with the internet blocked.
+:::
+
+::: {.actions}
+[[Rodar no navegador]({{LINK:tools}}){.btn .btn-primary} [Como funciona e privacidade]({{LINK:about}}){.btn}]{data-lang=pt}[[Run in the browser]({{LINK:tools}}){.btn .btn-primary} [How it works and privacy]({{LINK:about}}){.btn}]{data-lang=en}
+:::
+
+## [Autoria]{data-lang=pt}[Authors]{data-lang=en} {#autoria}
+
+::: {.statement}
+[O forplotR foi desenvolvido por **Giulia C. Ottino** como produto de seu mestrado em Botânica na Escola Nacional de Botânica Tropical (ENBT/JBRJ), sob orientação de **Domingos Cardoso**, no Instituto de Pesquisas Jardim Botânico do Rio de Janeiro (DBOSlab). Código aberto, licença MIT.]{data-lang=pt}[forplotR was developed by **Giulia C. Ottino** as the product of her master's degree in Botany at the National School of Tropical Botany (ENBT/JBRJ), supervised by **Domingos Cardoso**, at the Rio de Janeiro Botanical Garden Research Institute (DBOSlab). Open source, MIT licence.]{data-lang=en}
+:::
+
+[[Autoria]({{LINK:authors}}) · [Como citar]({{LINK:cite}}) · [Código no GitHub](https://github.com/DBOSlab/forplotR)]{data-lang=pt}[[Authors]({{LINK:authors}}) · [How to cite]({{LINK:cite}}) · [Source on GitHub](https://github.com/DBOSlab/forplotR)]{data-lang=en}

@@ -1,0 +1,48 @@
+# forplotR online — servidor do JBRJ
+#   quarto render                       # gera _site/
+#   docker compose up -d --build        # API + workers
+# O site e a API ficam em http://127.0.0.1:8000/ (publicar pelo nginx do JBRJ:
+# exemplo em backend/nginx-jbrj.conf). Para atualizar só o site: quarto render.
+
+x-env: &env
+  FORPLOTR_MAX_UPLOAD_MB: "200"     # tamanho máximo de cada envio
+  FORPLOTR_MAX_ZIP_MB: "500"        # fotos de vouchers descompactadas
+  FORPLOTR_JOB_TIMEOUT: "1800"      # segundos por processamento
+  FORPLOTR_KEEP_HOURS: "72"         # depois disso os resultados são apagados
+  FORPLOTR_MAX_QUEUE: "20"
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+      args:
+        FORPLOTR_REF: main          # tag ou branch do forplotR no GitHub
+    image: forplotr-online:0.3.0
+    command: ["Rscript", "backend/run_api.R"]
+    environment: *env
+    ports:
+      - "127.0.0.1:8000:8000"
+    volumes:
+      - forplotr-data:/data
+      - ./_site:/srv/forplotr/_site:ro
+    restart: unless-stopped
+
+  worker:
+    image: forplotr-online:0.3.0
+    pull_policy: never
+    command: ["Rscript", "backend/worker.R"]
+    environment: *env
+    volumes:
+      - forplotr-data:/data
+    depends_on:
+      - api
+    deploy:
+      replicas: 2                   # processamentos simultâneos
+      resources:
+        limits:
+          memory: 3g
+    restart: unless-stopped
+
+volumes:
+  forplotr-data: {}

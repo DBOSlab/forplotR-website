@@ -1,0 +1,114 @@
+## [Sobre o forplotR]{data-lang=pt}[About forplotR]{data-lang=en} {#sobre}
+
+```{=html}
+<details class="faq" id="o-que-e" open><summary><span data-lang="pt">O que é o forplotR?</span><span data-lang="en">What is forplotR?</span></summary>
+```
+
+::: {data-lang="pt"}
+É um pacote R de código aberto (licença MIT), com um app no navegador, para gerir as coleções botânicas de parcelas permanentes de monitoramento da vegetação. Ele liga o censo de qualquer parcela dividida em subparcelas à documentação dos espécimes de herbário: mapa interativo da parcela, balanço de coleta, organização das fotos dos vouchers, planilhas de etiquetas (JABOT, BRAHMS) e cruzamento das determinações de campo com o herbário.
+:::
+::: {data-lang="en"}
+It is an open-source R package (MIT licence), with a web app, to manage the botanical collections of permanent vegetation monitoring plots. It links the census of any plot divided into subplots to the documentation of herbarium specimens: interactive plot map, collection balance, voucher photo organisation, label spreadsheets (JABOT, BRAHMS) and cross-checks of field determinations against the herbarium.
+:::
+
+```{=html}
+</details>
+<details class="faq" id="quem-desenvolveu"><summary><span data-lang="pt">Quem desenvolveu o forplotR?</span><span data-lang="en">Who developed forplotR?</span></summary>
+```
+
+::: {data-lang="pt"}
+Giulia C. Ottino, como produto de seu mestrado em Botânica na Escola Nacional de Botânica Tropical (ENBT/JBRJ), sob orientação de Domingos Cardoso, no Instituto de Pesquisas Jardim Botânico do Rio de Janeiro (DBOSlab). Os dois são os autores do pacote. Veja [Autoria]({{LINK:authors}}).
+:::
+::: {data-lang="en"}
+Giulia C. Ottino, as the product of her master's degree in Botany at the National School of Tropical Botany (ENBT/JBRJ), supervised by Domingos Cardoso, at the Rio de Janeiro Botanical Garden Research Institute (DBOSlab). Both are the authors of the package. See [Authors]({{LINK:authors}}).
+:::
+
+```{=html}
+</details>
+<details class="faq" id="identifica-especies"><summary><span data-lang="pt">O forplotR identifica espécies ou corrige determinações?</span><span data-lang="en">Does forplotR identify species or correct determinations?</span></summary>
+```
+
+::: {data-lang="pt"}
+Não. O pacote organiza e cruza os dados. O [cruzamento de determinações]({{LINK:determinations}}) aponta divergências entre o campo e o herbário para alguém conferir, e o [balanço de coleta]({{LINK:balance}}) mostra o que falta coletar segundo a planilha. A decisão taxonômica continua com quem conhece as plantas.
+:::
+::: {data-lang="en"}
+No. The package organises and cross-references the data. The [determination cross-check]({{LINK:determinations}}) points out differences between field and herbarium for someone to review, and the [collection balance]({{LINK:balance}}) shows what is missing according to the spreadsheet. The taxonomic decision stays with the people who know the plants.
+:::
+
+```{=html}
+</details>
+<details class="faq" id="formatos"><summary><span data-lang="pt">Quais planilhas o forplotR lê?</span><span data-lang="en">Which spreadsheets does forplotR read?</span></summary>
+```
+
+::: {data-lang="pt"}
+Qualquer planilha de parcela dividida em subparcelas, com plaqueta, subparcela, posição x–y, família, determinação e diâmetro. Quatro formatos são reconhecidos diretamente (fichas e exportações do ForestPlots.net, fichas de Terras Indígenas e o protocolo MONITORA); nos demais, os nomes das colunas são indicados pelos argumentos `colname_*` ou, no navegador, escolhidos numa lista. Veja [Dados aceitos]({{LINK:formats}}).
+:::
+::: {data-lang="en"}
+Any spreadsheet of a plot divided into subplots, with tag, subplot, x–y position, family, determination and diameter. Four layouts are recognised directly (ForestPlots.net sheets and exports, Indigenous Land field sheets and the MONITORA protocol); for others, column names are given through the `colname_*` arguments or, in the browser, picked from a list. See [Supported data]({{LINK:formats}}).
+:::
+
+```{=html}
+</details>
+<details class="faq" id="como-citar"><summary><span data-lang="pt">Como citar o forplotR?</span><span data-lang="en">How do I cite forplotR?</span></summary>
+```
+
+{{< include /pt/citar/_bib.md >}}
+
+```{=html}
+</details>
+```
+
+{{< include /pt/perguntas/_faq_pacote.md >}}
+
+## [No navegador]{data-lang=pt}[In the browser]{data-lang=en} {#navegador}
+
+```{=html}
+<details class="faq" id="instalar"><summary><span data-lang="pt">Preciso instalar o R para usar as ferramentas do site?</span><span data-lang="en">Do I need to install R to use the site's tools?</span></summary>
+```
+
+::: {data-lang="pt"}
+Não. As ferramentas carregam o R e o forplotR no próprio navegador (webR, o R compilado para WebAssembly). O primeiro acesso baixa cerca de 120 MB, que depois ficam no cache do navegador.
+:::
+::: {data-lang="en"}
+No. The tools load R and forplotR in the browser itself (webR, R compiled to WebAssembly). The first visit downloads about 120 MB, which then stay in the browser cache.
+:::
+
+```{=html}
+</details>
+<details class="faq" id="dados"><summary><span data-lang="pt">Minhas planilhas e fotos são enviadas a algum servidor?</span><span data-lang="en">Are my spreadsheets and photos sent to a server?</span></summary>
+```
+
+::: {data-lang="pt"}
+Não. O processamento acontece no seu computador; durante a execução, o acesso à internet fica bloqueado dentro do R, e a política de segurança das páginas só permite conexões com o próprio site. Ao terminar, a pasta de trabalho é apagada da memória do navegador. Veja [Sobre e privacidade]({{LINK:about}}).
+:::
+::: {data-lang="en"}
+No. Processing happens on your computer; while it runs, internet access is blocked inside R, and the pages' security policy only allows connections to the site itself. When it finishes, the working folder is deleted from the browser's memory. See [About and privacy]({{LINK:about}}).
+:::
+
+```{=html}
+</details>
+<details class="faq" id="so-no-r"><summary><span data-lang="pt">O que só funciona no pacote, no R?</span><span data-lang="en">What only works in the package, in R?</span></summary>
+```
+
+::: {data-lang="pt"}
+O que usa a internet: a busca de exsicatas no JABOT/REFLORA no mapa, a verificação de localidade (GADM) e a altitude automática nas etiquetas, e o [cruzamento de determinações]({{LINK:determinations}}), que baixa os dados do herbário.
+:::
+::: {data-lang="en"}
+Whatever uses the internet: the JABOT/REFLORA specimen lookup in the map, the locality check (GADM) and automatic altitude in the labels, and the [determination cross-check]({{LINK:determinations}}), which downloads the herbarium data.
+:::
+
+```{=html}
+</details>
+<details class="faq" id="erros"><summary><span data-lang="pt">Como relatar um erro?</span><span data-lang="en">How do I report a bug?</span></summary>
+```
+
+::: {data-lang="pt"}
+Abra uma *issue* no [GitHub](https://github.com/DBOSlab/forplotR/issues) com a mensagem de erro e, se possível, uma planilha reduzida que reproduza o problema (sem dados sensíveis).
+:::
+::: {data-lang="en"}
+Open an issue on [GitHub](https://github.com/DBOSlab/forplotR/issues) with the error message and, if possible, a reduced spreadsheet that reproduces the problem (without sensitive data).
+:::
+
+```{=html}
+</details>
+```

@@ -1,0 +1,17 @@
+forplotr:
+  versao: 1.0.0
+rus01:
+  arvores: 936
+  sem_subparcela: 1.0
+  coletadas: 688
+  nao_coletadas: 11
+  palmeiras: 237
+  familias: 42
+  subparcelas: 100
+  pct_coletado: 98.0
+  pastas_familia: 42
+  etiquetas: 690
+tum:
+  registros: 1675
+  estacoes: 3
+  etiquetas_ea1: 65

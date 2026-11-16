@@ -1,0 +1,3 @@
+[As novidades vêm do arquivo NEWS.md do pacote, em inglês.]{data-lang=pt}[From the package NEWS.md file.]{data-lang=en}
+
+{{< include /pt/novidades/_news.md >}}

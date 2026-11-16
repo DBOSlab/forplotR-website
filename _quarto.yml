@@ -1,102 +1,69 @@
+# Site do forplotR --------------------------------------------------------------
+#
+# Quarto sem Bootstrap: template próprio (_tpl/page.html) e CSS com tokens
+# (assets/site.css). Cada página é escrita uma vez, nas duas línguas, em
+# pt/<caminho>/_body.qmd. O inglês é o idioma padrão e fica na raiz; o português
+# fica em /pt/. As duas versões incluem o mesmo corpo e o filtro _tpl/lang.lua
+# mantém só a língua da página.
+#
+#   scripts/sync_lang.R  (pré) gera as páginas em inglês (raiz) a partir de pt/
+#   scripts/seo.R        (pós) canonical, hreflang, JSON-LD, sitemap, robots,
+#                        llms.txt e redirecionamentos dos endereços antigos
+#
+# Saída em _site/: publicada no GitHub Pages pelo workflow build-webr.yml e
+# servida pelo modo servidor (backend/plumber.R).
+
 project:
-  output-dir: docs
   type: website
+  output-dir: _site
+  pre-render: scripts/sync_lang.R
+  post-render: scripts/seo.R
+  render:
+    - index.qmd
+    - get-started/index.qmd
+    - applications/**/index.qmd
+    - formats/index.qmd
+    - tools/**/index.qmd
+    - reference/index.qmd
+    - authors/index.qmd
+    - cite/index.qmd
+    - about/index.qmd
+    - news/index.qmd
+    - faq/index.qmd
+    - pt/**/index.qmd
   resources:
-    - figures/**
+    - assets/
+    - js/
+    - figures/
+    - fonts/
+    - exemplos/
+    - "!_tools/"
+
+lang: en
+# idioma padrão inglês; pt/_metadata.yml muda para português (lang-en: false)
+lang-en: true
 
 website:
   title: "forplotR"
-  site-url: https://dboslab.github.io/forplotR-website/
-  page-navigation: true
-  reader-mode: true
-  favicon: "figures/forplotR_hex_sticker.png"
-
-  page-footer:
-    center:
-      - text: "About"
-        href: about.qmd
-      - text: "FAQ"
-        href: faq/index.qmd
-      - text: "License"
-        href: LICENSE.md
-    right:
-      - icon: github
-        href: https://github.com/DBOSlab/forplotR
-        aria-label: forplotR GitHub
-
-  navbar:
-    search: true
-    background: light
-    collapse-below: lg
-    type: light
-    logo: "figures/forplotR_hex_sticker.png"
-    href: index.qmd
-    left:
-      - text: "Overview"
-        href: index.qmd
-      - text: "Get Started"
-        href: get-started/index.qmd
-      - text: "Articles"
-        href: articles/index.qmd
-      - text: "News"
-        href: news/index.qmd
-      - text: "Reference"
-        href: reference/index.qmd
-      - text: "Authors"
-        href: authors/index.qmd
-      - text: "Help"
-        menu:
-          - text: "Report a Bug"
-            icon: "bug"
-            href: "https://github.com/DBOSlab/forplotR/issues"
-          - text: "Ask a Question"
-            icon: "chat-right-text"
-            href: "https://github.com/DBOSlab/forplotR/discussions"
-          - text: "FAQ"
-            icon: "question-circle"
-            href: faq/index.qmd
-
-    tools:
-      - icon: github
-        href: https://github.com/DBOSlab/forplotR
-        text: forplotR GitHub
-
-  sidebar:
-    - id: articles
-      title: Articles
-      collapse-level: 3
-      align: left
-      contents:
-        - text: Overview
-          href: articles/index.qmd
-        - section: Using fp_herb_converter
-          contents:
-          - text: General use
-            href: articles/fp_herb_converter_general_usage.qmd
-        - section: Using mk_voucher_dirs
-          contents:
-          - text: General use
-            href: articles/mk_voucher_dirs_general_usage.qmd
-        - section: Using plot_for_balance
-          contents:
-          - text: General use
-            href: articles/plot_for_balance_general_usage.qmd
-        - section: Using plot_html_map
-          contents:
-          - text: General use
-            href: articles/plot_html_map_general_usage.qmd
+  site-url: "https://dboslab.github.io/forplotR-website/"
+  description: "forplotR: an R package and browser app to manage the botanical collections of permanent vegetation monitoring plots."
+  # a busca do site é a do Pagefind (_tools); o índice do Quarto não é usado
+  search: false
 
 format:
   html:
-    toc: true
-    embed-resources: true
-    code-copy: true
-    code-overflow: wrap
-    code-tools: true
-    css: styles.css
-    eval: false
-    theme:
-      light: [spacelab, theme.scss]
-      dark: [spacelab, theme-dark.scss]
-    include-in-header: gtm-head.html
-    include-before-body: gtm-body.html
+    theme: none
+    minimal: true
+    template: _tpl/page.html
+    filters:
+      - _tpl/lang.lua
+    toc: false
+    toc-depth: 2
+    highlight-style: none
+    link-external-newwindow: false
+    anchor-sections: false
+    code-copy: false
+    title-prefix: ""
+
+execute:
+  freeze: auto
