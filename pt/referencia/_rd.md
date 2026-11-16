@@ -563,13 +563,14 @@ extracted from the input file metadata.</p>
 </td></tr>
 <tr><td><code id="render_html">render_html</code></td>
 <td>
-<p>Logical. If <code>TRUE</code>, renders the HTML report. Uses
-pandoc when available; otherwise the report is rendered with <span class="pkg">knitr</span>
-and the suggested package <span class="pkg">markdown</span> into the same single-file HTML.</p>
+<p>Logical. If <code>TRUE</code>, writes the field report as a
+single self-contained HTML file (see <em>Field report</em>).</p>
 </td></tr>
 <tr><td><code id="render_pdf">render_pdf</code></td>
 <td>
-<p>Logical. If <code>TRUE</code>, renders the PDF report.</p>
+<p>Logical. If <code>TRUE</code>, prints the field report to PDF
+(A4) with a headless Chrome, Chromium or Edge. Skipped with a warning when
+no such browser is found.</p>
 </td></tr>
 <tr><td><code id="write_xlsx">write_xlsx</code></td>
 <td>
@@ -651,7 +652,7 @@ sheets, Query Library exports, and MONITORA layouts. Depending on the selected
 <li><p> generates whole-plot and subplot-level maps, with optional palm highlighting;
 </p>
 </li>
-<li><p> renders HTML and/or PDF reports;
+<li><p> writes the field report (HTML) and optionally prints it to PDF;
 </p>
 </li>
 <li><p> optionally writes an Excel workbook summarizing collection balance per subplot.
@@ -675,7 +676,8 @@ summary files to disk.
 <dl>
 <dt>html_report</dt><dd><p>Path to the rendered HTML report, or <code>NULL</code> if not generated.</p>
 </dd>
-<dt>pdf_report</dt><dd><p>Path to the rendered PDF report, or <code>NULL</code> if not generated.</p>
+<dt>pdf_report</dt><dd><p>Path to the PDF report, or <code>NULL</code> if not generated
+(including when no Chrome, Chromium or Edge browser is available).</p>
 </dd>
 <dt>xlsx_report</dt><dd><p>Path to the Excel summary workbook, or <code>NULL</code> if not generated.</p>
 </dd>
@@ -705,11 +707,44 @@ than 1, the function recursively processes each station and invisibly returns
 
 
 
+<h4>Field report</h4>
+
+<p>The report is a single self-contained HTML file designed to be used in the
+field, on a phone (offline) or printed. It contains a summary of the
+collection balance with footnotes on how each number is computed, a
+clickable grid of subplots coloured by what remains to collect, whole-plot
+maps with the tag of every stem (all stems, with voucher, pending and, when
+<code>highlight_palms = TRUE</code>, palms), a priority route, one A4 page per
+subplot (map, tree table with stems pending collection first, and blank
+columns for new DBH, status, voucher number and notes), a floristic and
+phytosociological overview and a checklist appendix. Maps are inline SVG, so the file opens without internet. In a
+browser the report has a search box for tags and subplots; tapping a stem on
+a subplot map highlights its row in the table. MONITORA plots are drawn as
+the cross of four arms of the protocol.
+</p>
+<p>The floristic and phytosociological overview follows Mueller-Dombois &amp;
+Ellenberg (1974), with the subplot as the sampling unit for frequency. It
+gives richness (species, genera, families), density and basal area per
+hectare, Shannon <code class="reqn">H'</code>, Simpson <code class="reqn">1 - D</code> and Pielou <code class="reqn">J'</code>; the
+families and species with the highest importance value (IVI = relative
+density + relative frequency + relative dominance) as stacked bar charts;
+the distribution of stems per diameter class; and the full tables of
+phytosociological parameters of every family and species. A name used in
+more than one family (e.g. &quot;Indet indet&quot;) is treated as one taxon per
+family. The same charts are also saved as PNG files.
+</p>
+<p>The PDF report is the same HTML printed by a headless Chrome, Chromium or
+Microsoft Edge, one A4 page per subplot. The browser is found automatically
+or through the <code>FORPLOTR_CHROME</code> environment variable. When none is
+available, the PDF is skipped with a warning; the HTML report can then be
+printed to PDF from any browser.
+</p>
+
+
 <h4>Side effects</h4>
 
 <p>The function creates output files on disk, including map images, an optional
-HTML report, an optional PDF report, and an optional Excel workbook. Temporary
-intermediate files used during report rendering are removed before exit.
+HTML report, an optional PDF report, and an optional Excel workbook.
 </p>
 
 
@@ -726,15 +761,16 @@ intermediate files used during report rendering are removed before exit.
 fp &lt;- file.path(tempdir(), "RUS01.xlsx")
 openxlsx::write.xlsx(RUS01, fp)
 
-# Maps and Excel summary only (the PDF report needs LaTeX)
+# Field report (HTML) and Excel summary; set render_pdf = TRUE to also
+# print the report to PDF with Chrome, Chromium or Edge
 res &lt;- forplot_balance(
   fp,
   input_type = "field_sheet",
-  render_html = FALSE,
   render_pdf = FALSE,
   dir = tempdir(),
   verbose = FALSE
 )
+res$html_report
 res$xlsx_report
 
 # MONITORA data, one station

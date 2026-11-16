@@ -1,15 +1,46 @@
 <!-- gerado por scripts/build_reference.R a partir de NEWS.md; não edite -->
 
 ::: {lang="en"}
-## forplotR 1.0.0 {#news-1}
+## forplotR (development version) {#news-1}
 
-### Initial release {#news-2}
+- The field report of `forplot_balance()` ends with a floristic and
+  phytosociological overview: richness, density and basal area per hectare,
+  Shannon, Simpson and Pielou indices, the families and species with the
+  highest importance value (IVI, stacked by relative density, frequency and
+  dominance), stems per diameter class, and full tables of phytosociological
+  parameters for every family and species. The PNG charts use the same
+  palette, and the diameter classes are also saved
+  (`<filename>_dbh_classes.png`).
+- Phytosociological parameters now treat a name used in more than one family
+  (e.g. "Indet indet") as one taxon per family instead of merging them.
+- Pedro Lage Viana (Instituto Nacional da Mata Atlântica) added as thesis
+  co-advisor.
+
+- `forplot_balance()` writes a new field report: a single self-contained HTML
+  file for use on a phone (offline) or printed, one A4 page per subplot. It
+  has a summary of the collection balance with footnotes on how each number
+  is computed, a clickable subplot grid, whole-plot maps with the tag of every
+  stem (all stems, with voucher, pending and palms), a priority route, subplot
+  pages with a tree table and blank columns for remeasurement, and a
+  checklist appendix. MONITORA plots are drawn as the cross of four arms.
+  Maps are inline SVG instead of plotly widgets, so the report is several
+  times smaller (RUS01: about 1 MB instead of 5.8 MB) and builds in seconds.
+- The PDF report is the same HTML printed by a headless Chrome, Chromium or
+  Edge (found automatically or through `FORPLOTR_CHROME`); LaTeX, `tinytex`
+  and pandoc are no longer used by `forplot_balance()`. Without a browser the
+  PDF is skipped with a warning.
+- `plotly` is no longer a dependency; `markdown` and `tinytex` are no longer
+  suggested.
+
+## forplotR 1.0.0 {#news-2}
+
+### Initial release {#news-3}
 
 `forplotR` streamlines the management of permanent forest plot data from
 ForestPlots.net field sheets, Query Library exports and MONITORA
 spreadsheets.
 
-#### Functions {#news-3}
+#### Functions {#news-4}
 
 - `forplot_map()`: interactive HTML map of tagged trees, with voucher
   photographs, optional JABOT herbarium lookup, and filters for taxonomy,
@@ -24,14 +55,14 @@ spreadsheets.
 - `forplot_crossdet()`: cross-checks field determinations against a JABOT
   herbarium Darwin Core Archive.
 
-#### Data {#news-4}
+#### Data {#news-5}
 
 - `RUS01`: ForestPlots.net field sheet of the 1-ha plot RUS01 (REBIO Augusto
   Ruschi, Espirito Santo, Brazil).
 - `TUM`: MONITORA data from the Parque Nacional Montanhas do Tumucumaque
   (Amapa, Brazil).
 
-#### Behaviour {#news-5}
+#### Behaviour {#news-6}
 
 - Output files are written to `dir` (or `output_dir`); by default they go to a
   session temporary directory, so nothing is written to the working directory
@@ -56,7 +87,7 @@ spreadsheets.
   internet. Locality validation, elevation download and herbarium downloads
   are skipped with a warning; already cached herbarium data is still used.
 
-#### Infrastructure {#news-6}
+#### Infrastructure {#news-7}
 
 - MIT license.
 - Vignette with a complete worked example using the bundled data.

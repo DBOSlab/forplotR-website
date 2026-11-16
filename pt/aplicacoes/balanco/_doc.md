@@ -18,8 +18,9 @@ This function was previously called `plot_for_balance()`. The biomass calculatio
 1. o **mapa geral** da parcela, com os indivíduos classificados pela situação de coleta (coletado, não coletado e, opcionalmente, palmeiras em categoria própria);
 2. um **mapa por subparcela** (ou braço da cruz-de-malta), com o tamanho do símbolo proporcional ao diâmetro;
 3. as **subparcelas prioritárias**, que concentram espécies ainda sem coleta;
-4. o **checklist** por família, ligado às plaquetas, aos códigos de voucher e à situação de coleta, e as espécies e famílias mais abundantes;
-5. o **relatório completo** em HTML e PDF e a **planilha de balanço** em XLSX.
+4. o **checklist** por família, ligado às plaquetas e à situação de coleta;
+5. a **florística e fitossociologia** da parcela (Mueller-Dombois & Ellenberg 1974, com a subparcela como unidade amostral): riqueza de espécies, gêneros e famílias, densidade e área basal por hectare, índices de Shannon (H′), Simpson (1 − D) e Pielou (J′), famílias e espécies com maior valor de importância (IVI = densidade + frequência + dominância relativas), fustes por classe de diâmetro e as tabelas completas de parâmetros de todas as famílias e espécies;
+6. o **relatório de campo** em HTML, que se imprime em PDF com uma página A4 por subparcela, e a **planilha de balanço** em XLSX.
 
 A situação de coleta é lida da coluna `Collected` (ou equivalente). Valores como `Sim`, `Yes`, `Coletado`, `1` ou `x` são interpretados como coletado.
 
@@ -32,8 +33,9 @@ Em dados com vários censos, o relatório pode ser regenerado após cada campanh
 1. the **overall plot map**, with individuals classified by collection status (collected, not collected and, optionally, palms as a separate category);
 2. a **map per subplot** (or maltese-cross arm), with symbol size proportional to diameter;
 3. the **priority subplots**, where species still lacking collections are concentrated;
-4. the **checklist** by family, linked to tags, voucher codes and collection status, together with the most abundant species and families;
-5. the **full report** in HTML and PDF and the **balance spreadsheet** in XLSX.
+4. the **checklist** by family, linked to tags and collection status;
+5. the **floristics and phytosociology** of the plot (Mueller-Dombois & Ellenberg 1974, with the subplot as the sampling unit): species, genus and family richness, density and basal area per hectare, Shannon (H′), Simpson (1 − D) and Pielou (J′) indices, the families and species with the highest importance value (IVI = relative density + frequency + dominance), stems per diameter class and the full tables of parameters of every family and species;
+6. the **field report** in HTML, which prints to PDF with one A4 page per subplot, and the **balance spreadsheet** in XLSX.
 
 Collection status is read from the `Collected` column (or equivalent). Values such as `Sim`, `Yes`, `Coletado`, `1` or `x` are interpreted as collected.
 

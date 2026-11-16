@@ -34,15 +34,15 @@ To run without your own spreadsheet, tick **Use the example data**.
 ## [Saídas]{data-lang=pt}[Outputs]{data-lang=en} {#saidas}
 
 ::: {data-lang="pt"}
-- **Relatório de campo (HTML)**: um único arquivo que abre no celular sem internet. Traz o resumo do balanço, a grade clicável das subparcelas, mapas da parcela com a plaqueta de cada fuste (todos, com voucher, pendentes e palmeiras), a rota de prioridade, uma página por subparcela com mapa e tabela (pendentes primeiro) e o checklist. Tem busca por plaqueta ou subparcela.
+- **Relatório de campo (HTML)**: um único arquivo que abre no celular sem internet. Traz o resumo do balanço, a grade clicável das subparcelas, mapas da parcela com a plaqueta de cada fuste (todos, com voucher, pendentes e palmeiras), a rota de prioridade, uma página por subparcela com mapa e tabela (pendentes primeiro), a florística e fitossociologia (índices de diversidade, IVI de famílias e espécies, classes de diâmetro e tabelas completas) e o checklist. Tem busca por plaqueta ou subparcela.
 - **PDF** para levar impresso: abra o relatório HTML baixado e use Imprimir > Salvar como PDF. Sai uma página A4 por subparcela, com colunas em branco para novo DAP, situação, número do voucher e observações. No R, o pacote gera o PDF diretamente quando há Chrome, Chromium ou Edge instalado.
-- **Figuras PNG**: mapa geral, coletados, não coletados, palmeiras, subparcelas prioritárias, espécies e famílias mais abundantes.
+- **Figuras PNG**: mapa geral, coletados, não coletados, palmeiras, subparcelas prioritárias, famílias e espécies com maior valor de importância (IVI) e fustes por classe de diâmetro.
 - **Planilha XLSX** com o percentual de coleta por subparcela e as plaquetas coletadas e não coletadas (não disponível para o Monitora).
 :::
 ::: {data-lang="en"}
-- **Field report (HTML)**: a single file that opens on a phone without internet. It has the balance summary, a clickable subplot grid, plot maps with the tag of every stem (all, with voucher, pending and palms), the priority route, one page per subplot with map and table (pending stems first) and the checklist. Tags and subplots can be searched.
+- **Field report (HTML)**: a single file that opens on a phone without internet. It has the balance summary, a clickable subplot grid, plot maps with the tag of every stem (all, with voucher, pending and palms), the priority route, one page per subplot with map and table (pending stems first), floristics and phytosociology (diversity indices, IVI of families and species, diameter classes and full tables) and the checklist. Tags and subplots can be searched.
 - **PDF** to take on paper: open the downloaded HTML report and use Print > Save as PDF. It prints one A4 page per subplot, with blank columns for new DBH, status, voucher number and notes. In R, the package builds the PDF directly when Chrome, Chromium or Edge is installed.
-- **PNG figures**: overall map, collected, not collected, palms, priority subplots, most abundant species and families.
+- **PNG figures**: overall map, collected, not collected, palms, priority subplots, families and species with the highest importance value (IVI) and stems per diameter class.
 - **XLSX spreadsheet** with the collection percentage per subplot and the collected and uncollected tags (not available for Monitora).
 :::
 

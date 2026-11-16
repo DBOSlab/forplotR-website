@@ -152,8 +152,9 @@ TOOLS <- list(
     description = paste(
       "Um único arquivo HTML para usar no campo (celular, sem internet) ou impresso:",
       "resumo do balanço, grade clicável das subparcelas, mapas da parcela com a",
-      "plaqueta de cada fuste, rota de prioridade e uma página A4 por subparcela",
-      "com mapa, tabela e colunas para remedição. Também gera a planilha XLSX."),
+      "plaqueta de cada fuste, rota de prioridade, uma página A4 por subparcela",
+      "com mapa, tabela e colunas para remedição, e florística e fitossociologia.",
+      "Também gera a planilha XLSX."),
     eta = "1 a 2 minutos com os dados de exemplo",
     example = TRUE,
     # No navegador não há Chrome sem interface para imprimir o PDF: o relatório
