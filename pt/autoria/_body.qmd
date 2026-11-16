@@ -1,5 +1,5 @@
 ::: {.statement}
-[O **forplotR** foi desenvolvido por **Giulia C. Ottino** como produto de seu mestrado em Botânica na Escola Nacional de Botânica Tropical (ENBT/JBRJ), sob orientação de **Domingos Cardoso**, no Instituto de Pesquisas Jardim Botânico do Rio de Janeiro (JBRJ), no DBOSlab.]{data-lang=pt}[**forplotR** was developed by **Giulia C. Ottino** as the product of her master's degree in Botany at the National School of Tropical Botany (ENBT/JBRJ), supervised by **Domingos Cardoso**, at the Rio de Janeiro Botanical Garden Research Institute (JBRJ), in DBOSlab.]{data-lang=en}
+[O **forplotR** foi desenvolvido por **Giulia C. Ottino** como produto de seu mestrado em Botânica na Escola Nacional de Botânica Tropical (ENBT/JBRJ), sob orientação de **Domingos Cardoso** e coorientação de **Pedro Lage Viana** (Instituto Nacional da Mata Atlântica, INMA), no Instituto de Pesquisas Jardim Botânico do Rio de Janeiro (JBRJ), no DBOSlab.]{data-lang=pt}[**forplotR** was developed by **Giulia C. Ottino** as the product of her master's degree in Botany at the National School of Tropical Botany (ENBT/JBRJ), supervised by **Domingos Cardoso** and co-supervised by **Pedro Lage Viana** (Instituto Nacional da Mata Atlântica, INMA), at the Rio de Janeiro Botanical Garden Research Institute (JBRJ), in DBOSlab.]{data-lang=en}
 :::
 
 {{THESIS_BLOCK}}
@@ -14,29 +14,47 @@ The package brings together, in a single source, what work with permanent forest
 ```{=html}
 <div class="people">
   <section class="person" id="giulia-c-ottino">
-    <h2>Giulia C. Ottino</h2>
-    <p class="person-full">Giulia Cavalcanti Ottino</p>
-    <p class="role" data-lang="pt">Autora e mantenedora. Desenvolveu o forplotR como produto de seu mestrado em Botânica na Escola Nacional de Botânica Tropical (ENBT/JBRJ).</p>
-    <p class="role" data-lang="en">Author and maintainer. Developed forplotR as the product of her master's degree in Botany at the National School of Tropical Botany (ENBT/JBRJ).</p>
-    <ul>
-      <li>ORCID <a href="https://orcid.org/0009-0001-4352-1733" rel="me">0009-0001-4352-1733</a></li>
-      <li>Lattes <a href="http://lattes.cnpq.br/0819473317412079" rel="me">0819473317412079</a></li>
-      <li>GitHub <a href="https://github.com/giuliaottino" rel="me">giuliaottino</a></li>
-      <li data-lang="pt">Jardim Botânico do Rio de Janeiro</li>
-      <li data-lang="en">Rio de Janeiro Botanical Garden</li>
-    </ul>
+    <img class="person-photo" src="{{ROOT}}assets/authors/giulia-c-ottino.jpg" alt="Giulia C. Ottino" width="400" height="400" loading="lazy">
+    <div class="person-text">
+      <h2>Giulia C. Ottino</h2>
+      <p class="person-full">Giulia Cavalcanti Ottino</p>
+      <p class="role" data-lang="pt">Autora e mantenedora. Desenvolveu o forplotR como produto de seu mestrado em Botânica na Escola Nacional de Botânica Tropical (ENBT/JBRJ).</p>
+      <p class="role" data-lang="en">Author and maintainer. Developed forplotR as the product of her master's degree in Botany at the National School of Tropical Botany (ENBT/JBRJ).</p>
+      <p class="affil" data-lang="pt">Jardim Botânico do Rio de Janeiro</p>
+      <p class="affil" data-lang="en">Rio de Janeiro Botanical Garden</p>
+      <ul>
+        <li>ORCID <a href="https://orcid.org/0009-0001-4352-1733" rel="me">0009-0001-4352-1733</a></li>
+        <li>Lattes <a href="http://lattes.cnpq.br/0819473317412079" rel="me">0819473317412079</a></li>
+        <li>GitHub <a href="https://github.com/giuliaottino" rel="me">giuliaottino</a></li>
+      </ul>
+    </div>
   </section>
   <section class="person" id="domingos-cardoso">
-    <h2>Domingos Cardoso</h2>
-    <p class="person-full">Domingos Benício Oliveira Silva Cardoso</p>
-    <p class="role" data-lang="pt">Coautor e orientador do mestrado.</p>
-    <p class="role" data-lang="en">Co-author and master's supervisor.</p>
-    <ul>
-      <li>ORCID <a href="https://orcid.org/0000-0001-7072-2656">0000-0001-7072-2656</a></li>
-      <li>DBOSlab · <a href="https://github.com/DBOSlab">github.com/DBOSlab</a></li>
-      <li data-lang="pt">Jardim Botânico do Rio de Janeiro</li>
-      <li data-lang="en">Rio de Janeiro Botanical Garden</li>
-    </ul>
+    <img class="person-photo" src="{{ROOT}}assets/authors/domingos-cardoso.jpg" alt="Domingos Cardoso" width="400" height="400" loading="lazy">
+    <div class="person-text">
+      <h2>Domingos Cardoso</h2>
+      <p class="person-full">Domingos Benício Oliveira Silva Cardoso</p>
+      <p class="role" data-lang="pt">Coautor e orientador do mestrado.</p>
+      <p class="role" data-lang="en">Co-author and master's supervisor.</p>
+      <p class="affil" data-lang="pt">Jardim Botânico do Rio de Janeiro</p>
+      <p class="affil" data-lang="en">Rio de Janeiro Botanical Garden</p>
+      <ul>
+        <li>ORCID <a href="https://orcid.org/0000-0001-7072-2656">0000-0001-7072-2656</a></li>
+        <li>DBOSlab · <a href="https://github.com/DBOSlab">github.com/DBOSlab</a></li>
+      </ul>
+    </div>
+  </section>
+  <section class="person" id="pedro-lage-viana">
+    <img class="person-photo" src="{{ROOT}}assets/authors/pedro-lage-viana.jpg" alt="Pedro Lage Viana" width="400" height="400" loading="lazy">
+    <div class="person-text">
+      <h2>Pedro Lage Viana</h2>
+      <p class="role" data-lang="pt">Coorientador do mestrado.</p>
+      <p class="role" data-lang="en">Master's co-supervisor.</p>
+      <p class="affil">Instituto Nacional da Mata Atlântica (INMA)</p>
+      <ul>
+        <li>Lattes <a href="http://lattes.cnpq.br/8375441896375273">8375441896375273</a></li>
+      </ul>
+    </div>
   </section>
 </div>
 ```

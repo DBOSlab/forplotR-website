@@ -64,6 +64,7 @@ people:
     role_en: "author and maintainer; developed forplotR as the product of her master's degree in Botany (ENBT/JBRJ)"
     affiliation: jbrj
     alumni_of: enbt
+    image: "assets/authors/giulia-c-ottino.jpg"
     github: "https://github.com/giuliaottino"
     same_as:
       - "https://orcid.org/0009-0001-4352-1733"
@@ -79,6 +80,7 @@ people:
     role_pt: "coautor e orientador do mestrado"
     role_en: "co-author and master's supervisor"
     affiliation: jbrj
+    image: "assets/authors/domingos-cardoso.jpg"
     github: "https://github.com/DBOSlab"
     same_as:
       - "https://orcid.org/0000-0001-7072-2656"
@@ -90,8 +92,12 @@ people:
     family: "Viana"
     role_pt: "coorientador do mestrado"
     role_en: "master's co-supervisor"
-    same_as: []
-    lattes: null
+    orcid: null                                  # não informado
+    affiliation: inma
+    image: "assets/authors/pedro-lage-viana.jpg"
+    same_as:
+      - "http://lattes.cnpq.br/8375441896375273"
+    lattes: "http://lattes.cnpq.br/8375441896375273"
 
 # Dissertação de mestrado de que o forplotR é produto. Enquanto title, program
 # e institution estiverem vazios, o script não publica o nó Thesis nem a frase
@@ -123,6 +129,10 @@ organizations:
     name: "Escola Nacional de Botânica Tropical"
     alternate_name: "ENBT"
     parent: jbrj
+    url: null
+  inma:
+    name: "Instituto Nacional da Mata Atlântica"
+    alternate_name: "INMA"
     url: null
   dboslab:
     name: "DBOSlab"

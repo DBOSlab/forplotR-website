@@ -121,6 +121,7 @@ person_node <- function(k, lang) {
     sameAs = unique(c(unlist(p$same_as), if (has(p$lattes)) p$lattes)),
     affiliation = if (has(p$affiliation)) list("@id" = id_org(p$affiliation)),
     alumniOf = if (has(p$alumni_of)) list("@id" = id_org(p$alumni_of)),
+    image = if (has(p$image)) paste0(base, p$image),
     url = paste0(base, authors_path(lang))
   ))
 }
@@ -180,16 +181,24 @@ thesis_node <- function(lang) {
   ))
 }
 
+# Coorientação na frase de autoria (só com o coorientador em _data/entities.yml).
+co_line <- function(lang, a) {
+  if (!(thesis_ok && has(th$co_advisor))) return("")
+  k <- th$co_advisor
+  anchor <- sub(".*#", "", id_person(k))
+  sprintf(if (lang == "en") ' and co-supervised by <a href="%s#%s">%s</a>' else ' e coorientação de <a href="%s#%s">%s</a>', a, anchor, P[[k]]$name)
+}
+
 # Frase de autoria do rodapé (texto visível: é o que buscadores e assistentes leem).
 author_line <- function(lang, root) {
   a <- paste0(root, authors_path(lang))
   yr <- if (thesis_ok && has(th$year)) paste0(", ", th$year) else ""
   if (lang == "en") {
     detail <- if (thesis_ok) sprintf(' as the product of her <a href="%s#dissertacao">master\'s degree in Botany</a> at the National School of Tropical Botany (ENBT/JBRJ%s)', a, yr) else " during her master's degree"
-    sprintf('forplotR was developed by <a href="%s#giulia-c-ottino">Giulia C. Ottino</a>%s, supervised by <a href="%s#domingos-cardoso">Domingos Cardoso</a>, at the Rio de Janeiro Botanical Garden (DBOSlab).', a, detail, a)
+    sprintf('forplotR was developed by <a href="%s#giulia-c-ottino">Giulia C. Ottino</a>%s, supervised by <a href="%s#domingos-cardoso">Domingos Cardoso</a>%s, at the Rio de Janeiro Botanical Garden (DBOSlab).', a, detail, a, co_line(lang, a))
   } else {
     detail <- if (thesis_ok) sprintf(' como produto de seu <a href="%s#dissertacao">mestrado em Botânica</a> na Escola Nacional de Botânica Tropical (ENBT/JBRJ%s)', a, yr) else " como produto de seu mestrado"
-    sprintf('O forplotR foi desenvolvido por <a href="%s#giulia-c-ottino">Giulia C. Ottino</a>%s, sob orientação de <a href="%s#domingos-cardoso">Domingos Cardoso</a>, no Jardim Botânico do Rio de Janeiro (DBOSlab).', a, detail, a)
+    sprintf('O forplotR foi desenvolvido por <a href="%s#giulia-c-ottino">Giulia C. Ottino</a>%s, sob orientação de <a href="%s#domingos-cardoso">Domingos Cardoso</a>%s, no Jardim Botânico do Rio de Janeiro (DBOSlab).', a, detail, a, co_line(lang, a))
   }
 }
 
@@ -276,7 +285,8 @@ page_node <- function(row, h) {
   }
   if (type == "FAQPage") node$mainEntity <- faq_entities(h)
   if (type %in% c("AboutPage", "ProfilePage")) {
-    node$mainEntity <- list(list("@id" = id_person("ottino")), list("@id" = id_person("cardoso")))
+    node$mainEntity <- compact(list(list("@id" = id_person("ottino")), list("@id" = id_person("cardoso")),
+                                    if (thesis_ok && has(th$co_advisor)) list("@id" = id_person(th$co_advisor))))
   }
   node
 }
@@ -295,7 +305,12 @@ graph_for <- function(row, h) {
   )
   t <- thesis_node(row$lang)
   if (!is.null(t)) g <- c(g, list(t))
-  if (thesis_ok && has(th$co_advisor)) g <- c(g, list(person_node(th$co_advisor, row$lang)))
+  if (thesis_ok && has(th$co_advisor)) {
+    g <- c(g, list(person_node(th$co_advisor, row$lang)))
+    # instituição do coorientador (INMA), quando não é uma das já listadas
+    af <- P[[th$co_advisor]]$affiliation
+    if (has(af) && !af %in% c("jbrj", "dboslab", "enbt") && !is.null(O[[af]])) g <- c(g, list(org_node(af)))
+  }
   # páginas do app no navegador: WebApplication (gratuito, roda no navegador,
   # dados ficam no computador), ligado ao pacote e à autora
   if (row$id == "tools" || grepl("^tool-", row$id)) {
@@ -514,8 +529,8 @@ lst <- function(lang, ids) {
 }
 core_ids <- c("home", "start", "apps", "map", "balance", "photos", "labels", "determinations", "tools", "reference")
 meta_ids <- c("authors", "cite", "about", "faq", "news")
-thesis_txt_en <- if (thesis_ok) sprintf("as the product of her master's degree in Botany at the National School of Tropical Botany (ENBT), Rio de Janeiro Botanical Garden Research Institute (dissertation, in Portuguese: \"%s\", %s; supervisor Domingos Cardoso, co-supervisor Pedro Lage Viana; CAPES scholarship)", th$title, th$year) else "as the product of her master's degree"
-thesis_txt_pt <- if (thesis_ok) sprintf("como produto de seu mestrado em Botânica na Escola Nacional de Botânica Tropical (ENBT/JBRJ), com a dissertação \"%s\" (%s; orientação de Domingos Cardoso, coorientação de Pedro Lage Viana; bolsa CAPES)", th$title, th$year) else "como produto de seu mestrado"
+thesis_txt_en <- if (thesis_ok) sprintf("as the product of her master's degree in Botany at the National School of Tropical Botany (ENBT), Rio de Janeiro Botanical Garden Research Institute (dissertation, in Portuguese: \"%s\", %s; supervisor Domingos Cardoso, co-supervisor Pedro Lage Viana, Instituto Nacional da Mata Atlântica (INMA); CAPES scholarship)", th$title, th$year) else "as the product of her master's degree"
+thesis_txt_pt <- if (thesis_ok) sprintf("como produto de seu mestrado em Botânica na Escola Nacional de Botânica Tropical (ENBT/JBRJ), com a dissertação \"%s\" (%s; orientação de Domingos Cardoso, coorientação de Pedro Lage Viana, do Instituto Nacional da Mata Atlântica (INMA); bolsa CAPES)", th$title, th$year) else "como produto de seu mestrado"
 llms <- c(
   "# forplotR",
   "",
