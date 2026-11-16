@@ -176,6 +176,11 @@ TOOLS <- list(
           help = "Exige Chrome, Chromium ou Edge no servidor.", local = FALSE),
       fld("write_xlsx", "Gerar planilha de balanço (XLSX)", "bool", default = TRUE,
           help = "Não disponível para MONITORA."),
+      # O relatório sempre leva as logos do forplotR e do JBRJ; esta opção troca
+      # para o preset "panara" (mais CI e Iakiô). O app a marca sozinho quando
+      # detecta a ficha de Terra Indígena, e a pessoa pode desmarcar.
+      fld("logos_partner", "Incluir as logos da CI e da Iakiô", "bool", default = FALSE,
+          help = "No cabeçalho do relatório, além das logos do forplotR e do JBRJ. Sugerido para a ficha de Terra Indígena (Panará)."),
       fld("highlight_palms", "Destacar palmeiras (Arecaceae)", "bool", default = TRUE,
           group = "avancado"),
       f_plot_meta(),
@@ -184,7 +189,13 @@ TOOLS <- list(
       f_colnames()
     ),
     fixed = function(ctx, params) list(dir = ctx$outputs, filename = "relatorio_parcela",
-                                       verbose = TRUE)
+                                       verbose = TRUE),
+    # caixa "logos da CI e da Iakiô" -> argumento logos do forplot_balance()
+    check = function(params, ctx) {
+      params$logos <- if (isTRUE(params$logos_partner)) "panara" else c("forplotR", "jbrj")
+      params$logos_partner <- NULL
+      params
+    }
   ),
 
   map = list(

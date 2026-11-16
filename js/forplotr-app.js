@@ -69,6 +69,8 @@
     'Para demonstração: usa RUS01 (field sheet) ou TUM (MONITORA) no lugar da planilha.': 'For demonstration: uses RUS01 (field sheet) or TUM (MONITORA) instead of a spreadsheet.',
     'Formato da planilha': 'Spreadsheet layout',
     'Linha do cabeçalho': 'Header row',
+    'Incluir as logos da CI e da Iakiô': 'Include CI + Iakiô logos',
+    'No cabeçalho do relatório, além das logos do forplotR e do JBRJ. Sugerido para a ficha de Terra Indígena (Panará).': 'In the report header, next to the forplotR and JBRJ logos. Suggested for the Indigenous Land field sheet (Panará).',
     'Linha da planilha com os nomes das colunas. Vazio: detectada automaticamente.': 'Row of the spreadsheet with the column names. Empty: detected automatically.',
     'Field sheet de Terra Indígena': 'Indigenous Land field sheet',
     'Idioma dos resultados': 'Output language',
@@ -696,7 +698,10 @@
     form.appendChild(bar);
     form.appendChild(biEl('p', { class: 'muted-note form-req' }, '* campo obrigatório', '* required field'));
 
-    form.addEventListener('change', function () { applyVisibility(tool); });
+    form.addEventListener('change', function (e) {
+      if (e.isTrusted && e.target && e.target.id === 'f_logos_partner') e.target.setAttribute('data-touched', '1');
+      applyVisibility(tool);
+    });
     form.addEventListener('input', function (e) { if (e.target && /^(plot_|subplot_size)/.test(e.target.name || '')) applyVisibility(tool); });
     applyVisibility(tool);
     form.addEventListener('submit', function (ev) { ev.preventDefault(); submit(tool); });
@@ -958,6 +963,10 @@
     if (ul.children.length) box.appendChild(ul);
     if (lay) setLayout(lay);
     if (stations.length) stationChips(stations);
+    // Logos da CI e da Iakiô: sugeridas para a ficha de Terra Indígena, até a
+    // pessoa mexer na caixa (aí vale a escolha dela).
+    var lp = $('f_logos_partner');
+    if (lp && lp.getAttribute('data-touched') !== '1') lp.checked = d.type === 'field_sheet_ti';
 
     // Os seletores de coluna mostram sempre o cabeçalho lido pelo R
     var missing = arr(d.missing);
