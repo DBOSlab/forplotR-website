@@ -964,7 +964,9 @@
     var headers = arr(d.headers);
     var nSug = Object.keys(d.suggest || {}).length;
     if (headers.length && d.type !== 'monitora' && document.querySelector('[data-field^="colname_"]')) {
-      columnSelects(headers, d.suggest || {});
+      // Planilha com nomes diferentes do padrão: todos os campos reconhecidos
+      // aparecem já escolhidos. Com os nomes padrão, nada precisa ser indicado.
+      columnSelects(headers, nSug ? (d.mapped || d.suggest || {}) : {});
       var det = $('group-colunas');
       if (missing.length) {
         if (det) det.open = true;
