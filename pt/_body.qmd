@@ -1,18 +1,20 @@
 ```{=html}
 <header class="home-hero full">
   <div class="home-hero-inner">
-    <p class="kicker" data-lang="pt">Pacote R · ForestPlots.net · Programa MONITORA · herbário</p>
-    <p class="kicker" data-lang="en">R package · ForestPlots.net · MONITORA programme · herbarium</p>
-    <h1 data-lang="pt">Da parcela florestal ao herbário.</h1>
-    <h1 data-lang="en">From the forest plot to the herbarium.</h1>
-    <p class="deck" data-lang="pt">O <strong>forplotR</strong> liga a planilha do censo de uma parcela permanente às fotos dos vouchers, às etiquetas e às determinações do herbário. Em R, ou no navegador, sem enviar os dados.</p>
-    <p class="deck" data-lang="en"><strong>forplotR</strong> links the census spreadsheet of a permanent plot to the voucher photos, the labels and the herbarium determinations. In R, or in the browser, without sending the data.</p>
+    <p class="kicker" data-lang="pt">Pacote R e app no navegador · parcelas permanentes · coleções botânicas</p>
+    <p class="kicker" data-lang="en">R package and web app · permanent vegetation plots · botanical collections</p>
+    <h1 data-lang="pt">Do censo da parcela à coleção do herbário.</h1>
+    <h1 data-lang="en">From plot census to herbarium collection.</h1>
+    <p class="deck" data-lang="pt">O <strong>forplotR</strong> liga a planilha do censo de uma parcela permanente de vegetação aos seus espécimes-testemunho: onde está cada árvore, o que já foi coletado, o que ainda falta e como os nomes de campo se comparam com os do herbário. Em R ou no navegador; os dados ficam no seu computador.</p>
+    <p class="deck" data-lang="en"><strong>forplotR</strong> links the census spreadsheet of a permanent vegetation plot to its voucher specimens: where each tree stands, what has been collected, what is still missing, and how field names compare with herbarium records. In R or in your browser; your data stay on your computer.</p>
     <p class="byline" data-lang="pt">Desenvolvido por <a href="{{LINK:authors}}#giulia-c-ottino">Giulia C. Ottino</a> no mestrado em Botânica da ENBT/JBRJ, com <a href="{{LINK:authors}}#domingos-cardoso">Domingos Cardoso</a>, no Jardim Botânico do Rio de Janeiro.</p>
     <p class="byline" data-lang="en">Developed by <a href="{{LINK:authors}}#giulia-c-ottino">Giulia C. Ottino</a> during her master's degree in Botany at ENBT/JBRJ, with <a href="{{LINK:authors}}#domingos-cardoso">Domingos Cardoso</a>, at the Rio de Janeiro Botanical Garden.</p>
     <div class="actions">
       <a class="btn btn-primary" href="{{LINK:start}}"><span data-lang="pt">Começar</span><span data-lang="en">Get started</span></a>
-      <a class="btn" href="{{LINK:tools}}"><span data-lang="pt">Rodar no navegador</span><span data-lang="en">Run in the browser</span></a>
+      <a class="btn" href="{{LINK:tools}}"><span data-lang="pt">Abrir o app no navegador</span><span data-lang="en">Open the web app</span></a>
     </div>
+    <p class="works-with" data-lang="pt">Para qualquer parcela dividida em subparcelas: fichas e exportações do ForestPlots.net, fichas de Terras Indígenas, o protocolo MONITORA e outras tabelas cujas colunas possam ser indicadas. <a href="{{LINK:formats}}">Dados aceitos</a></p>
+    <p class="works-with" data-lang="en">For any plot divided into subplots: ForestPlots.net sheets and exports, Indigenous Land field sheets, the MONITORA protocol and other tables whose columns can be mapped. <a href="{{LINK:formats}}">Supported data</a></p>
   </div>
 </header>
 ```
@@ -34,7 +36,7 @@ A permanent plot census is a spreadsheet: each tagged tree, the subplot it is in
   <figcaption>
     <span data-lang="pt">Cada haste é uma árvore do RUS01 na sua posição; a altura acompanha o diâmetro. <span class="key col">com voucher</span> <span class="key unc">sem voucher</span> <span class="key palm">palmeira</span></span>
     <span data-lang="en">Each stem is a RUS01 tree at its position; the height follows the diameter. <span class="key col">with voucher</span> <span class="key unc">without voucher</span> <span class="key palm">palm</span></span>
-    <span class="src">forplotR {{< var forplotr.versao >}} · RUS01 (ForestPlots.net)</span>
+    <span class="src">forplotR {{< var forplotr.versao >}} · RUS01</span>
   </figcaption>
 </figure>
 ```

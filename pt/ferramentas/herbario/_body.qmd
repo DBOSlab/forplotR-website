@@ -13,14 +13,14 @@ Fills the JABOT or BRAHMS input spreadsheet with the collected individuals and t
 ## [Procedimento]{data-lang=pt}[Procedure]{data-lang=en} {#procedimento}
 
 ::: {data-lang="pt"}
-1. Envie a planilha da parcela (ForestPlots.net ou Programa Monitora).
+1. Escolha a planilha da parcela; o app sugere o formato.
 2. Informe estado, município, coordenadas e altitude da parcela. No navegador a altitude é obrigatória; no pacote, no R, ela pode ser estimada a partir de um modelo digital de elevação global de baixa resolução.
 3. Envie o modelo do herbário ou deixe o campo em branco para usar um modelo com as colunas padrão do formato selecionado.
 
 As notas de etiqueta são redigidas a partir do DAP, dos códigos RAINFOR (ex.: “com casca solta”, “copa exposta à luz”) e da posição do indivíduo na parcela, em português, inglês ou espanhol.
 :::
 ::: {data-lang="en"}
-1. Upload the plot spreadsheet (ForestPlots.net or Monitora Program).
+1. Choose the plot spreadsheet; the app suggests the layout.
 2. Enter the state, municipality, coordinates and elevation of the plot. In the browser the elevation is required; in the package, in R, it can be estimated from a low-resolution global digital elevation model.
 3. Upload the herbarium template, or leave the field empty to use a template with the default columns of the selected layout.
 

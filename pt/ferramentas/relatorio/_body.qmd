@@ -13,14 +13,14 @@ A report summarising plot structure, species composition and voucher coverage: m
 ## [Procedimento]{data-lang=pt}[Procedure]{data-lang=en} {#procedimento}
 
 ::: {data-lang="pt"}
-1. Envie a planilha e selecione o formato (ForestPlots.net, Terra Indígena, Query Library ou Programa Monitora).
+1. Escolha a planilha da parcela; o app sugere o formato e as colunas.
 2. Verifique a área da parcela e o lado da subparcela. Para o Monitora, informe a estação.
 3. Selecione as saídas. Com os dados de exemplo (RUS01), o processamento no navegador leva cerca de 2 minutos.
 
 Para executar sem planilha própria, marque **Usar os dados de exemplo**.
 :::
 ::: {data-lang="en"}
-1. Upload the spreadsheet and select its layout (ForestPlots.net, Indigenous Land, Query Library or Monitora Program).
+1. Choose the plot spreadsheet; the app suggests the layout and the columns.
 2. Check the plot area and the subplot side. For Monitora, give the station.
 3. Select the outputs. With the example data (RUS01), processing in the browser takes about 2 minutes.
 

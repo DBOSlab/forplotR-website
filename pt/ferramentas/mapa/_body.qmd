@@ -15,15 +15,15 @@ A Leaflet map in a single HTML file, with the position of each individual, filte
 ::: {data-lang="pt"}
 1. Envie a planilha e selecione o formato.
 2. Informe as coordenadas em graus decimais, uma linha por ponto (`latitude; longitude`):
-    - ForestPlots.net: os **quatro vértices**, na ordem (0, 0), (0, comprimento), (largura, 0), (largura, comprimento);
-    - Programa Monitora: **um ponto**, o centro da estação.
+    - parcelas retangulares: os **quatro vértices**, na ordem (0, 0), (0, comprimento), (largura, 0), (largura, comprimento), como no desenho do formulário;
+    - estações do MONITORA: **um ponto**, o centro da estação.
 3. Opcionalmente, envie um arquivo ZIP com as imagens (um diretório por voucher). A consulta às exsicatas dos herbários usa a internet e está disponível apenas no pacote, no R.
 :::
 ::: {data-lang="en"}
 1. Upload the spreadsheet and select its layout.
 2. Enter the coordinates in decimal degrees, one line per point (`latitude; longitude`):
-    - ForestPlots.net: the **four vertices**, in the order (0, 0), (0, length), (width, 0), (width, length);
-    - Monitora Program: **one point**, the centre of the station.
+    - rectangular plots: the **four vertices**, in the order (0, 0), (0, length), (width, 0), (width, length), as in the form diagram;
+    - MONITORA stations: **one point**, the centre of the station.
 3. Optionally, upload a ZIP file with the images (one directory per voucher). The herbarium specimen lookup uses the internet and is available only in the package, in R.
 :::
 

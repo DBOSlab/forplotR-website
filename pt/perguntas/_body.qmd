@@ -5,10 +5,10 @@
 ```
 
 ::: {data-lang="pt"}
-É um pacote R de código aberto (licença MIT) que integra os dados de censos de parcelas florestais permanentes, nos formatos do ForestPlots.net e do Programa MONITORA, à documentação dos espécimes de herbário: mapa interativo da parcela, balanço de coleta, organização das fotos dos vouchers, planilhas de etiquetas (JABOT, BRAHMS) e cruzamento das determinações de campo com o herbário.
+É um pacote R de código aberto (licença MIT), com um app no navegador, para gerir as coleções botânicas de parcelas permanentes de monitoramento da vegetação. Ele liga o censo de qualquer parcela dividida em subparcelas à documentação dos espécimes de herbário: mapa interativo da parcela, balanço de coleta, organização das fotos dos vouchers, planilhas de etiquetas (JABOT, BRAHMS) e cruzamento das determinações de campo com o herbário.
 :::
 ::: {data-lang="en"}
-It is an open-source R package (MIT licence) that links permanent forest plot census data, in the ForestPlots.net and MONITORA programme layouts, to the documentation of herbarium specimens: interactive plot map, collection balance, voucher photo organisation, label spreadsheets (JABOT, BRAHMS) and cross-checks of field determinations against the herbarium.
+It is an open-source R package (MIT licence), with a web app, to manage the botanical collections of permanent vegetation monitoring plots. It links the census of any plot divided into subplots to the documentation of herbarium specimens: interactive plot map, collection balance, voucher photo organisation, label spreadsheets (JABOT, BRAHMS) and cross-checks of field determinations against the herbarium.
 :::
 
 ```{=html}
@@ -41,10 +41,10 @@ No. The package organises and cross-references the data. The [determination cros
 ```
 
 ::: {data-lang="pt"}
-Fichas de campo e exportações da Query Library do ForestPlots.net (inclusive o modelo de Terras Indígenas) e planilhas do Programa MONITORA (ICMBio). Os nomes de coluna diferentes do padrão são informados pelos argumentos `colname_*`. Veja [Começar]({{LINK:start}}#formatos-de-entrada).
+Qualquer planilha de parcela dividida em subparcelas, com plaqueta, subparcela, posição x–y, família, determinação e diâmetro. Quatro formatos são reconhecidos diretamente (fichas e exportações do ForestPlots.net, fichas de Terras Indígenas e o protocolo MONITORA); nos demais, os nomes das colunas são indicados pelos argumentos `colname_*` ou, no navegador, escolhidos numa lista. Veja [Dados aceitos]({{LINK:formats}}).
 :::
 ::: {data-lang="en"}
-ForestPlots.net field sheets and Query Library exports (including the Indigenous Land template) and MONITORA programme (ICMBio) spreadsheets. Non-standard column names are given through the `colname_*` arguments. See [Get started]({{LINK:start}}#formatos-de-entrada).
+Any spreadsheet of a plot divided into subplots, with tag, subplot, x–y position, family, determination and diameter. Four layouts are recognised directly (ForestPlots.net sheets and exports, Indigenous Land field sheets and the MONITORA protocol); for others, column names are given through the `colname_*` arguments or, in the browser, picked from a list. See [Supported data]({{LINK:formats}}).
 :::
 
 ```{=html}

@@ -1,9 +1,9 @@
 
 ::: {data-lang="pt"}
-Formulários que executam as funções principais do pacote no seu navegador, sem instalação e sem enviar os dados a nenhum servidor. Todos aceitam planilhas do ForestPlots.net (ficha de campo e Query Library), de Terras Indígenas e do Programa Monitora, e podem ser testados com os conjuntos de dados de exemplo.
+As funções do pacote no seu navegador, sem instalar nada e sem enviar os dados a nenhum servidor. Escolha a planilha da parcela: o app lê o cabeçalho, sugere o formato e as colunas, e mostra o resultado com prévia e download. Dá para testar com os dados de exemplo.
 :::
 ::: {data-lang="en"}
-Forms that run the main package functions in your browser, with no installation and without sending your data to any server. All accept ForestPlots.net spreadsheets (field sheet and Query Library), Indigenous Land sheets and Monitora Program sheets, and can be tried with the example datasets.
+The package functions in your browser, with nothing to install and no data sent to any server. Choose the plot spreadsheet: the app reads its header, suggests the layout and the columns, and shows the result with a preview and downloads. You can try it with the example data.
 :::
 
 ::: {.actions}

@@ -28,21 +28,27 @@ software:
   programming_language: "R"
   runtime: "R (>= 4.1.0); webR (R em WebAssembly) no navegador"
   date_published: "2025"
-  keywords: ["R", "forest plots", "parcelas florestais permanentes", "ForestPlots.net",
-             "MONITORA", "herbário", "herbarium", "vouchers", "exsicatas", "JABOT",
-             "BRAHMS", "Darwin Core", "webR", "Mata Atlântica", "Amazônia"]
+  keywords: ["R", "permanent plots", "vegetation monitoring", "forest inventory",
+             "parcelas permanentes", "monitoramento da vegetação", "botanical collections",
+             "herbarium", "herbário", "voucher specimens", "vouchers", "exsicatas",
+             "collection management", "JABOT", "BRAHMS", "ForestPlots.net", "MONITORA",
+             "webR", "Atlantic Forest", "Amazon"]
   description_pt: >-
-    Pacote R que integra os dados de censos de parcelas florestais permanentes
-    (ForestPlots.net e programa MONITORA) à documentação dos espécimes botânicos:
-    mapa interativo da parcela, balanço de coleta, organização das fotos dos
-    vouchers, planilhas de etiquetas de herbário (JABOT, BRAHMS) e cruzamento das
-    determinações de campo com o herbário.
+    Pacote R e app no navegador para gerir as coleções botânicas de parcelas
+    permanentes de monitoramento da vegetação. Liga o censo de qualquer parcela
+    dividida em subparcelas aos espécimes-testemunho: mapa interativo da
+    parcela, balanço de coleta, organização das fotos dos vouchers, planilhas
+    de etiquetas de herbário (JABOT, BRAHMS) e cruzamento das determinações de
+    campo com o herbário. Lê fichas e exportações do ForestPlots.net, fichas de
+    Terras Indígenas, o protocolo MONITORA e outras tabelas com colunas indicadas.
   description_en: >-
-    R package that links permanent forest plot census data (ForestPlots.net and
-    the Brazilian MONITORA programme) to the documentation of botanical
-    specimens: interactive plot maps, collection-balance reports, voucher photo
-    organisation, herbarium label spreadsheets (JABOT, BRAHMS) and cross-checks of
-    field determinations against herbarium records.
+    R package and web app to manage the botanical collections of permanent
+    vegetation monitoring plots. It links the census of any plot divided into
+    subplots to its voucher specimens: interactive plot maps, collection-balance
+    reports, voucher photo organisation, herbarium label spreadsheets (JABOT,
+    BRAHMS) and cross-checks of field determinations against herbarium records.
+    Reads ForestPlots.net sheets and exports, Indigenous Land field sheets, the
+    MONITORA protocol and other tables with mapped columns.
   funders: ["CNPq", "CAPES"]
 
 # Autoria. O forplotR é produto do mestrado de Giulia C. Ottino.

@@ -419,3 +419,7 @@ main > h1.page-title + .statement,main > h1.page-title + * + .statement{border-t
 @media (max-width: 760px){
   main table{display:block; max-width:100%; overflow-x:auto; -webkit-overflow-scrolling:touch;}
 }
+
+/* home: "funciona com" sob os botões */
+.works-with{margin:var(--s5) 0 0; max-width:60ch; font-size:14.5px; line-height:1.55; color:var(--muted);}
+.works-with a{white-space:nowrap;}
