@@ -374,17 +374,57 @@
     });
   }
 
-  // ---------- formulário ----------
+  // ---------- formulário em etapas ----------
+  // O formulário continua gerado de backend/R/tools_spec.R (fonte única dos
+  // campos); aqui só se decide a apresentação: etapas, cartões, desenho da
+  // parcela, detecção do formato e a barra de execução.
+  var LAYOUTS = {
+    field_sheet: { pt: ['Ficha de campo', 'Padrão ForestPlots.net: linha de metadados e cabeçalho com New Tag No, T1, X, Y.'],
+                   en: ['Field sheet', 'ForestPlots.net layout: a metadata row and a header with New Tag No, T1, X, Y.'], icon: 'grid' },
+    fp_query_sheet: { pt: ['Exportação da Query Library', 'ForestPlots.net: Plot Code, Sub Plot T1, Standardised X e Y.'],
+                      en: ['Query Library export', 'ForestPlots.net: Plot Code, Sub Plot T1, Standardised X and Y.'], icon: 'rows' },
+    field_sheet_ti: { pt: ['Ficha de Terra Indígena', 'Ficha com metadados e colunas em ordem fixa.'],
+                      en: ['Indigenous Land field sheet', 'A field sheet with metadata and columns in a fixed order.'], icon: 'cols' },
+    monitora: { pt: ['Protocolo MONITORA', 'Estações com quatro subunidades em cruz (ICMBio).'],
+                en: ['MONITORA protocol', 'Stations with four subunits in a cross (ICMBio).'], icon: 'cross' },
+    forestplots: { pt: ['Planilha no padrão ForestPlots.net', 'Ficha de campo, exportação da Query Library ou ficha de Terra Indígena.'],
+                   en: ['ForestPlots.net-style sheet', 'Field sheet, Query Library export or Indigenous Land sheet.'], icon: 'grid' },
+    unknown: { pt: ['Formato não reconhecido', ''], en: ['Layout not recognised', ''], icon: 'grid' }
+  };
+  var LAYOUT_IC = {
+    grid: '<rect x="3.5" y="6" width="17" height="14.5" rx="1"/><path d="M3.5 10h17M9.2 10v10.5M14.8 10v10.5M3.5 15.2h17M5 3.5h7"/>',
+    rows: '<rect x="3.5" y="3.5" width="17" height="17" rx="1"/><path d="M3.5 8h17M3.5 12.5h17M3.5 17h17M8.5 3.5v17"/>',
+    cols: '<rect x="3.5" y="6" width="17" height="14.5" rx="1"/><path d="M3.5 10h17M7 10v10.5M10.5 10v10.5M14 10v10.5M17.5 10v10.5M5 3.5h7"/>',
+    cross: '<rect x="9.5" y="2.5" width="5" height="5.5"/><rect x="9.5" y="16" width="5" height="5.5"/><rect x="2.5" y="9.5" width="5.5" height="5"/><rect x="16" y="9.5" width="5.5" height="5"/><circle cx="12" cy="12" r="1.2" fill="currentColor"/>'
+  };
+  var IC_OK = '<path d="M5 12.5l4.5 4.5L19 7.5"/>';
+  var IC_INFO = '<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5h.01"/>';
+  var IC_EXPAND = '<path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/>';
+  var IC_EXT = '<path d="M14 4h6v6M20 4l-9 9M18 14v6H4V6h6"/>';
+  var IC_DL = '<path d="M12 4v11M7 10.5l5 5 5-5M5 20h14"/>';
+  var STEP_OF = { fp_file: 'data', usar_exemplo: 'data', input_type: 'layout', station_name: 'layout',
+                  plot_size: 'plot', subplot_size: 'plot', vertices: 'plot', vertex_file: 'plot' };
+  var STEPS = [
+    ['data', 'Seus dados', 'Your data'],
+    ['layout', 'Formato da planilha', 'Spreadsheet layout'],
+    ['plot', 'Geometria da parcela', 'Plot geometry'],
+    ['options', 'Saídas e opções', 'Outputs and options']
+  ];
+  var MONITORA_COLS = ['colname_subplot_t2', 'colname_cap', 'colname_station', 'colname_census_year'];
+  var PLOT_FIELDS = ['plot_size', 'subplot_size', 'plot_width_m', 'plot_length_m'];
+
   function fieldNode(f) {
+    if (f.type === 'select' && (f.name === 'input_type' || arr(f.options).length <= 6)) return choiceGroup(f);
     var id = 'f_' + f.name;
     var wrap = el('div', { class: 'form-field', 'data-field': f.name });
     if (f.type === 'bool' || f.type === 'example') {
-      wrap.className = 'form-field check-field' + (f.type === 'example' ? ' example-field' : '');
-      var lab = el('label', { for: id });
-      var cb = el('input', { type: 'checkbox', id: id, name: f.name });
+      wrap.className = 'form-field check-field switch-field' + (f.type === 'example' ? ' example-field' : '');
+      var lab = el('label', { for: id, class: 'switch' });
+      var cb = el('input', { type: 'checkbox', id: id, name: f.name, role: 'switch' });
       cb.checked = f.type === 'bool' ? !!f.default : false;
       lab.appendChild(cb);
-      lab.appendChild(biEl('span', null, f.label));
+      lab.appendChild(el('span', { class: 'switch-track', 'aria-hidden': 'true' }));
+      lab.appendChild(biEl('span', { class: 'switch-label' }, f.label));
       wrap.appendChild(lab);
     } else {
       var l = el('label', { for: id });
@@ -421,7 +461,7 @@
         wrap.appendChild(drop);
       } else if (f.type === 'vertices') {
         input = el('textarea', { id: id, name: f.name, rows: 4, spellcheck: 'false',
-          placeholder: '-22.9668; -43.2245\n-22.9659; -43.2245\n-22.9668; -43.2235\n-22.9659; -43.2235' });
+          placeholder: '-19.9000; -40.5500\n-19.9009; -40.5500\n-19.9000; -40.5490\n-19.9009; -40.5490' });
         wrap.appendChild(input);
       } else {
         input = el('input', { type: 'text', id: id, name: f.name,
@@ -435,9 +475,45 @@
     if (f.help) { var sm = el('small', { id: id + '_help' }); sm.appendChild(bi(f.help)); wrap.appendChild(sm); }
     return wrap;
   }
+
+  // select com poucas opções: cartões (formato da planilha) ou botões segmentados
+  function choiceGroup(f) {
+    var id = 'f_' + f.name;
+    var isLayout = f.name === 'input_type';
+    var opts = arr(f.options);
+    var def = opts.some(function (o) { return o.value === f.default; }) ? f.default : (opts[0] || {}).value;
+    var wrap = el('div', { class: 'form-field choice-field' + (isLayout ? ' layout-field' : ''), 'data-field': f.name });
+    var fs = el('fieldset', { class: isLayout ? 'layout-cards' : 'seg', id: id });
+    var lg = el('legend', { class: isLayout ? 'visually-hidden' : null });
+    lg.appendChild(bi(f.label));
+    fs.appendChild(lg);
+    opts.forEach(function (o) {
+      var rid = id + '_' + o.value;
+      var lab = el('label', { class: isLayout ? 'layout-card' : 'seg-opt', for: rid });
+      var r = el('input', { type: 'radio', name: f.name, id: rid, value: o.value });
+      if (o.value === def) r.checked = true;
+      lab.appendChild(r);
+      if (isLayout) {
+        var L = LAYOUTS[o.value];
+        lab.appendChild(svg(LAYOUT_IC[L ? L.icon : 'grid'], 'layout-ic'));
+        var tx = el('span', { class: 'layout-tx' });
+        tx.appendChild(L ? biEl('strong', null, L.pt[0], L.en[0]) : biEl('strong', null, o.label));
+        if (L && L.pt[1]) tx.appendChild(biEl('small', null, L.pt[1], L.en[1]));
+        lab.appendChild(tx);
+      } else {
+        lab.appendChild(biEl('span', null, o.label));
+      }
+      fs.appendChild(lab);
+    });
+    wrap.appendChild(fs);
+    fs.addEventListener('change', function () { clearError(wrap); });
+    if (f.help) { var sm = el('small', { id: id + '_help' }); sm.appendChild(bi(f.help)); wrap.appendChild(sm); }
+    return wrap;
+  }
+
   function setError(wrap, pt, en) {
     clearError(wrap);
-    var inp = wrap.querySelector('input:not([type=checkbox]), select, textarea');
+    var inp = wrap.querySelector('input:not([type=checkbox]):not([type=radio]), select, textarea');
     if (inp) inp.setAttribute('aria-invalid', 'true');
     var drop = wrap.querySelector('.file-drop'); if (drop) drop.classList.add('is-invalid');
     var msg = biEl('p', { class: 'field-error', role: 'alert' }, pt, en);
@@ -451,10 +527,10 @@
 
   function emptyState(tool) {
     var box = el('div', { class: 'result-empty' }, [svg(IC.plot)]);
-    box.appendChild(biEl('h3', null, 'Nenhum resultado ainda', 'No results yet'));
+    box.appendChild(biEl('h3', null, 'Os resultados aparecem aqui', 'Results appear here'));
     box.appendChild(biEl('p', null,
-      'Preencha o formulário e clique em Processar. Os arquivos gerados aparecem aqui, com prévia e download.',
-      'Fill in the form and press Run. The generated files appear here, with preview and download.'));
+      'Depois de Processar: os números da parcela, a prévia e os arquivos para baixar.',
+      'After you press Run: the plot figures, a preview and the files to download.'));
     if (tool && tool.eta) box.appendChild(biEl('p', { class: 'muted-note' }, 'Tempo típico: ' + tool.eta + '.', 'Typical time: ' + tr(tool.eta) + '.'));
     return box;
   }
@@ -467,11 +543,6 @@
     for (var i = 0; i < 4; i++) g.appendChild(el('div', null, [el('span', { class: 'sk sk-label' }), el('span', { class: 'sk sk-input' })]));
     card.appendChild(g);
     shell.appendChild(card);
-    var res = el('div', { class: 'result-panel' });
-    var e = el('div', { class: 'result-empty' }, [svg(IC.plot)]);
-    e.appendChild(biEl('p', null, 'Carregando o formulário…', 'Loading the form…'));
-    res.appendChild(e);
-    shell.appendChild(res);
     mount.appendChild(shell);
   }
 
@@ -484,6 +555,15 @@
     mount.appendChild(box);
   }
 
+  function stepSection(key, n, pt, en) {
+    var sec = el('section', { class: 'step', 'data-step': key, 'aria-labelledby': 'step-' + key });
+    var h = el('h3', { class: 'step-head', id: 'step-' + key });
+    h.appendChild(el('span', { class: 'step-n', 'aria-hidden': 'true' }, String(n)));
+    h.appendChild(bi(pt, en));
+    sec.appendChild(h);
+    return sec;
+  }
+
   function renderTool(tool, mount) {
     if (tool.available === false) { renderUnavailable(tool, mount); return; }
     mount.innerHTML = '';
@@ -493,7 +573,7 @@
     head.appendChild(el('span', { class: 'eyebrow' }, 'forplotR::' + tool.fun + '()'));
     head.appendChild(el('span', { class: 'api-status' }));
     card.appendChild(head);
-    var form = el('form', { class: 'tool-form', id: 'tool-form', novalidate: true });
+    var form = el('form', { class: 'tool-form wizard', id: 'tool-form', novalidate: true });
     card.appendChild(form);
     var res = el('div', { class: 'result-panel', id: 'result-panel', 'aria-live': 'polite' });
     res.appendChild(emptyState(tool));
@@ -501,44 +581,220 @@
     shell.appendChild(res);
     mount.appendChild(shell);
 
-    var groups = { principal: form };
-    var titles = { avancado: ['Opções avançadas', 'Advanced options'], colunas: ['Minha planilha usa outros nomes de coluna', 'My spreadsheet uses other column names'] };
-    tool.fields.forEach(function (f) {
-      var g = f.group || 'principal';
-      if (!groups[g]) {
-        var det = el('details', { class: 'adv-group' });
-        var t = titles[g] || [g, g];
-        det.appendChild(biEl('summary', null, t[0], t[1]));
-        var inner = el('div', { class: 'adv-inner' });
-        det.appendChild(inner);
-        groups[g] = inner;
-        groups['_' + g] = det;
-      }
-      groups[g].appendChild(fieldNode(f));
+    var by = {};
+    tool.fields.forEach(function (f) { by[f.name] = f; });
+    var hasPlot = !!(by.plot_size || by.vertices);
+    var secs = {}, n = 0;
+    STEPS.forEach(function (s) {
+      if (s[0] === 'plot' && !hasPlot) return;
+      if (s[0] === 'layout' && !by.input_type) return;
+      secs[s[0]] = stepSection(s[0], ++n, s[1], s[2]);
+      form.appendChild(secs[s[0]]);
     });
+
+    // 1. dados: planilha própria ou exemplo, e a leitura do cabeçalho
+    var cards = el('div', { class: 'source-cards' });
+    if (by.fp_file) {
+      var up = fieldNode(by.fp_file);
+      up.classList.add('src-card', 'src-upload');
+      var lab0 = up.querySelector('label');
+      if (lab0) { lab0.innerHTML = ''; lab0.appendChild(biEl('strong', null, 'Usar minha planilha', 'Use my spreadsheet')); }
+      var hint = up.querySelector('small');
+      if (hint) { hint.innerHTML = ''; hint.appendChild(bi(LOCAL ? 'O app lê o cabeçalho e sugere o formato e as colunas.' : 'Planilha Excel da parcela.',
+                                                         LOCAL ? 'The app reads the header and suggests the layout and columns.' : 'Excel spreadsheet of the plot.')); }
+      cards.appendChild(up);
+      up.querySelector('input[type=file]').addEventListener('change', function (e) {
+        var fl = e.target.files && e.target.files[0];
+        if (fl && $('f_usar_exemplo')) { $('f_usar_exemplo').checked = false; }
+        onFileChosen(tool, fl);
+        form.dispatchEvent(new Event('change'));
+      });
+    }
+    if (by.usar_exemplo) {
+      var exw = el('div', { class: 'form-field check-field example-field src-card src-example', 'data-field': 'usar_exemplo' });
+      var exl = el('label', { for: 'f_usar_exemplo' });
+      exl.appendChild(el('input', { type: 'checkbox', id: 'f_usar_exemplo', name: 'usar_exemplo' }));
+      var ext = el('span', { class: 'src-text' });
+      ext.appendChild(biEl('strong', null, 'Testar com os dados de exemplo', 'Try the example data'));
+      ext.appendChild(biEl('small', null, 'Dados que vêm com o pacote; nada para enviar.', 'Data that ship with the package; nothing to upload.'));
+      exl.appendChild(ext);
+      exw.appendChild(exl);
+      cards.appendChild(exw);
+    }
+    secs.data.appendChild(cards);
+    if (by.usar_exemplo && by.input_type) {
+      var pick = el('div', { class: 'example-pick', id: 'example-pick', hidden: true, role: 'group' });
+      [['field_sheet', 'RUS01', 'Mata Atlântica · parcela de 1 ha · ficha de campo', 'Atlantic Forest · 1-ha plot · field sheet'],
+       ['monitora', 'TUM', 'Amazônia · estações do MONITORA', 'Amazon · MONITORA stations']].forEach(function (x) {
+        var lay = mapLayout(tool, x[0]);
+        if (!lay) return;
+        var b = el('button', { type: 'button', class: 'ex-opt', 'data-layout': lay, 'aria-pressed': 'false' });
+        b.appendChild(el('strong', null, x[1]));
+        b.appendChild(biEl('span', null, x[2], x[3]));
+        b.addEventListener('click', function () { setLayout(lay); });
+        pick.appendChild(b);
+      });
+      secs.data.appendChild(pick);
+    }
+    secs.data.appendChild(el('div', { class: 'detect-box', id: 'detect-box', hidden: true, 'aria-live': 'polite' }));
+
+    // demais campos, cada um na sua etapa
+    var groups = {};
+    var titles = { avancado: ['Opções avançadas', 'Advanced options'], colunas: ['Colunas da planilha', 'Spreadsheet columns'] };
+    var plotInputs = null;
+    tool.fields.forEach(function (f) {
+      if (f.name === 'fp_file' || f.name === 'usar_exemplo') return;
+      var g = f.group || 'principal';
+      if (g !== 'principal') {
+        if (!groups[g]) {
+          var det = el('details', { class: 'adv-group', id: 'group-' + g });
+          var t = titles[g] || [g, g];
+          det.appendChild(biEl('summary', null, t[0], t[1]));
+          if (g === 'colunas') det.appendChild(biEl('p', { class: 'muted-note' },
+            'Só é preciso preencher se a planilha usa nomes diferentes dos padrões (veja Dados aceitos).',
+            'Only needed if the spreadsheet uses names other than the defaults (see Supported data).'));
+          var inner = el('div', { class: 'adv-inner' });
+          det.appendChild(inner);
+          groups[g] = inner; groups['_' + g] = det;
+        }
+        groups[g].appendChild(fieldNode(f));
+        return;
+      }
+      var step = STEP_OF[f.name] || 'options';
+      if (step === 'plot' && secs.plot) {
+        if (!plotInputs) {
+          var pg = el('div', { class: 'plot-grid' });
+          plotInputs = el('div', { class: 'plot-inputs' });
+          var fig = el('figure', { class: 'plot-diagram', id: 'plot-diagram' });
+          pg.appendChild(plotInputs); pg.appendChild(fig);
+          secs.plot.appendChild(pg);
+        }
+        plotInputs.appendChild(fieldNode(f));
+        return;
+      }
+      (secs[step] || secs.options).appendChild(fieldNode(f));
+    });
+    if (secs.options && secs.options.children.length < 2) { secs.options.remove(); }
     ['avancado', 'colunas'].forEach(function (g) { if (groups['_' + g]) form.appendChild(groups['_' + g]); });
 
-    var foot = el('div', { class: 'form-foot' });
-    var btn = el('button', { type: 'submit', class: 'fx-btn fx-btn-primary fx-btn-block', id: 'submit-btn' });
+    // barra de execução
+    var bar = el('div', { class: 'run-bar' });
+    bar.appendChild(el('p', { class: 'run-sum', id: 'run-sum', 'aria-live': 'polite' }));
+    var btn = el('button', { type: 'submit', class: 'fx-btn fx-btn-primary', id: 'submit-btn' });
     btn.appendChild(bi('Processar', 'Run'));
-    foot.appendChild(btn);
-    foot.appendChild(biEl('p', { class: 'muted-note', style: 'margin:0' }, '* campo obrigatório', '* required field'));
-    form.appendChild(foot);
+    bar.appendChild(btn);
+    form.appendChild(bar);
+    form.appendChild(biEl('p', { class: 'muted-note form-req' }, '* campo obrigatório', '* required field'));
 
     form.addEventListener('change', function () { applyVisibility(tool); });
+    form.addEventListener('input', function (e) { if (e.target && /^(plot_|subplot_size)/.test(e.target.name || '')) applyVisibility(tool); });
     applyVisibility(tool);
     form.addEventListener('submit', function (ev) { ev.preventDefault(); submit(tool); });
   }
 
-  function currentValue(name) { var f = $('tool-form'); var inp = f && f.elements[name]; return inp ? inp.value : ''; }
+  function currentValue(name) {
+    var f = $('tool-form'); var inp = f && f.elements[name];
+    if (!inp) return '';
+    return inp.value || '';
+  }
+  function layoutOptions(tool) {
+    var f = tool.fields.filter(function (x) { return x.name === 'input_type'; })[0];
+    return f ? arr(f.options).map(function (o) { return o.value; }) : [];
+  }
+  // formato detectado -> opção existente nesta ferramenta
+  function mapLayout(tool, type) {
+    var opts = layoutOptions(tool);
+    if (opts.indexOf(type) >= 0) return type;
+    var fsLike = /^(field_sheet|fp_query_sheet|field_sheet_ti|unknown)$/.test(type);
+    if (fsLike && opts.indexOf('forestplots') >= 0) return 'forestplots';
+    if (fsLike && opts.indexOf('field_sheet') >= 0) return 'field_sheet';
+    return null;
+  }
+  function setLayout(v) {
+    var r = document.querySelector('#tool-form input[name="input_type"][value="' + v + '"]');
+    if (r && !r.checked) { r.checked = true; }
+    $('tool-form').dispatchEvent(new Event('change'));
+  }
+
+  function plotDims() {
+    var num = function (n) { var x = parseFloat(String(currentValue(n) || '').replace(',', '.')); return isFinite(x) && x > 0 ? x : null; };
+    var s = num('subplot_size') || 10, ha = num('plot_size') || 1, w = num('plot_width_m'), l = num('plot_length_m');
+    if (!w && !l) { w = l = Math.sqrt(ha * 10000); }
+    else if (!w) w = ha * 10000 / l;
+    else if (!l) l = ha * 10000 / w;
+    return { w: w, l: l, s: s, nx: Math.max(1, Math.round(w / s)), ny: Math.max(1, Math.round(l / s)) };
+  }
+  function fmtNum(x) { return (Math.round(x * 10) / 10).toLocaleString(isEn() ? 'en' : 'pt-BR'); }
+  function drawPlot(tool) {
+    var fig = $('plot-diagram');
+    if (!fig) return;
+    var mon = currentValue('input_type') === 'monitora';
+    var hasV = tool.fields.some(function (f) { return f.name === 'vertices'; });
+    var W = 220, H = 220, P = 26, s = '';
+    if (mon) {
+      var c = W / 2, a = 30, gap = 12;
+      [[c - a / 2, P], [c - a / 2, H - P - a * 1.6], [P, c - a / 2], [W - P - a * 1.6, c - a / 2]].forEach(function (p, i) {
+        var w = i < 2 ? a : a * 1.6, h = i < 2 ? a * 1.6 : a;
+        s += '<rect class="pd-plot" x="' + p[0] + '" y="' + p[1] + '" width="' + w + '" height="' + h + '"/>';
+      });
+      s += '<circle class="pd-dot" cx="' + c + '" cy="' + c + '" r="4"/>';
+      if (hasV) s += '<text class="pd-lab" x="' + (c + 8) + '" y="' + (c - 8) + '">1</text>';
+    } else {
+      var g = plotDims();
+      var k = (W - 2 * P) / Math.max(g.w, g.l), pw = g.w * k, ph = g.l * k, x0 = (W - pw) / 2, y0 = (H - ph) / 2;
+      var stepX = Math.max(1, Math.ceil(g.nx / 40)), stepY = Math.max(1, Math.ceil(g.ny / 40));
+      for (var i = 1; i < g.nx; i += stepX) s += '<line class="pd-grid" x1="' + (x0 + i * pw / g.nx) + '" y1="' + y0 + '" x2="' + (x0 + i * pw / g.nx) + '" y2="' + (y0 + ph) + '"/>';
+      for (var j = 1; j < g.ny; j += stepY) s += '<line class="pd-grid" x1="' + x0 + '" y1="' + (y0 + j * ph / g.ny) + '" x2="' + (x0 + pw) + '" y2="' + (y0 + j * ph / g.ny) + '"/>';
+      s += '<rect class="pd-plot" x="' + x0 + '" y="' + y0 + '" width="' + pw + '" height="' + ph + '"/>';
+      if (hasV) {
+        // ordem dos vértices: (0,0), (0, comprimento), (largura, 0), (largura, comprimento)
+        [[x0, y0 + ph, '1', -14, 14], [x0, y0, '2', -14, -4], [x0 + pw, y0 + ph, '3', 5, 14], [x0 + pw, y0, '4', 5, -4]].forEach(function (v) {
+          s += '<circle class="pd-dot" cx="' + v[0] + '" cy="' + v[1] + '" r="3.5"/><text class="pd-lab" x="' + (v[0] + v[3]) + '" y="' + (v[1] + v[4]) + '">' + v[2] + '</text>';
+        });
+      }
+    }
+    fig.innerHTML = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-hidden="true">' + s + '</svg>';
+    var cap = el('figcaption');
+    if (mon) cap.appendChild(bi('MONITORA: o desenho do protocolo vale para a estação; área e subparcela são ignoradas.' + (hasV ? ' Informe um ponto: o centro da estação.' : ''),
+                                'MONITORA: the protocol design applies to the station; area and subplot are ignored.' + (hasV ? ' Give one point: the centre of the station.' : '')));
+    else {
+      var g2 = plotDims();
+      cap.appendChild(bi(fmtNum(g2.w) + ' × ' + fmtNum(g2.l) + ' m · ' + (g2.nx * g2.ny) + ' subparcelas de ' + fmtNum(g2.s) + ' × ' + fmtNum(g2.s) + ' m' + (hasV ? '. Vértices na ordem 1 a 4, como no desenho.' : ''),
+                         fmtNum(g2.w) + ' × ' + fmtNum(g2.l) + ' m · ' + (g2.nx * g2.ny) + ' subplots of ' + fmtNum(g2.s) + ' × ' + fmtNum(g2.s) + ' m' + (hasV ? '. Corners in the order 1 to 4, as drawn.' : '')));
+    }
+    fig.appendChild(cap);
+  }
+
+  function updateRunSum(tool) {
+    var s = $('run-sum');
+    if (!s) return;
+    var pt = [], en = [];
+    var ex = $('f_usar_exemplo') && $('f_usar_exemplo').checked;
+    var fi = $('f_fp_file'), fl = fi && fi.files && fi.files[0];
+    if (ex) { pt.push('Dados de exemplo'); en.push('Example data'); }
+    else if (fl) { pt.push(fl.name); en.push(fl.name); }
+    else if (fi) { pt.push('Nenhuma planilha escolhida'); en.push('No spreadsheet chosen'); }
+    var L = LAYOUTS[currentValue('input_type')];
+    if (L) { pt.push(L.pt[0]); en.push(L.en[0]); }
+    if ($('plot-diagram') && currentValue('input_type') !== 'monitora') {
+      var g = plotDims(); pt.push((g.nx * g.ny) + ' subparcelas'); en.push((g.nx * g.ny) + ' subplots');
+    }
+    s.innerHTML = '';
+    s.appendChild(bi(pt.join(' · '), en.join(' · ')));
+  }
+
   function applyVisibility(tool) {
     var ex = $('f_usar_exemplo');
     var useEx = ex && ex.checked;
+    var lay = currentValue('input_type');
+    var mon = lay === 'monitora';
     tool.fields.forEach(function (f) {
       var node = document.querySelector('[data-field="' + f.name + '"]');
       if (!node) return;
       var show = true;
       if (f.show_if) show = arr(f.show_if.values).indexOf(currentValue(f.show_if.field)) >= 0;
+      if (mon && PLOT_FIELDS.indexOf(f.name) >= 0) show = false;
+      if (!mon && MONITORA_COLS.indexOf(f.name) >= 0) show = false;
       node.hidden = !show;
       if (f.name === 'fp_file') {
         node.classList.toggle('is-disabled', !!useEx);
@@ -546,8 +802,127 @@
         if (useEx) clearError(node);
       }
     });
+    var pick = $('example-pick');
+    if (pick) {
+      pick.hidden = !useEx;
+      pick.querySelectorAll('.ex-opt').forEach(function (b) { b.setAttribute('aria-pressed', b.getAttribute('data-layout') === lay ? 'true' : 'false'); });
+    }
+    if (useEx && $('detect-box')) $('detect-box').hidden = true;
+    drawPlot(tool);
+    updateRunSum(tool);
   }
   function isHidden(f) { var node = document.querySelector('[data-field="' + f.name + '"]'); return !node || node.hidden; }
+
+  // ---------- leitura do cabeçalho (só no navegador) ----------
+  function onFileChosen(tool, file) {
+    var box = $('detect-box');
+    if (!box) return;
+    if (!LOCAL || !LOCAL.detect || !file || !/\.xlsx?$/i.test(file.name)) { box.hidden = true; return; }
+    box.hidden = false; box.className = 'detect-box is-busy'; box.innerHTML = '';
+    var ready = LOCAL.stage && LOCAL.stage() === 'ready';
+    box.appendChild(biEl('p', { class: 'detect-head' },
+      ready ? 'Lendo o cabeçalho da planilha…' : 'Carregando o R no navegador para ler o cabeçalho…',
+      ready ? 'Reading the spreadsheet header…' : 'Loading R in your browser to read the header…'));
+    LOCAL.detect(file).then(function (d) {
+      var cur = $('f_fp_file'); var now = cur && cur.files && cur.files[0];
+      if (now !== file) return; // outro arquivo foi escolhido nesse meio-tempo
+      if (d) renderDetect(tool, d); else box.hidden = true;
+    }).catch(function () { box.hidden = true; });
+  }
+
+  function renderDetect(tool, d) {
+    var box = $('detect-box');
+    box.innerHTML = ''; box.className = 'detect-box';
+    if (!d.ok) {
+      box.classList.add('is-warn');
+      box.appendChild(biEl('p', { class: 'detect-head' }, 'Não foi possível ler o cabeçalho. Escolha o formato abaixo.', 'Could not read the header. Choose the layout below.'));
+      return;
+    }
+    var lay = mapLayout(tool, d.type);
+    var L = LAYOUTS[d.type] || LAYOUTS.unknown;
+    var head = el('p', { class: 'detect-head' }, [svg(d.type === 'unknown' ? IC_INFO : IC_OK)]);
+    if (d.type === 'unknown') {
+      box.classList.add('is-warn');
+      head.appendChild(bi('O cabeçalho não corresponde a um formato reconhecido. Indique as colunas abaixo.',
+                          'The header does not match a recognised layout. Map the columns below.'));
+    } else {
+      head.appendChild(bi('Formato sugerido: ' + L.pt[0] + '.' + (d.confidence === 'low' ? ' Confira abaixo.' : ''),
+                          'Suggested layout: ' + L.en[0] + '.' + (d.confidence === 'low' ? ' Please check below.' : '')));
+    }
+    box.appendChild(head);
+    var ul = el('ul', { class: 'detect-facts' });
+    var who = [d.plot_code, d.plot_name].filter(function (x) { return x; }).join(' · ');
+    if (who) ul.appendChild(el('li', null, who));
+    if (d.n_rows) ul.appendChild(biEl('li', null, d.n_rows + ' linhas', d.n_rows + ' rows'));
+    var stations = arr(d.stations);
+    if (stations.length) ul.appendChild(biEl('li', null, 'Estações: ' + stations.join(', '), 'Stations: ' + stations.join(', ')));
+    if (ul.children.length) box.appendChild(ul);
+    if (lay) setLayout(lay);
+    if (stations.length) stationChips(stations);
+
+    var missing = arr(d.missing);
+    if (missing.length && document.querySelector('[data-field^="colname_"]')) {
+      columnSelects(arr(d.headers), d.suggest || {});
+      var det = $('group-colunas'); if (det) det.open = true;
+      var nSug = Object.keys(d.suggest || {}).length;
+      box.appendChild(biEl('p', { class: 'detect-note' },
+        missing.length + ' coluna(s) com nome padrão não encontrada(s)' + (nSug ? '; sugerimos ' + nSug + ' correspondência(s)' : '') + ' em “Colunas da planilha”. Confira antes de processar.',
+        missing.length + ' default column name(s) not found' + (nSug ? '; ' + nSug + ' match(es) suggested' : '') + ' under “Spreadsheet columns”. Check them before running.'));
+    }
+    if (/^(field_sheet|unknown)$/.test(d.type) && !d.has_meta && $('f_plot_name')) {
+      var adv = $('group-avancado'); if (adv) adv.open = true;
+      box.appendChild(biEl('p', { class: 'detect-note' },
+        'A planilha não tem a linha de metadados (Plotcode:, Plot Name:): informe o nome ou o código da parcela em “Opções avançadas”.',
+        'The spreadsheet has no metadata row (Plotcode:, Plot Name:): give the plot name or code under “Advanced options”.'));
+    }
+    box.appendChild(biEl('p', { class: 'detect-privacy' }, 'Lido no seu computador; nada foi enviado.', 'Read on your computer; nothing was sent.'));
+    $('tool-form').dispatchEvent(new Event('change'));
+  }
+
+  // estações detectadas viram botões que preenchem o campo
+  function stationChips(stations) {
+    var node = document.querySelector('[data-field="station_name"]');
+    if (!node) return;
+    var inp = node.querySelector('input');
+    var old = node.querySelector('.chips'); if (old) old.remove();
+    var multi = /\(ões\)|\(s\)/.test(node.querySelector('label') ? node.querySelector('label').textContent : '');
+    var box = el('div', { class: 'chips', role: 'group' });
+    var sync = function () {
+      var cur = inp.value.split(',').map(function (x) { return x.trim(); }).filter(Boolean);
+      box.querySelectorAll('button').forEach(function (b) { b.setAttribute('aria-pressed', cur.indexOf(b.textContent) >= 0 ? 'true' : 'false'); });
+    };
+    stations.forEach(function (st) {
+      var b = el('button', { type: 'button', class: 'chip', 'aria-pressed': 'false' }, st);
+      b.addEventListener('click', function () {
+        var cur = inp.value.split(',').map(function (x) { return x.trim(); }).filter(Boolean);
+        if (multi) { var i = cur.indexOf(st); if (i >= 0) cur.splice(i, 1); else cur.push(st); }
+        else cur = [st];
+        inp.value = cur.join(', ');
+        clearError(node); sync(); updateRunSum();
+      });
+      box.appendChild(b);
+    });
+    inp.insertAdjacentElement('afterend', box);
+    if (!inp.value.trim()) inp.value = stations[0];
+    sync();
+  }
+
+  // colunas: a lista vira um seletor com as colunas do arquivo
+  function columnSelects(headers, suggest) {
+    document.querySelectorAll('[data-field^="colname_"]').forEach(function (node) {
+      var name = node.getAttribute('data-field');
+      var old = node.querySelector('input, select');
+      if (!old) return;
+      var sel = el('select', { id: old.id, name: name });
+      sel.appendChild(el('option', { value: '' }, isEn() ? '(default name)' : '(nome padrão)'));
+      headers.forEach(function (h) { sel.appendChild(el('option', { value: h }, h)); });
+      var v = suggest[name] || (old.tagName === 'SELECT' ? old.value : old.value.trim());
+      if (v && headers.indexOf(v) < 0) sel.appendChild(el('option', { value: v }, v));
+      sel.value = v || '';
+      node.classList.toggle('is-suggested', !!suggest[name]);
+      old.replaceWith(sel);
+    });
+  }
 
   function buildFormData(tool) {
     var form = $('tool-form');
@@ -715,7 +1090,7 @@
       box.appendChild(bar);
       box.appendChild(el('pre', { class: 'progress-log', id: 'live-log' }));
       p.appendChild(box);
-      if (window.innerWidth < 1100) box.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      box.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
     }
     var fill = $('progress-fill'), tag = $('job-tag'), sub = $('job-sub');
     $('job-title').innerHTML = ''; $('job-title').appendChild(bi(st.title || ''));
@@ -754,31 +1129,119 @@
   }
   function zipUrl(st) { return LOCAL ? LOCAL.zipUrl(st) : API + '/jobs/' + st.id + '/files/all'; }
 
+  // números da parcela (detect.R: local_summary), com a mesma regra do balanço
+  function summaryTiles(sm) {
+    if (!sm || !sm.trees) return null;
+    var nf = function (x) { return Number(x).toLocaleString(isEn() ? 'en' : 'pt-BR'); };
+    var wrap = el('div', { class: 'res-summary' });
+    var who = [sm.plot_code, sm.plot_name].filter(function (x) { return x; }).join(' · ');
+    if (who) wrap.appendChild(el('p', { class: 'res-plot' }, who));
+    var tiles = el('dl', { class: 'tiles' });
+    var add = function (val, pt, en, cls) {
+      var t = el('div', { class: 'tile' + (cls ? ' ' + cls : '') });
+      t.appendChild(el('dd', null, val));
+      t.appendChild(biEl('dt', null, pt, en));
+      tiles.appendChild(t);
+    };
+    add(nf(sm.trees), 'árvores na planilha', 'trees in the spreadsheet');
+    add(nf(sm.families), 'famílias', 'families');
+    add(nf(sm.with_voucher) + (sm.pct_voucher !== null && sm.pct_voucher !== undefined ? ' · ' + sm.pct_voucher + '%' : ''),
+        'com voucher (sem palmeiras)', 'with a voucher (palms excluded)', 'is-col');
+    add(nf(sm.without_voucher), 'sem voucher', 'without a voucher', sm.without_voucher ? 'is-unc' : '');
+    add(nf(sm.subplots_missing) + ' / ' + nf(sm.subplots), 'subparcelas com algo a coletar', 'subplots with something to collect');
+    if (sm.palms) add(nf(sm.palms), 'palmeiras, à parte', 'palms, counted apart', 'is-palm');
+    wrap.appendChild(tiles);
+    wrap.appendChild(biEl('p', { class: 'muted-note' },
+      'Contagens da planilha, com a regra do balanço de coleta: “com voucher” é a coluna Collected preenchida.',
+      'Counts from the spreadsheet, with the collection-balance rule: “with a voucher” means the Collected column is filled in.'));
+    return wrap;
+  }
+
+  function tabset(items) {
+    var wrap = el('div', { class: 'res-tabs' });
+    var list = el('div', { class: 'tab-list', role: 'tablist' });
+    wrap.appendChild(list);
+    var panes = [];
+    items.forEach(function (it, i) {
+      var id = 'res-tab-' + it.key;
+      var b = el('button', { type: 'button', role: 'tab', id: id, 'aria-controls': id + '-p', 'aria-selected': i === 0 ? 'true' : 'false', tabindex: i === 0 ? '0' : '-1' });
+      b.appendChild(bi(it.pt, it.en));
+      if (it.count !== undefined) b.appendChild(el('span', { class: 'tab-count' }, String(it.count)));
+      list.appendChild(b);
+      var p = el('div', { role: 'tabpanel', id: id + '-p', 'aria-labelledby': id, class: 'tab-pane', hidden: i !== 0 });
+      p.appendChild(it.node);
+      wrap.appendChild(p);
+      panes.push([b, p]);
+    });
+    var select = function (k) {
+      panes.forEach(function (x, j) {
+        var on = j === k;
+        x[0].setAttribute('aria-selected', on ? 'true' : 'false'); x[0].tabIndex = on ? 0 : -1; x[1].hidden = !on;
+      });
+      panes[k][0].focus();
+    };
+    panes.forEach(function (x, j) { x[0].addEventListener('click', function () { select(j); }); });
+    list.addEventListener('keydown', function (e) {
+      var k = panes.findIndex(function (x) { return x[0] === document.activeElement; });
+      if (k < 0) return;
+      if (e.key === 'ArrowRight') { e.preventDefault(); select((k + 1) % panes.length); }
+      if (e.key === 'ArrowLeft') { e.preventDefault(); select((k - 1 + panes.length) % panes.length); }
+    });
+    return wrap;
+  }
+
+  function lightbox() {
+    var d = el('dialog', { class: 'lightbox' });
+    var fig = el('figure');
+    var img = el('img', { alt: '' });
+    var cap = el('figcaption');
+    var close = biEl('button', { type: 'button', class: 'fx-btn fx-btn-secondary fx-btn-sm lb-close' }, 'Fechar', 'Close');
+    close.addEventListener('click', function () { d.close(); });
+    d.addEventListener('click', function (e) { if (e.target === d) d.close(); });
+    fig.appendChild(img); fig.appendChild(cap); d.appendChild(close); d.appendChild(fig);
+    d.show_ = function (src, label, dl) {
+      img.src = src; img.alt = label; cap.innerHTML = '';
+      cap.appendChild(document.createTextNode(label + ' · '));
+      cap.appendChild(dl);
+      if (typeof d.showModal === 'function') d.showModal(); else window.open(src, '_blank', 'noopener');
+    };
+    return d;
+  }
+
   function renderResult(st, log) {
     var p = panel();
     var ok = st.status === 'done';
     var box = el('section', { class: 'job-box' });
-    box.appendChild(ok ? statusTag('is-done', 'Concluído', 'Done') : statusTag('is-error', 'Falhou', 'Failed'));
-    box.appendChild(biEl('h3', { class: 'job-title' }, st.title || ''));
+    var hd = el('header', { class: 'res-head' });
+    hd.appendChild(ok ? statusTag('is-done', 'Concluído', 'Done') : statusTag('is-error', 'Falhou', 'Failed'));
+    hd.appendChild(biEl('h3', { class: 'job-title' }, st.title || ''));
     var sub = el('p', { class: 'job-sub' });
     var t = st.elapsed_s ? fmtDur(st.elapsed_s) : '';
     sub.appendChild(ok
       ? bi((st.message || 'Concluído') + '.' + (t ? ' Tempo: ' + t + '.' : ''), tr(st.message || 'Concluído') + '.' + (t ? ' Time: ' + t + '.' : ''))
       : bi('O forplotR parou com um erro.', 'forplotR stopped with an error.'));
     if (st.forplotR) sub.appendChild(document.createTextNode(' forplotR ' + st.forplotR + '.'));
-    box.appendChild(sub);
+    hd.appendChild(sub);
+    box.appendChild(hd);
 
     if (!ok) {
       box.appendChild(el('div', { class: 'error-box' }, st.error || '—'));
       box.appendChild(biEl('p', { class: 'muted-note' },
-        'Confira o formato da planilha escolhido e, se as colunas tiverem outros nomes, informe-os em “Minha planilha usa outros nomes de coluna”.',
-        'Check the selected spreadsheet layout and, if the columns have other names, declare them under “My spreadsheet uses other column names”.'));
+        'Confira o formato da planilha e, se as colunas tiverem outros nomes, indique-as em “Colunas da planilha”.',
+        'Check the spreadsheet layout and, if the columns have other names, map them under “Spreadsheet columns”.'));
     }
 
+    var tiles = ok ? summaryTiles(st.summary) : null;
+    if (tiles) box.appendChild(tiles);
+
     var files = arr(st.files);
-    if (files.length) {
+    if (files.length || st.zip) {
       var actions = el('div', { class: 'result-actions' });
-      if (st.zip) actions.appendChild(biEl('a', { class: 'fx-btn fx-btn-primary', href: zipUrl(st), download: LOCAL ? st.zip : null }, 'Baixar tudo (.zip)', 'Download all (.zip)'));
+      if (st.zip) {
+        var za = el('a', { class: 'fx-btn fx-btn-primary', href: zipUrl(st), download: LOCAL ? st.zip : null }, [svg(IC_DL)]);
+        za.appendChild(bi('Baixar tudo (.zip)', 'Download all (.zip)'));
+        actions.appendChild(za);
+      }
       // No modo local não há link para compartilhar: o resultado só existe nesta página.
       var share = LOCAL ? null : biEl('button', { type: 'button', class: 'fx-btn fx-btn-secondary' }, 'Copiar link do resultado', 'Copy result link');
       if (share) share.addEventListener('click', function () {
@@ -791,76 +1254,99 @@
       });
       if (share) actions.appendChild(share);
       box.appendChild(actions);
+    }
 
-      var htmls = files.filter(function (f) { return f.kind === 'html'; });
-      var imgs = files.filter(function (f) { return f.kind === 'image'; }).slice(0, 8);
-      if (htmls.length) {
-        var tabs = el('div', { class: 'preview-tabs', role: 'tablist' });
-        var frame = el('iframe', { class: 'report-frame', title: isEn() ? 'Preview' : 'Prévia', sandbox: 'allow-scripts allow-popups allow-downloads' });
+    var items = [];
+    var htmls = files.filter(function (f) { return f.kind === 'html'; });
+    var imgs = files.filter(function (f) { return f.kind === 'image'; }).slice(0, 12);
+    if (htmls.length) {
+      var pv = el('div', { class: 'preview' });
+      var bar = el('div', { class: 'preview-bar' });
+      var frame = el('iframe', { class: 'report-frame', title: isEn() ? 'Preview' : 'Prévia', sandbox: 'allow-scripts allow-popups allow-downloads' });
+      var openA = el('a', { class: 'fx-btn fx-btn-quiet fx-btn-sm', target: '_blank', rel: 'noopener' }, [svg(IC_EXT)]);
+      openA.appendChild(bi('Abrir em nova aba', 'Open in a new tab'));
+      var full = el('button', { type: 'button', class: 'fx-btn fx-btn-quiet fx-btn-sm' }, [svg(IC_EXPAND)]);
+      full.appendChild(bi('Tela cheia', 'Full screen'));
+      full.addEventListener('click', function () { var r = pv.requestFullscreen || pv.webkitRequestFullscreen; if (r) r.call(pv); });
+      var show = function (f) { frame.src = fileUrl(st, f, true); openA.href = fileUrl(st, f, true); };
+      if (htmls.length > 1) {
+        var sw = el('div', { class: 'seg seg-sm', role: 'group' });
         htmls.forEach(function (f, i) {
-          var b = biEl('button', { type: 'button', role: 'tab', class: i === 0 ? 'is-active' : '', 'aria-selected': i === 0 ? 'true' : 'false' }, f.label);
+          var b = biEl('button', { type: 'button', class: 'seg-btn', 'aria-pressed': i === 0 ? 'true' : 'false' }, f.label);
           b.addEventListener('click', function () {
-            tabs.querySelectorAll('button').forEach(function (x) { x.classList.remove('is-active'); x.setAttribute('aria-selected', 'false'); });
-            b.classList.add('is-active'); b.setAttribute('aria-selected', 'true');
-            frame.src = fileUrl(st, f, true);
+            sw.querySelectorAll('button').forEach(function (x) { x.setAttribute('aria-pressed', 'false'); });
+            b.setAttribute('aria-pressed', 'true'); show(f);
           });
-          tabs.appendChild(b);
+          sw.appendChild(b);
         });
-        frame.src = fileUrl(st, htmls[0], true);
-        box.appendChild(biEl('h4', { class: 'block-title' }, 'Prévia', 'Preview'));
-        if (htmls.length > 1) box.appendChild(tabs);
-        box.appendChild(frame);
-        if (LOCAL && st.tool === 'balance') {
-          box.appendChild(biEl('p', { class: 'muted-note' },
-            'Para ter o relatório em PDF, baixe o arquivo HTML, abra-o no navegador e use Imprimir > Salvar como PDF.',
-            'To get the report as a PDF, download the HTML file, open it in your browser and use Print > Save as PDF.'));
-        }
-        if (LOCAL && st.tool === 'map') {
-          box.appendChild(biEl('p', { class: 'muted-note' },
-            'A prévia não carrega a imagem de satélite, para não revelar a localização da parcela ao provedor das imagens. No arquivo baixado, o satélite aparece ao abri-lo, e a área visualizada é enviada ao provedor.',
-            'The preview does not load satellite imagery, so that the plot location is not revealed to the imagery provider. In the downloaded file, the imagery appears when it is opened, and the area in view is sent to the provider.'));
-        }
+        bar.appendChild(sw);
       }
-      if (imgs.length) {
-        box.appendChild(biEl('h4', { class: 'block-title' }, 'Figuras', 'Figures'));
-        var grid = el('div', { class: 'thumb-grid' });
-        imgs.forEach(function (f) {
-          var a = el('a', { href: fileUrl(st, f, true), target: '_blank', rel: 'noopener', title: f.label });
-          a.appendChild(el('img', { src: fileUrl(st, f, true), alt: f.label, loading: 'lazy' }));
-          a.appendChild(biEl('span', null, f.label));
-          grid.appendChild(a);
+      var tools = el('div', { class: 'preview-tools' });
+      tools.appendChild(openA); tools.appendChild(full);
+      bar.appendChild(tools);
+      pv.appendChild(bar);
+      pv.appendChild(frame);
+      show(htmls[0]);
+      var pvWrap = el('div');
+      pvWrap.appendChild(pv);
+      if (LOCAL && st.tool === 'balance') {
+        pvWrap.appendChild(biEl('p', { class: 'muted-note' },
+          'Para ter o relatório em PDF, baixe o arquivo HTML, abra-o no navegador e use Imprimir > Salvar como PDF.',
+          'To get the report as a PDF, download the HTML file, open it in your browser and use Print > Save as PDF.'));
+      }
+      if (LOCAL && st.tool === 'map') {
+        pvWrap.appendChild(biEl('p', { class: 'muted-note' },
+          'A prévia não carrega a imagem de satélite, para não revelar a localização da parcela ao provedor das imagens. No arquivo baixado, o satélite aparece ao abri-lo, e a área visualizada é enviada ao provedor.',
+          'The preview does not load satellite imagery, so that the plot location is not revealed to the imagery provider. In the downloaded file, the imagery appears when it is opened, and the area in view is sent to the provider.'));
+      }
+      items.push({ key: 'preview', pt: 'Prévia', en: 'Preview', node: pvWrap });
+    }
+    if (imgs.length) {
+      var lb = lightbox();
+      var grid = el('div', { class: 'thumb-grid' });
+      imgs.forEach(function (f) {
+        var a = el('a', { href: fileUrl(st, f, true), title: f.label, class: 'thumb' });
+        a.appendChild(el('img', { src: fileUrl(st, f, true), alt: f.label, loading: 'lazy' }));
+        a.appendChild(biEl('span', null, f.label));
+        a.addEventListener('click', function (e) {
+          if (typeof lb.showModal !== 'function') return;
+          e.preventDefault();
+          lb.show_(fileUrl(st, f, true), f.label, biEl('a', { href: fileUrl(st, f, false), download: LOCAL ? f.name : null }, 'Baixar', 'Download'));
         });
-        box.appendChild(grid);
-      }
-
-      box.appendChild(biEl('h4', { class: 'block-title' }, 'Arquivos (' + st.n_files + ')', 'Files (' + st.n_files + ')'));
+        grid.appendChild(a);
+      });
+      var gw = el('div'); gw.appendChild(grid); gw.appendChild(lb);
+      items.push({ key: 'figures', pt: 'Figuras', en: 'Figures', count: imgs.length, node: gw });
+    }
+    if (files.length) {
       var list = el('div', { class: 'output-list' });
       files.forEach(function (f) {
         var card = el('article', { class: 'output-card' });
+        card.appendChild(el('span', { class: 'file-kind kind-' + (f.kind || 'file') }, (String(f.path).split('.').pop() || '').toUpperCase().slice(0, 4)));
         var info = el('div');
         info.appendChild(biEl('strong', null, f.label));
         info.appendChild(el('span', null, f.path + ' · ' + fmtSize(f.size)));
         card.appendChild(info);
-        card.appendChild(biEl('a', { class: 'fx-btn fx-btn-secondary fx-btn-sm', href: fileUrl(st, f, false), download: LOCAL ? f.name : null }, 'Baixar', 'Download'));
+        var dl = el('a', { class: 'fx-btn fx-btn-secondary fx-btn-sm', href: fileUrl(st, f, false), download: LOCAL ? f.name : null }, [svg(IC_DL)]);
+        dl.appendChild(bi('Baixar', 'Download'));
+        card.appendChild(dl);
         list.appendChild(card);
       });
-      box.appendChild(list);
+      var fw = el('div'); fw.appendChild(list);
       if (st.n_files > files.length) {
-        box.appendChild(biEl('p', { class: 'muted-note' },
+        fw.appendChild(biEl('p', { class: 'muted-note' },
           'Mostrando ' + files.length + ' de ' + st.n_files + ' arquivos. Todos estão no ZIP.',
           'Showing ' + files.length + ' of ' + st.n_files + ' files. All are in the ZIP.'));
       }
+      items.push({ key: 'files', pt: 'Arquivos', en: 'Files', count: st.n_files || files.length, node: fw });
     } else if (st.zip) {
-      // Só há a estrutura de pastas (ex.: vouchers sem fotos): o conteúdo está no ZIP.
-      var zipActions = el('div', { class: 'result-actions' });
-      zipActions.appendChild(biEl('a', { class: 'fx-btn fx-btn-primary', href: zipUrl(st), download: LOCAL ? st.zip : null }, 'Baixar tudo (.zip)', 'Download all (.zip)'));
-      box.appendChild(zipActions);
       box.appendChild(biEl('p', { class: 'muted-note' },
         'O resultado é uma estrutura de pastas (' + st.n_files + ' itens), toda dentro do ZIP.',
         'The result is a folder structure (' + st.n_files + ' items), all inside the ZIP.'));
     } else if (ok) {
       box.appendChild(biEl('p', { class: 'muted-note' }, 'Nenhum arquivo foi gerado. Veja o registro abaixo.', 'No file was produced. See the log below.'));
     }
+    if (items.length) box.appendChild(tabset(items));
 
     var det = el('details', { class: 'log-details' });
     if (!ok) det.open = true;
@@ -868,6 +1354,7 @@
     det.appendChild(el('pre', { class: 'progress-log' }, log || '—'));
     box.appendChild(det);
     p.appendChild(box);
+    if (ok) box.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
   }
 
   function showError(pt, en) {

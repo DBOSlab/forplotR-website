@@ -25,7 +25,7 @@
     csv: 'text/csv', txt: 'text/plain', zip: 'application/zip',
     xlsx: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
   };
-  var ENGINE_FILES = ['config.R', 'tools_spec.R', 'core_params.R', 'core_run.R', 'engine.R'];
+  var ENGINE_FILES = ['config.R', 'tools_spec.R', 'core_params.R', 'core_run.R', 'engine.R', 'detect.R'];
   var ENGINE_DIR = '/home/web_user/fpengine';
 
   function ext(p) { var m = /\.([^.\/]+)$/.exec(p); return m ? m[1].toLowerCase() : ''; }
@@ -157,6 +157,22 @@
       }
     }
 
+    // Lê o cabeçalho da planilha e sugere formato, colunas e estações (detect.R).
+    // Roda só no navegador; o arquivo vai para a memória do webR e é apagado.
+    async function detect(file) {
+      if (busy) return null;
+      await init();
+      busy = true;
+      var p = '/home/web_user/fpdetect.xlsx';
+      try {
+        await webR.FS.writeFile(p, new Uint8Array(await file.arrayBuffer()));
+        return JSON.parse(await webR.evalRString('local_detect("' + p + '")'));
+      } finally {
+        try { await webR.FS.unlink(p); } catch (e) { /* ignora */ }
+        busy = false;
+      }
+    }
+
     window.addEventListener('pagehide', release);
 
     return {
@@ -177,6 +193,7 @@
       stage: function () { return stage; },
       onStage: onStage,
       run: run,
+      detect: detect,
       fileUrl: function (st, f) { return f._url || '#'; },
       zipUrl: function (st) { return st._zipUrl || '#'; },
       release: release

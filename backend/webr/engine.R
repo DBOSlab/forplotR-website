@@ -2,6 +2,7 @@
 #
 # Carregado pelo js/forplotr-local.js, dentro do webR, depois de:
 #   backend/R/config.R, tools_spec.R, core_params.R, core_run.R
+# e antes de backend/webr/detect.R (detecção do formato e resumo do resultado).
 # O JavaScript grava os arquivos enviados em <raiz>/uploads, chama local_run()
 # e lê as saídas de <raiz>/outputs. Ao terminar, local_cleanup() apaga tudo.
 #
@@ -73,6 +74,7 @@ local_run <- function(tool, fields_file = file.path(local_root, "fields.json")) 
   t0 <- Sys.time()
   id <- paste(sample(c(0:9, letters[1:6]), 32, replace = TRUE), collapse = "")
   spec <- NULL
+  summ <- NULL
   err <- tryCatch({
     spec <- tool_spec(tool, "local")
     fields <- jsonlite::fromJSON(fields_file, simplifyVector = FALSE)
@@ -98,6 +100,7 @@ local_run <- function(tool, fields_file = file.path(local_root, "fields.json")) 
     old <- setwd(file.path(local_root, "outputs"))
     on.exit(setwd(old), add = TRUE)
     run_tool(spec$fun, params)
+    summ <- local_summary(params)   # detect.R: números para a prévia
     ""
   }, error = function(e) {
     message("Erro: ", conditionMessage(e))
@@ -118,6 +121,7 @@ local_run <- function(tool, fields_file = file.path(local_root, "fields.json")) 
     elapsed_s = round(as.numeric(difftime(Sys.time(), t0, units = "secs"))),
     forplotR = as.character(utils::packageVersion("forplotR")),
     files = fin$files, n_files = fin$n_files, zip = fin$zip,
+    summary = if (ok) summ else NULL,
     root = local_root
   )
   jsonlite::toJSON(st, auto_unbox = TRUE, null = "null", na = "null")
