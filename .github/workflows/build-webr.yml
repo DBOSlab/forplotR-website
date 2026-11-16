@@ -24,6 +24,10 @@ on:
         default: ""
   push:
     branches: [main, feat/webr-site]
+  # Enviado pelo workflow notify-site do DBOSlab/forplotR a cada push no main
+  # do pacote: reconstrói o app com o forplotR novo e publica (roda no main).
+  repository_dispatch:
+    types: [forplotr-updated]
 
 permissions:
   contents: read
@@ -183,13 +187,13 @@ jobs:
           if-no-files-found: error
 
       - name: Preparar publicação no GitHub Pages
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/main' && contains(fromJSON('["push","repository_dispatch","workflow_dispatch"]'), github.event_name)
         uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
         with:
           path: _site
 
   deploy:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main' && contains(fromJSON('["push","repository_dispatch","workflow_dispatch"]'), github.event_name)
     needs: build
     runs-on: ubuntu-latest
     permissions:
