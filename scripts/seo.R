@@ -180,6 +180,44 @@ thesis_node <- function(lang) {
   ))
 }
 
+# Ícones clicáveis de uma pessoa (página de autoria): ORCID, Lattes e GitHub, a
+# partir de _data/entities.yml. Os SVG ficam em assets/icons/ e entram embutidos
+# (seguem as cores do tema); cada link abre em nova aba e tem title/aria-label.
+icon_svg <- local({
+  cache <- list()
+  function(name) {
+    if (is.null(cache[[name]])) {
+      f <- file.path("assets", "icons", paste0(name, ".svg"))
+      cache[[name]] <<- if (file.exists(f)) paste(read_utf8(f), collapse = "") else ""
+    }
+    cache[[name]]
+  }
+})
+person_links <- function(k, lang) {
+  p <- P[[k]]
+  if (is.null(p)) return("")
+  en <- lang == "en"
+  of <- function(what, who) if (en) sprintf("%s of %s", what, who) else sprintf("%s de %s", what, who)
+  item <- function(icon, url, what, id) {
+    lab <- html_escape(of(what, p$name))
+    sprintf('<li><a class="icon-link icon-%s" href="%s" target="_blank" rel="me noopener noreferrer" title="%s" aria-label="%s (%s)">%s</a></li>',
+            icon, html_escape(url), lab, lab, html_escape(id), icon_svg(icon))
+  }
+  out <- c(
+    if (has(p$orcid)) item("orcid", p$orcid, "ORCID", sub("^https?://orcid\\.org/", "", p$orcid)),
+    if (has(p$lattes)) item("lattes", p$lattes, if (en) "Lattes CV" else "Currículo Lattes", sub("^https?://lattes\\.cnpq\\.br/", "", p$lattes)),
+    if (has(p$github)) {
+      gh <- sub("^https?://github\\.com/", "", p$github)
+      who <- if (has(p$github_label)) paste0(p$github_label, " (", p$name, ")") else p$name
+      lab <- html_escape(if (en) sprintf("GitHub of %s", who) else sprintf("GitHub de %s", who))
+      sprintf('<li><a class="icon-link icon-github" href="%s" target="_blank" rel="me noopener noreferrer" title="%s" aria-label="%s (%s)">%s</a></li>',
+              html_escape(p$github), lab, lab, html_escape(gh), icon_svg("github"))
+    }
+  )
+  if (!length(out)) return("")
+  paste0('<ul class="person-links">', paste(out, collapse = ""), "</ul>")
+}
+
 # Artigo (página "Como citar"): DOI quando publicado.
 pp <- ent$paper
 paper_ok <- !is.null(pp) && has(pp$doi)
@@ -384,6 +422,9 @@ for (i in seq_len(nrow(pages))) {
   h <- gsub("{{LANGROOT}}", langroot, h, fixed = TRUE)
   h <- gsub("{{ALT_URL}}", alt_href, h, fixed = TRUE)
   h <- gsub("<p>{{THESIS_BLOCK}}</p>", thesis_block(row$lang), h, fixed = TRUE)
+  for (pl in unique(regmatches(h, gregexpr("\\{\\{PERSON_LINKS:[a-z_]+\\}\\}", h, perl = TRUE))[[1]])) {
+    h <- gsub(pl, person_links(sub("^\\{\\{PERSON_LINKS:([a-z_]+)\\}\\}$", "\\1", pl), row$lang), h, fixed = TRUE)
+  }
   h <- gsub("<p>{{PAPER_BLOCK}}</p>", paper_block(row$lang), h, fixed = TRUE)
   # {{LINK:id}}: endereço relativo da página com esse page-id, na língua da página
   for (lk in unique(regmatches(h, gregexpr("\\{\\{LINK:[A-Za-z0-9_-]+\\}\\}", h, perl = TRUE))[[1]])) {

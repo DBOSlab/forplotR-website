@@ -265,6 +265,11 @@ figcaption .src{font-family:var(--font-mono); font-size:12px;}
 .person .affil{color:var(--muted); font-size:15px; margin:0 0 var(--s2);}
 .person ul{list-style:none; padding:0; margin:0; font-size:15px; display:flex; flex-wrap:wrap; gap:0 var(--s4);}
 .person li{margin:0;}
+/* ORCID, Lattes e GitHub como ícones clicáveis (gerados por scripts/seo.R) */
+.person ul.person-links{gap:var(--s2); margin-top:var(--s2);}
+.icon-link{display:inline-flex; align-items:center; justify-content:center; width:36px; height:36px; border-radius:50%; color:var(--muted); border:1px solid var(--rule); background:var(--surface); transition:color var(--fast) var(--ease),border-color var(--fast) var(--ease),transform var(--fast) var(--ease);}
+.icon-link svg{width:20px; height:20px; display:block;}
+.icon-link:hover,.icon-link:focus-visible{color:var(--text-strong); border-color:var(--rule-hover); transform:translateY(-1px);}
 @media (max-width:480px){
   .person{grid-template-columns:80px minmax(0,1fr); gap:var(--s4);}
   .person-photo{width:80px; height:80px;}
