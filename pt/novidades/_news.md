@@ -3,6 +3,40 @@
 ::: {lang="en"}
 ## forplotR (development version) {#news-1}
 
+- Field sheets that start with rows of plot metadata are now read from their
+  real header row. `detect_header_row()` scores the first rows of a sheet by
+  the column names it recognises and returns the header row;
+  `read_plot_metadata()` turns the `"Label | Translation: value"` cells above
+  it into `plot_code`, `plot_name`, `date` (day/month/year first) and `team`
+  (one element per person); `read_plot_sheet()` reads the table from that row.
+  `forplot_balance()`, `forplot_map()`, `forplot_vouchers()` and
+  `forplot_sheets()` gain `header_row = NULL` (automatic) to force the row.
+- Bilingual column names are understood: either side of
+  `"Name | Translation"` is matched, ignoring case and accents, with English,
+  Portuguese and Panará labels (`"Família botânica | Ksyapiâhapiâra pârikiã"`
+  is `Family`, `"D | Wy"` is `D`). The Indigenous Land (Panará) field sheet is
+  now mapped by column name under both `input_type = "field_sheet_ti"` and
+  `"field_sheet"`, with the fixed column order as a fallback. When that sheet
+  has separate columns for the scientific and the Panará name, the
+  determination is the scientific name and the Panará name is kept in
+  `Local name`.
+- When two columns read as the same name (the Panará sheet has `"D | Wy"` and
+  a helper column `"D"`), the first one in the sheet is used and the other is
+  kept as `D_2`; a message says which is which.
+- The census date read from the sheet is shown in the field report.
+- The field report (HTML and PDF) has a header with official logos again.
+  `forplot_balance()` gains `logos`: logo names (`"forplotR"`, `"jbrj"`,
+  `"ci"`, `"iakio"`), presets and paths to your own image files, in the order
+  they should appear. The default is forplotR + JBRJ; the `"panara"` preset
+  adds Conservação Internacional and the Iakiô Panará association and is
+  used automatically for `input_type = "field_sheet_ti"` (pass
+  `logos = c("forplotR", "jbrj")` to keep only the two standard ones, or
+  `FALSE` for none). The logos are in `inst/logos/`, keep their proportions
+  and share one height in both formats.
+- `LICENSE.md` with the full text of the MIT licence.
+- `inst/extdata/panara_SKR01.xlsx`: the SKR01 plot of the Panará Indigenous
+  Land, used in examples and regression tests.
+
 - The field report of `forplot_balance()` ends with a floristic and
   phytosociological overview: richness, density and basal area per hectare,
   Shannon, Simpson and Pielou indices, the families and species with the

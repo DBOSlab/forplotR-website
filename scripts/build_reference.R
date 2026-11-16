@@ -27,6 +27,8 @@ groups <- list(
   list(id = "photos", pt = "Organizar as fotos", en = "Organise the photos", rd = "forplot_vouchers"),
   list(id = "labels", pt = "Etiquetas para o herbário", en = "Herbarium labels", rd = "forplot_sheets"),
   list(id = "determinations", pt = "Conferir determinações", en = "Check determinations", rd = "forplot_crossdet"),
+  list(id = "formats", pt = "Ler a planilha", en = "Read the spreadsheet",
+       rd = c("detect_header_row", "read_plot_metadata", "read_plot_sheet")),
   list(id = "start", pt = "Dados de exemplo", en = "Example data", rd = c("RUS01", "TUM"))
 )
 # Rd do pacote instalado (instale a versão documentada antes: R CMD INSTALL <pkg>)
@@ -56,7 +58,7 @@ for (g in groups) {
   lines <- c(lines, sprintf("## [%s]{data-lang=pt}[%s]{data-lang=en} {#%s}", g$pt, g$en, paste0("grupo-", g$id)), "")
   for (r in g$rd) {
     x <- rd_html(r)
-    is_fun <- startsWith(r, "forplot_")
+    is_fun <- !(r %in% c("RUS01", "TUM"))
     lines <- c(lines,
       sprintf("### `%s%s` {#%s}", r, if (is_fun) "()" else "", r), "",
       sprintf('<p class="rd-title">%s</p>', x$title), "",

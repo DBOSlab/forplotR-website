@@ -52,6 +52,7 @@ shareable HTML map to disk.
   language = c("en", "pt", "es", "fr", "ma", "pa"),
   embed_voucher_imgs = FALSE,
   dir = NULL,
+  header_row = NULL,
   colname_tagno = NULL,
   colname_stemgroup = NULL,
   colname_subplot = NULL,
@@ -221,6 +222,13 @@ copied next to the HTML file and linked.</p>
 (<code>tempdir()</code>), which is deleted when the R session ends; supply a path
 to keep the map.</p>
 </td></tr>
+<tr><td><code id="header_row">header_row</code></td>
+<td>
+<p>Row of the spreadsheet that holds the column names. The
+default <code>NULL</code> finds it automatically (see <code>detect_header_row()</code>),
+which copes with sheets that start with rows of plot metadata. Give a
+number to force it.</p>
+</td></tr>
 <tr><td><code id="colname_tagno">colname_tagno</code>, <code id="colname_stemgroup">colname_stemgroup</code>, <code id="colname_subplot">colname_subplot</code>, <code id="colname_x">colname_x</code>, <code id="colname_y">colname_y</code>, <code id="colname_family">colname_family</code>, <code id="colname_species">colname_species</code>, <code id="colname_dbh">colname_dbh</code>, <code id="colname_voucher">colname_voucher</code>, <code id="colname_collected">colname_collected</code></td>
 <td>
 <p>Optional column names in the input file to map to the internal schema,
@@ -342,7 +350,10 @@ and west).
 <dl>
 <dt><code>"field_sheet"</code></dt><dd><p>Standard ForestPlots.net field-sheet layout.</p>
 </dd>
-<dt><code>"field_sheet_ti"</code></dt><dd><p>Indigenous Land field-sheet layout with direct column mapping.</p>
+<dt><code>"field_sheet_ti"</code></dt><dd><p>Indigenous Land field-sheet layout: rows of
+plot metadata, then a header that may be bilingual
+(<code>"Name | Translation"</code>). Columns are recognised by name and, failing
+that, by their fixed position in the template.</p>
 </dd>
 <dt><code>"fp_query_sheet"</code></dt><dd><p>ForestPlots.net Query Library export converted internally to a field-sheet-like schema.</p>
 </dd>
@@ -469,6 +480,8 @@ HTML/PDF reports and an Excel summary workbook.
   verbose = TRUE,
   dir = file.path(tempdir(), "Results_map_plot"),
   filename = "plot_specimen",
+  logos = NULL,
+  header_row = NULL,
   colname_tagno = NULL,
   colname_stemgroup = NULL,
   colname_subplot = NULL,
@@ -593,6 +606,27 @@ session ends; supply a path to keep the outputs.</p>
 <td>
 <p>Basename for generated output files, without extension.</p>
 </td></tr>
+<tr><td><code id="logos">logos</code></td>
+<td>
+<p>Logos shown at the top of the HTML and PDF report. A character
+vector that may mix logo names (<code>"forplotR"</code>, <code>"jbrj"</code>,
+<code>"ci"</code>, <code>"iakio"</code>), presets and paths to your own image files
+(PNG, SVG or JPEG), in the order they should appear. Presets:
+<code>"default"</code> is forplotR + JBRJ; <code>"panara"</code> adds Conservação
+Internacional and the Iakiô Panará association. The default <code>NULL</code>
+uses <code>"default"</code>, or <code>"panara"</code> when
+<code>input_type = "field_sheet_ti"</code>; pass <code>c("forplotR", "jbrj")</code> to
+keep only the two standard logos there. <code>FALSE</code> or <code>"none"</code>
+leaves the report without logos. Logos keep their proportions and share
+one height.</p>
+</td></tr>
+<tr><td><code id="header_row">header_row</code></td>
+<td>
+<p>Row of the spreadsheet that holds the column names. The
+default <code>NULL</code> finds it automatically (see <code>detect_header_row()</code>),
+which copes with sheets that start with rows of plot metadata. Give a
+number to force it.</p>
+</td></tr>
 <tr><td><code id="colname_tagno">colname_tagno</code>, <code id="colname_stemgroup">colname_stemgroup</code>, <code id="colname_subplot">colname_subplot</code>, <code id="colname_x">colname_x</code>, <code id="colname_y">colname_y</code>, <code id="colname_family">colname_family</code>, <code id="colname_species">colname_species</code>, <code id="colname_dbh">colname_dbh</code>, <code id="colname_voucher">colname_voucher</code>, <code id="colname_collected">colname_collected</code></td>
 <td>
 <p>Optional column names in the input file to map to the internal schema,
@@ -697,7 +731,10 @@ than 1, the function recursively processes each station and invisibly returns
 <dl>
 <dt><code>"field_sheet"</code></dt><dd><p>Standard ForestPlots.net field sheet.</p>
 </dd>
-<dt><code>"field_sheet_ti"</code></dt><dd><p>Indigenous Land field-sheet layout with direct column mapping.</p>
+<dt><code>"field_sheet_ti"</code></dt><dd><p>Indigenous Land field-sheet layout: rows of
+plot metadata, then a header that may be bilingual
+(<code>"Name | Translation"</code>). Columns are recognised by name and, failing
+that, by their fixed position in the template.</p>
 </dd>
 <dt><code>"fp_query_sheet"</code></dt><dd><p>ForestPlots.net Query Library export, converted internally to field-sheet schema.</p>
 </dd>
@@ -717,7 +754,8 @@ maps with the tag of every stem (all stems, with voucher, pending and, when
 <code>highlight_palms = TRUE</code>, palms), a priority route, one A4 page per
 subplot (map, tree table with stems pending collection first, and blank
 columns for new DBH, status, voucher number and notes), a floristic and
-phytosociological overview and a checklist appendix. Maps are inline SVG, so the file opens without internet. In a
+phytosociological overview and a checklist appendix. The first page
+carries the logos chosen with <code>logos</code>. Maps are inline SVG, so the file opens without internet. In a
 browser the report has a search box for tags and subplots; tapping a stem on
 a subplot map highlights its row in the table. MONITORA plots are drawn as
 the cross of four arms of the protocol.
@@ -876,7 +914,8 @@ non-empty voucher code is present after input harmonization, except when
   output_dir = file.path(tempdir(), "voucher_imgs"),
   input_type = c("field_sheet", "field_sheet_ti", "fp_query_sheet", "monitora"),
   station_name = NULL,
-  verbose = TRUE
+  verbose = TRUE,
+  header_row = NULL
 )
 </code></pre>
 
@@ -911,6 +950,13 @@ for the other input types.</p>
 <td>
 <p>Logical. If <code>TRUE</code>, prints detailed messages during
 processing.</p>
+</td></tr>
+<tr><td><code id="header_row">header_row</code></td>
+<td>
+<p>Row of the spreadsheet that holds the column names. The
+default <code>NULL</code> finds it automatically (see <code>detect_header_row()</code>),
+which copes with sheets that start with rows of plot metadata. Give a
+number to force it.</p>
 </td></tr>
 </table>
 
@@ -1022,6 +1068,7 @@ on the value set in the <code>language</code> argument.
   herb_file_path = NULL,
   input_type = c("forestplots", "monitora"),
   sheet = 1,
+  header_row = NULL,
   station_name = NULL,
   language = "en",
   herbarium_format = "jabot",
@@ -1067,6 +1114,13 @@ to a forestplots-like structure before filling the herbarium template.</p>
 <tr><td><code id="sheet">sheet</code></td>
 <td>
 <p>Sheet index or name to read from the input Excel file.</p>
+</td></tr>
+<tr><td><code id="header_row">header_row</code></td>
+<td>
+<p>Row of the spreadsheet that holds the column names. The
+default <code>NULL</code> finds it automatically (see <code>detect_header_row()</code>),
+which copes with sheets that start with rows of plot metadata and with
+bilingual column names. Give a number to force it.</p>
 </td></tr>
 <tr><td><code id="station_name">station_name</code></td>
 <td>
@@ -1530,6 +1584,269 @@ out2 &lt;- forplot_crossdet(
 
 ## End(Not run)
 
+
+</code></pre>
+</div>
+```
+
+## [Ler a planilha]{data-lang=pt}[Read the spreadsheet]{data-lang=en} {#grupo-formats}
+
+### `detect_header_row()` {#detect_header_row}
+
+<p class="rd-title">Detect the header row of a plot spreadsheet</p>
+
+[Aplicação: Ler a planilha]{data-lang=pt}[Application: Read the spreadsheet]{data-lang=en} · [→]({{LINK:formats}})
+
+```{=html}
+<div class="rd" lang="en">
+
+
+<h4>Description</h4>
+
+<p>Finds the row that holds the column names of a field sheet. Some templates,
+such as the Indigenous Land (Panará) field sheet, start with one or more rows
+of plot metadata (<code>"Plotcode | Kypa kukâri: SKR01"</code>) before the header.
+The first <code>max_scan</code> rows are read as text and each one is scored by the
+number of cells that match a column name known to the package (tag, stem
+grouping, subplot, X, Y, family, species, diameter, POM, flag, height,
+voucher, CAP and so on). Matching ignores case and accents, and accepts either
+side of a bilingual label written as <code>"Name | Translation"</code>. Cells that
+look like metadata (<code>"Label: value"</code>) count against the row.
+</p>
+<p>The row with the highest score wins, provided it has at least three known
+column names; ties go to the first row. When no row qualifies, row 1 is
+returned with a warning.
+</p>
+
+
+<h4>Usage</h4>
+
+<pre><code class='language-R'>detect_header_row(path, sheet = 1, max_scan = 20)
+</code></pre>
+
+
+<h4>Arguments</h4>
+
+<table>
+<tr><td><code id="path">path</code></td>
+<td>
+<p>Path to an Excel file (<code>.xlsx</code> or <code>.xls</code>).</p>
+</td></tr>
+<tr><td><code id="sheet">sheet</code></td>
+<td>
+<p>Worksheet name or index.</p>
+</td></tr>
+<tr><td><code id="max_scan">max_scan</code></td>
+<td>
+<p>Number of rows, from the top of the sheet, to examine.</p>
+</td></tr>
+</table>
+
+
+<h4>Value</h4>
+
+<p>A single integer: the row number of the header, counted from the
+first row of the worksheet.
+</p>
+
+
+<h4>See Also</h4>
+
+<p><code>read_plot_metadata()</code>, <code>read_plot_sheet()</code>
+</p>
+
+
+<h4>Examples</h4>
+
+<pre><code class='language-R'>f &lt;- system.file("extdata", "panara_SKR01.xlsx", package = "forplotR")
+detect_header_row(f)
+
+</code></pre>
+</div>
+```
+
+### `read_plot_metadata()` {#read_plot_metadata}
+
+<p class="rd-title">Read the plot metadata written above the header of a field sheet</p>
+
+[Aplicação: Ler a planilha]{data-lang=pt}[Application: Read the spreadsheet]{data-lang=en} · [→]({{LINK:formats}})
+
+```{=html}
+<div class="rd" lang="en">
+
+
+<h4>Description</h4>
+
+<p>Reads every row above the header row and turns the cells written as
+<code>"Label: value"</code> or <code>"Label | Translation: value"</code> into a list
+with standard names. Labels are accepted in English, Portuguese or Panará
+(for example <code>"Plotcode"</code>, <code>"Código da parcela"</code> or
+<code>"Kypa kukâri"</code>); matching ignores case and accents.
+</p>
+
+
+<h4>Usage</h4>
+
+<pre><code class='language-R'>read_plot_metadata(path, sheet = 1, header_row = NULL)
+</code></pre>
+
+
+<h4>Arguments</h4>
+
+<table>
+<tr><td><code id="path">path</code></td>
+<td>
+<p>Path to an Excel file (<code>.xlsx</code> or <code>.xls</code>).</p>
+</td></tr>
+<tr><td><code id="sheet">sheet</code></td>
+<td>
+<p>Worksheet name or index.</p>
+</td></tr>
+<tr><td><code id="header_row">header_row</code></td>
+<td>
+<p>Row that holds the column names. The default <code>NULL</code>
+finds it with <code>detect_header_row()</code>.</p>
+</td></tr>
+</table>
+
+
+<h4>Value</h4>
+
+<p>A list with:
+</p>
+
+<dl>
+<dt>plot_code</dt><dd><p>Plot code, or <code>NA</code>.</p>
+</dd>
+<dt>plot_name</dt><dd><p>Plot name, or <code>NA</code>.</p>
+</dd>
+<dt>date</dt><dd><p>Census date as a <code>Date</code> (day/month/year is tried first),
+or <code>NA</code>.</p>
+</dd>
+<dt>team</dt><dd><p>Character vector with one element per person; names separated
+by commas, semicolons or <code>&amp;</code> are split.</p>
+</dd>
+<dt>census_no</dt><dd><p>Census number, or <code>NA</code>.</p>
+</dd>
+<dt>other</dt><dd><p>Named character vector with any other <code>"Label: value"</code>
+cell found.</p>
+</dd>
+<dt>header_row</dt><dd><p>The header row that was used.</p>
+</dd>
+</dl>
+
+
+
+<h4>See Also</h4>
+
+<p><code>detect_header_row()</code>, <code>read_plot_sheet()</code>
+</p>
+
+
+<h4>Examples</h4>
+
+<pre><code class='language-R'>f &lt;- system.file("extdata", "panara_SKR01.xlsx", package = "forplotR")
+meta &lt;- read_plot_metadata(f)
+meta$plot_code
+meta$date
+length(meta$team)
+
+</code></pre>
+</div>
+```
+
+### `read_plot_sheet()` {#read_plot_sheet}
+
+<p class="rd-title">Read a field sheet from its real header row</p>
+
+[Aplicação: Ler a planilha]{data-lang=pt}[Application: Read the spreadsheet]{data-lang=en} · [→]({{LINK:formats}})
+
+```{=html}
+<div class="rd" lang="en">
+
+
+<h4>Description</h4>
+
+<p>Reads a plot spreadsheet whose header may not be on the first row and whose
+column names may be bilingual (<code>"Name | Translation"</code>). The header row
+is found with <code>detect_header_row()</code>, the rows above it are read as plot
+metadata with <code>read_plot_metadata()</code>, and the columns are renamed to the
+names used throughout the package (<code>"New Tag No"</code>, <code>"T1"</code>,
+<code>"X"</code>, <code>"Y"</code>, <code>"Family"</code>, <code>"Original determination"</code>,
+<code>"D"</code>, <code>"POM"</code>, <code>"Flag1"</code>, <code>"Voucher"</code> and so on).
+Columns that are not recognised keep the first side of their label.
+</p>
+<p>When two columns end up with the same name (for example <code>"D | Wy"</code> and
+a helper column <code>"D"</code>), the first one in the sheet keeps the name and
+the others get a numeric suffix (<code>"D_2"</code>); a message says so. Cells
+holding formulas are read by their stored value.
+</p>
+
+
+<h4>Usage</h4>
+
+<pre><code class='language-R'>read_plot_sheet(path, sheet = 1, header_row = NULL, verbose = TRUE)
+</code></pre>
+
+
+<h4>Arguments</h4>
+
+<table>
+<tr><td><code id="path">path</code></td>
+<td>
+<p>Path to an Excel file (<code>.xlsx</code> or <code>.xls</code>).</p>
+</td></tr>
+<tr><td><code id="sheet">sheet</code></td>
+<td>
+<p>Worksheet name or index.</p>
+</td></tr>
+<tr><td><code id="header_row">header_row</code></td>
+<td>
+<p>Row that holds the column names. The default <code>NULL</code>
+finds it automatically; give a number to force it.</p>
+</td></tr>
+<tr><td><code id="verbose">verbose</code></td>
+<td>
+<p>Logical. If <code>TRUE</code>, reports the header row, the metadata
+that were read and any column that had to be renamed.</p>
+</td></tr>
+</table>
+
+
+<h4>Value</h4>
+
+<p>A data frame with one row per record (empty rows are dropped) and
+three attributes:
+</p>
+
+<dl>
+<dt>header_row</dt><dd><p>The header row that was used.</p>
+</dd>
+<dt>metadata</dt><dd><p>The list returned by <code>read_plot_metadata()</code>.</p>
+</dd>
+<dt>columns</dt><dd><p>A data frame describing each column: its position in the
+sheet, the header as written, the name it received, the canonical
+column it was recognised as (<code>NA</code> when not recognised) and, for a
+repeated name, the column it duplicates.</p>
+</dd>
+</dl>
+
+
+
+<h4>See Also</h4>
+
+<p><code>detect_header_row()</code>, <code>read_plot_metadata()</code>
+</p>
+
+
+<h4>Examples</h4>
+
+<pre><code class='language-R'>f &lt;- system.file("extdata", "panara_SKR01.xlsx", package = "forplotR")
+skr &lt;- read_plot_sheet(f, verbose = FALSE)
+dim(skr)
+attr(skr, "header_row")
+attr(skr, "metadata")$plot_code
+subset(attr(skr, "columns"), !is.na(canonical), c(header, column))
 
 </code></pre>
 </div>
