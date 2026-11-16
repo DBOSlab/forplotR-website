@@ -139,11 +139,3 @@ Plot data are often sensitive: tree identities and measurements, frequently in p
 ::: {.actions}
 [[Rodar no navegador]({{LINK:tools}}){.btn .btn-primary} [Como funciona e privacidade]({{LINK:about}}){.btn}]{data-lang=pt}[[Run in the browser]({{LINK:tools}}){.btn .btn-primary} [How it works and privacy]({{LINK:about}}){.btn}]{data-lang=en}
 :::
-
-## [Autoria]{data-lang=pt}[Authors]{data-lang=en} {#autoria}
-
-::: {.statement}
-[O forplotR foi desenvolvido por **Giulia C. Ottino** como produto de seu mestrado em Botânica na Escola Nacional de Botânica Tropical (ENBT/JBRJ), sob orientação de **Domingos Cardoso** e coorientação de **Pedro Lage Viana** (INMA), no Instituto de Pesquisas Jardim Botânico do Rio de Janeiro (DBOSlab). Código aberto, licença MIT.]{data-lang=pt}[forplotR was developed by **Giulia C. Ottino** as the product of her master's degree in Botany at the National School of Tropical Botany (ENBT/JBRJ), supervised by **Domingos Cardoso** and co-supervised by **Pedro Lage Viana** (INMA), at the Rio de Janeiro Botanical Garden Research Institute (DBOSlab). Open source, MIT licence.]{data-lang=en}
-:::
-
-[[Autoria]({{LINK:authors}}) · [Como citar]({{LINK:cite}}) · [Código no GitHub](https://github.com/DBOSlab/forplotR)]{data-lang=pt}[[Authors]({{LINK:authors}}) · [How to cite]({{LINK:cite}}) · [Source on GitHub](https://github.com/DBOSlab/forplotR)]{data-lang=en}
