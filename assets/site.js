@@ -6,7 +6,8 @@
  *   - preferência de idioma (forplotR_lang), usada pelos redirecionamentos;
  *   - índice da página com a seção atual e o arco de progresso da leitura;
  *   - botão "Copiar" nos blocos de código;
- *   - atalhos: t (tema), l (idioma), / (busca, quando houver).
+ *   - busca (Pagefind, carregada só quando aberta) e panoramas 3D;
+ *   - atalhos: t (tema), l (idioma), / (busca).
  * Nada sai do navegador.
  */
 (function () {
@@ -149,6 +150,92 @@
     }
     evs.forEach(function (ev) { window.addEventListener(ev, go, { passive: true, once: true }); });
     setTimeout(go, 3000);
+  })();
+
+  // ---------- busca (Pagefind) ----------
+  // O índice (pagefind/, gerado depois do quarto render) só é baixado quando a
+  // pessoa abre a busca. Cada idioma tem o seu índice, escolhido pelo lang da
+  // página. Sem JavaScript o botão não aparece.
+  (function () {
+    var opens = document.querySelectorAll('[data-search-open]');
+    if (!opens.length || typeof HTMLDialogElement !== 'function') return;
+    var meta = document.querySelector('meta[name="quarto:offset"]');
+    var base = new URL((meta && meta.content) || './', location.href);
+    var S = EN
+      ? { title: 'Search the site', ph: 'Search…', hint: 'Type at least two letters.', none: 'Nothing found.', fail: 'Search is not available in this copy of the site (index not built).', close: 'Close', n: function (k) { return k + (k === 1 ? ' result' : ' results'); } }
+      : { title: 'Buscar no site', ph: 'Buscar…', hint: 'Digite pelo menos duas letras.', none: 'Nada encontrado.', fail: 'A busca não está disponível nesta cópia do site (índice não gerado).', close: 'Fechar', n: function (k) { return k + (k === 1 ? ' resultado' : ' resultados'); } };
+    var dlg, input, list, status, pf;
+
+    function build() {
+      dlg = document.createElement('dialog');
+      dlg.className = 'search-dlg';
+      dlg.setAttribute('aria-label', S.title);
+      dlg.innerHTML = '<form method="dialog" class="search-top" role="search">' +
+        '<svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="4.5"/><path d="m10.5 10.5 3.5 3.5"/></svg>' +
+        '<input type="search" autocomplete="off" spellcheck="false">' +
+        '<button type="submit" class="search-close"></button></form>' +
+        '<p class="search-status" role="status" aria-live="polite"></p><ol class="search-results"></ol>';
+      input = dlg.querySelector('input');
+      input.placeholder = S.ph;
+      input.setAttribute('aria-label', S.title);
+      dlg.querySelector('.search-close').textContent = S.close;
+      status = dlg.querySelector('.search-status');
+      list = dlg.querySelector('.search-results');
+      status.textContent = S.hint;
+      input.addEventListener('input', run);
+      input.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') { e.preventDefault(); var a = list.querySelector('a'); if (a) a.click(); }
+        if (e.key === 'ArrowDown') { e.preventDefault(); var b = list.querySelector('a'); if (b) b.focus(); }
+      });
+      list.addEventListener('keydown', function (e) {
+        var as = [].slice.call(list.querySelectorAll('a'));
+        var i = as.indexOf(document.activeElement);
+        if (e.key === 'ArrowDown' && i < as.length - 1) { e.preventDefault(); as[i + 1].focus(); }
+        if (e.key === 'ArrowUp') { e.preventDefault(); (i > 0 ? as[i - 1] : input).focus(); }
+      });
+      dlg.addEventListener('click', function (e) { if (e.target === dlg) dlg.close(); });
+      document.body.appendChild(dlg);
+    }
+    function load() {
+      if (!pf) {
+        pf = import(new URL('pagefind/pagefind.js', base).href).then(function (m) {
+          return Promise.resolve(m.options({ baseUrl: base.pathname })).then(function () { return m; });
+        });
+        pf.catch(function () { status.textContent = S.fail; });
+      }
+      return pf;
+    }
+    function run() {
+      var q = input.value.trim();
+      if (q.length < 2) { list.innerHTML = ''; status.textContent = S.hint; return; }
+      load().then(function (m) { return m.debouncedSearch(q, {}, 180); }).then(function (r) {
+        if (!r) return; // substituída por uma busca mais nova
+        return Promise.all(r.results.slice(0, 8).map(function (x) { return x.data(); })).then(function (rows) {
+          if (q !== input.value.trim()) return;
+          list.innerHTML = '';
+          status.textContent = rows.length ? S.n(r.results.length) : S.none;
+          rows.forEach(function (d) {
+            var li = document.createElement('li');
+            var a = document.createElement('a');
+            a.href = d.url;
+            var t = document.createElement('span');
+            t.className = 'r-title';
+            t.textContent = (d.meta && d.meta.title) || d.url;
+            var ex = document.createElement('span');
+            ex.className = 'r-excerpt';
+            ex.innerHTML = d.excerpt; // trecho do próprio índice do site, com <mark>
+            a.appendChild(t); a.appendChild(ex); li.appendChild(a); list.appendChild(li);
+          });
+        });
+      }).catch(function () {});
+    }
+    function open() {
+      if (!dlg) build();
+      if (!dlg.open) dlg.showModal();
+      input.select();
+      load();
+    }
+    opens.forEach(function (b) { b.addEventListener('click', open); });
   })();
 
   // ---------- atalhos de teclado ----------

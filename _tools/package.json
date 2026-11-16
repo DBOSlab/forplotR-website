@@ -1,0 +1,14 @@
+{
+  "name": "forplotr-site-tools",
+  "private": true,
+  "description": "Ferramentas de build do site: panoramas 3D (Three.js empacotado) e índice de busca (Pagefind).",
+  "scripts": {
+    "panorama": "esbuild panorama/src/panorama.js --bundle --minify --format=esm --target=es2019 --legal-comments=none --outfile=../assets/panorama.js",
+    "search": "pagefind --site ../_site --output-subdir pagefind"
+  },
+  "devDependencies": {
+    "esbuild": "0.24.0",
+    "pagefind": "1.1.1",
+    "three": "0.170.0"
+  }
+}
