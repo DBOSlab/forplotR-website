@@ -1667,7 +1667,7 @@ first row of the worksheet.
 
 <h4>See Also</h4>
 
-<p><code>read_plot_metadata()</code>, <code>read_plot_sheet()</code>
+<p><code>read_plot_header()</code>, <code>read_plot_metadata()</code>, <code>read_plot_sheet()</code>
 </p>
 
 
@@ -1678,6 +1678,93 @@ first row of the worksheet.
 f &lt;- system.file("extdata", "panara_field_sheet_template.xlsx",
                  package = "forplotR")
 detect_header_row(f)
+
+</code></pre>
+</div>
+```
+
+### `read_plot_header()` {#read_plot_header}
+
+<p class="rd-title">Read the column names of a plot spreadsheet from its real header row</p>
+
+[Aplicação: Ler a planilha]{data-lang=pt}[Application: Read the spreadsheet]{data-lang=en} · [→]({{LINK:formats}})
+
+```{=html}
+<div class="rd" lang="en">
+
+
+<h4>Description</h4>
+
+<p>Returns the columns of a field sheet as the package reads them: the header
+row is found with <code>detect_header_row()</code> (the same detection every reader
+uses), so rows of plot metadata above the header never show up as columns.
+Use it to see which names are available for the <code>colname_*</code> arguments
+of <code>forplot_balance()</code> and <code>forplot_map()</code>, or to fill a column picker.
+</p>
+
+
+<h4>Usage</h4>
+
+<pre><code class='language-R'>read_plot_header(path, sheet = 1, header_row = NULL)
+</code></pre>
+
+
+<h4>Arguments</h4>
+
+<table>
+<tr><td><code id="path">path</code></td>
+<td>
+<p>Path to an Excel file (<code>.xlsx</code> or <code>.xls</code>).</p>
+</td></tr>
+<tr><td><code id="sheet">sheet</code></td>
+<td>
+<p>Worksheet name or index.</p>
+</td></tr>
+<tr><td><code id="header_row">header_row</code></td>
+<td>
+<p>Row that holds the column names. The default <code>NULL</code>
+finds it automatically; give a number to force it.</p>
+</td></tr>
+</table>
+
+
+<h4>Value</h4>
+
+<p>A data frame with one row per column, in sheet order, and the
+attribute <code>header_row</code>:
+</p>
+
+<dl>
+<dt>position</dt><dd><p>Column position in the sheet.</p>
+</dd>
+<dt>header</dt><dd><p>The header cell as written (<code>""</code> when empty).</p>
+</dd>
+<dt>name</dt><dd><p>The column name to give to a <code>colname_*</code> argument: the
+header as written; <code>NA_col_&lt;position&gt;</code> for an empty header cell;
+<code>.1</code>, <code>.2</code> added when the same header is repeated.</p>
+</dd>
+<dt>canonical</dt><dd><p>The column the package recognises it as (for example
+<code>"New Tag No"</code>, <code>"T1"</code>, <code>"D"</code>), or <code>NA</code>.</p>
+</dd>
+<dt>has_data</dt><dd><p>Whether any cell below the header is filled.</p>
+</dd>
+</dl>
+
+
+
+<h4>See Also</h4>
+
+<p><code>detect_header_row()</code>, <code>read_plot_sheet()</code>
+</p>
+
+
+<h4>Examples</h4>
+
+<pre><code class='language-R'>f &lt;- system.file("extdata", "panara_field_sheet_template.xlsx",
+                 package = "forplotR")
+cols &lt;- read_plot_header(f)
+attr(cols, "header_row")
+cols[, c("position", "name", "canonical")]
 
 </code></pre>
 </div>

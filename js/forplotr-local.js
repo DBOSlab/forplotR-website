@@ -160,7 +160,8 @@
     // Lê o cabeçalho da planilha e sugere formato, colunas e estações (detect.R).
     // Roda só no navegador; o arquivo vai para a memória do webR e é apagado.
     // headerRow: '' = linha detectada pelo forplotR; número = linha escolhida.
-    async function detect(file, headerRow) {
+    // sheet: número da aba (padrão 1).
+    async function detect(file, headerRow, sheet) {
       if (busy) return null;
       await init();
       busy = true;
@@ -168,7 +169,8 @@
       try {
         await webR.FS.writeFile(p, new Uint8Array(await file.arrayBuffer()));
         var hr = /^[0-9]{1,4}$/.test(String(headerRow || '')) ? String(headerRow) : 'NULL';
-        return JSON.parse(await webR.evalRString('local_detect("' + p + '", ' + hr + ')'));
+        var sh = /^[0-9]{1,3}$/.test(String(sheet || '')) ? String(sheet) : '1';
+        return JSON.parse(await webR.evalRString('local_detect("' + p + '", ' + hr + ', ' + sh + ')'));
       } finally {
         try { await webR.FS.unlink(p); } catch (e) { /* ignora */ }
         busy = false;

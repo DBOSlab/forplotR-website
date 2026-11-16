@@ -712,6 +712,13 @@
     form.addEventListener('input', function (e) { if (e.target && /^(plot_|subplot_size)/.test(e.target.name || '')) applyVisibility(tool); });
     applyVisibility(tool);
     form.addEventListener('submit', function (ev) { ev.preventDefault(); submit(tool); });
+    // Trocar de aba: lê de novo o cabeçalho dessa aba (linha do cabeçalho volta ao automático)
+    var sheetInp = form.elements.sheet;
+    if (sheetInp && LOCAL && LOCAL.detect) sheetInp.addEventListener('change', function () {
+      var cur = $('f_fp_file'); var file = cur && cur.files && cur.files[0];
+      var hrSel = $('f_header_row'); if (hrSel && hrSel.tagName === 'SELECT') hrSel.value = '';
+      if (file) onFileChosen(tool, file);
+    });
   }
 
   function currentValue(name) {
@@ -842,6 +849,7 @@
       pick.querySelectorAll('.ex-opt').forEach(function (b) { b.setAttribute('aria-pressed', b.getAttribute('data-layout') === lay ? 'true' : 'false'); });
     }
     if (useEx && $('detect-box')) $('detect-box').hidden = true;
+    if (useEx && document.querySelector('[data-field^="colname_"] select')) resetColumnSelects();
     var hrField = document.querySelector('.header-row-field');
     if (hrField) hrField.hidden = !!useEx || !detected;
     drawPlot(tool);
@@ -857,18 +865,20 @@
     var box = $('detect-box');
     if (!box) return;
     if (!LOCAL || !LOCAL.detect || !file || !/\.xlsx?$/i.test(file.name)) {
-      detected = null; box.hidden = true; applyVisibility(tool); return;
+      detected = null; box.hidden = true; resetColumnSelects(); applyVisibility(tool); return;
     }
+    // enquanto a nova leitura não chega, nada da planilha anterior fica à mostra
+    detected = null; resetColumnSelects();
     box.hidden = false; box.className = 'detect-box is-busy'; box.innerHTML = '';
     var ready = LOCAL.stage && LOCAL.stage() === 'ready';
     box.appendChild(biEl('p', { class: 'detect-head' },
       ready ? 'Lendo o cabeçalho da planilha…' : 'Carregando o R no navegador para ler o cabeçalho…',
       ready ? 'Reading the spreadsheet header…' : 'Loading R in your browser to read the header…'));
-    LOCAL.detect(file, headerRow || '').then(function (d) {
+    LOCAL.detect(file, headerRow || '', currentValue('sheet')).then(function (d) {
       var cur = $('f_fp_file'); var now = cur && cur.files && cur.files[0];
       if (now !== file) return; // outro arquivo foi escolhido nesse meio-tempo
-      if (d) renderDetect(tool, d); else { detected = null; box.hidden = true; applyVisibility(tool); }
-    }).catch(function () { detected = null; box.hidden = true; applyVisibility(tool); });
+      if (d) renderDetect(tool, d); else { detected = null; box.hidden = true; resetColumnSelects(); applyVisibility(tool); }
+    }).catch(function () { detected = null; box.hidden = true; resetColumnSelects(); applyVisibility(tool); });
   }
 
   // "Linha do cabeçalho: [automática / 1 / 2 / 3 …]": reprocessa ao mudar
@@ -935,8 +945,27 @@
     box.innerHTML = ''; box.className = 'detect-box';
     if (!d.ok) {
       detected = null;
+      resetColumnSelects();
       box.classList.add('is-warn');
       box.appendChild(biEl('p', { class: 'detect-head' }, 'Não foi possível ler o cabeçalho. Escolha o formato abaixo.', 'Could not read the header. Choose the layout below.'));
+      if (d.error) box.appendChild(el('p', { class: 'detect-note' }, String(d.error)));
+      applyVisibility(tool);
+      return;
+    }
+    if (d.legacy) {
+      // O forplotR deste build não tem a detecção do cabeçalho: não listamos
+      // colunas (seriam as da linha 1, que pode ser de metadados).
+      detected = null;
+      resetColumnSelects();
+      box.classList.add('is-warn');
+      box.appendChild(biEl('p', { class: 'detect-head' },
+        'Esta versão do app foi montada com um forplotR sem a leitura do cabeçalho: as colunas da planilha não puderam ser listadas.',
+        'This build of the app uses a forplotR without header detection: the spreadsheet columns could not be listed.'));
+      box.appendChild(biEl('p', { class: 'detect-note' },
+        'Escolha o formato abaixo. Se precisar indicar colunas, digite o nome exatamente como está no cabeçalho.',
+        'Choose the layout below. To map a column, type its name exactly as written in the header.'));
+      var layL = mapLayout(tool, d.type);
+      if (layL && d.type !== 'unknown') setLayout(layL);
       applyVisibility(tool);
       return;
     }
@@ -962,6 +991,7 @@
     var ul = el('ul', { class: 'detect-facts' });
     var who = [d.plot_code, d.plot_name].filter(function (x) { return x; }).join(' · ');
     if (who && !card) ul.appendChild(el('li', null, who));
+    if (d.n_sheets > 1) ul.appendChild(biEl('li', null, 'Aba ' + d.sheet + ' de ' + d.n_sheets + ' (' + d.sheet_name + ')', 'Sheet ' + d.sheet + ' of ' + d.n_sheets + ' (' + d.sheet_name + ')'));
     if (d.header_row) ul.appendChild(biEl('li', null, 'Cabeçalho na linha ' + d.header_row, 'Header on row ' + d.header_row));
     if (d.n_rows) ul.appendChild(biEl('li', null, d.n_rows + ' linhas', d.n_rows + ' rows'));
     if (d.n_subplots) ul.appendChild(biEl('li', null, d.n_subplots + ' subparcelas', d.n_subplots + ' subplots'));
@@ -987,8 +1017,9 @@
 
     // Os seletores de coluna mostram sempre o cabeçalho lido pelo R
     var missing = arr(d.missing);
-    var headers = arr(d.headers);
+    var headers = arr(d.columns).length ? arr(d.columns) : arr(d.headers).map(function (h) { return { value: h, label: h }; });
     var nSug = Object.keys(d.suggest || {}).length;
+    if (!headers.length || d.type === 'monitora') resetColumnSelects();
     if (headers.length && d.type !== 'monitora' && document.querySelector('[data-field^="colname_"]')) {
       // Planilha com nomes diferentes do padrão: todos os campos reconhecidos
       // aparecem já escolhidos. Com os nomes padrão, nada precisa ser indicado.
@@ -1049,21 +1080,36 @@
   }
 
   // colunas: a lista vira um seletor com as colunas do arquivo
-  function columnSelects(headers, suggest) {
+  // Seletores de coluna: "(nome padrão)" + as colunas do cabeçalho detectado,
+  // na ordem da planilha. As opções vêm só do R (detect.R -> read_plot_header()
+  // do forplotR); o valor de cada uma é o nome que a coluna tem na leitura.
+  // São refeitos do zero a cada leitura: nada sobra de outro arquivo ou aba.
+  function columnSelects(columns, suggest) {
+    var values = columns.map(function (c) { return c.value; });
     document.querySelectorAll('[data-field^="colname_"]').forEach(function (node) {
       var name = node.getAttribute('data-field');
       var old = node.querySelector('input, select');
       if (!old) return;
       var sel = el('select', { id: old.id, name: name });
       sel.appendChild(el('option', { value: '' }, isEn() ? '(default name)' : '(nome padrão)'));
-      headers.forEach(function (h) { sel.appendChild(el('option', { value: h }, h)); });
-      // sugestão do R; senão, o que a pessoa digitou (mas não a sugestão de outra planilha)
-      var typed = old.tagName === 'SELECT' ? (node.classList.contains('is-suggested') ? '' : old.value) : old.value.trim();
-      var v = suggest[name] || (headers.indexOf(typed) >= 0 || old.tagName !== 'SELECT' ? typed : '');
-      if (v && headers.indexOf(v) < 0) sel.appendChild(el('option', { value: v }, v));
-      sel.value = v || '';
+      columns.forEach(function (c) {
+        sel.appendChild(el('option', { value: c.value }, isEn() ? (c.label_en || c.label || c.value) : (c.label || c.value)));
+      });
+      // sugestão do R; senão, a escolha da própria pessoa, se a coluna ainda existe
+      var chosen = node.classList.contains('is-suggested') ? '' : (old.value || '').trim();
+      var v = suggest[name] || (values.indexOf(chosen) >= 0 ? chosen : '');
+      sel.value = v;
       node.classList.toggle('is-suggested', !!suggest[name]);
       old.replaceWith(sel);
+    });
+  }
+  // Sem leitura da planilha (exemplo, outro formato, erro): volta ao campo de texto vazio
+  function resetColumnSelects() {
+    document.querySelectorAll('[data-field^="colname_"]').forEach(function (node) {
+      var old = node.querySelector('select');
+      node.classList.remove('is-suggested');
+      if (!old) return;
+      old.replaceWith(el('input', { type: 'text', id: old.id, name: node.getAttribute('data-field'), autocomplete: 'off' }));
     });
   }
 
