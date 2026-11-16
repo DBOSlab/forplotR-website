@@ -98,6 +98,17 @@ jobs:
           working-directory: _pkg
           dependencies: '"hard"'
 
+      # O app lê o cabeçalho e as colunas com funções do pacote. Um pacote sem
+      # elas deixaria o app sem o mapeamento de colunas: melhor falhar aqui.
+      - name: Conferir se o forplotR tem a leitura do cabeçalho
+        run: |
+          for fn in detect_header_row read_plot_metadata read_plot_sheet read_plot_header; do
+            grep -q "^export(${fn})$" _pkg/NAMESPACE || {
+              echo "::error::O forplotR (${{ steps.ref.outputs.ref }}) não exporta ${fn}(): o app precisa dela para ler o cabeçalho e listar as colunas."
+              exit 1
+            }
+          done
+
       - name: Gerar o binário do forplotR para o webR
         run: Rscript scripts/build_pure_r_binary.R _pkg webr/repo "${R_WASM_VERSION}"
 

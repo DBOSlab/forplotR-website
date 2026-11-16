@@ -58,14 +58,19 @@
 }
 
 # header_row: NULL, "" ou "auto" = automático; número = linha escolhida na tela
-local_detect <- function(path, header_row = NULL) {
+# sheet: aba da planilha (número ou nome); o padrão é a primeira.
+local_detect <- function(path, header_row = NULL, sheet = 1) {
   hr <- suppressWarnings(as.integer(header_row))
   if (!length(hr) || is.na(hr) || hr < 1L) hr <- NULL
+  sh <- suppressWarnings(as.integer(sheet))
+  if (!length(sh) || is.na(sh) || sh < 1L) sh <- 1L
   if (!.fp_has_header_api()) return(.local_detect_legacy(path))
 
   out <- tryCatch({
     fp <- asNamespace("forplotR")
-    raw <- fp$.read_raw_rows(path, sheet = 1, n_max = 20L)
+    sheets <- readxl::excel_sheets(path)
+    if (sh > length(sheets)) stop("a planilha tem ", length(sheets), " aba(s); a aba ", sh, " não existe")
+    raw <- fp$.read_raw_rows(path, sheet = sh, n_max = 20L)
     if (!nrow(raw)) stop("planilha vazia")
 
     sc <- fp$.score_header_rows(raw)
@@ -102,12 +107,24 @@ local_detect <- function(path, header_row = NULL) {
     mo_score <- sum(mo_t %in% hn)
     ql_score <- sum(ql_t %in% hn)
 
+    # Metadados acima do cabeçalho, pelos rótulos que o pacote conhece
+    # (inglês, português e Panará: .metadata_label_dict() do forplotR)
     meta <- fp$.parse_plot_metadata(raw[seq_len(hdr - 1L), , drop = FALSE])
     has_meta <- !is.na(meta$plot_code) || !is.na(meta$plot_name) || length(meta$team) > 0
 
-    header_cells <- as.character(unlist(raw[hdr, , drop = TRUE]))
-    cols <- fp$.canonical_header(header_cells)
-    cols <- cols[nzchar(cols$header), , drop = FALSE]
+    # Colunas: os nomes e o significado de cada uma vêm do pacote, da mesma
+    # linha de cabeçalho usada na leitura dos dados (read_plot_header();
+    # dicionário de nomes .header_alias_dict(), com os rótulos em Panará).
+    # `name` é o nome que a coluna tem na leitura: é ele que vai no seletor e
+    # é ele que volta para o R em colname_*.
+    cols <- if (exists("read_plot_header", envir = fp, inherits = FALSE)) {
+      forplotR::read_plot_header(path, sheet = sh, header_row = hdr)
+    } else {
+      cc <- fp$.canonical_header(as.character(unlist(raw[hdr, , drop = TRUE])))
+      cc <- cc[nzchar(cc$header), , drop = FALSE]
+      cc$name <- cc$header
+      cc
+    }
     n_known <- sum(!is.na(cols$canonical))
     bilingual <- any(grepl("|", c(cols$header, as.character(unlist(raw[seq_len(hdr - 1L), , drop = TRUE]))),
                            fixed = TRUE), na.rm = TRUE)
@@ -124,26 +141,31 @@ local_detect <- function(path, header_row = NULL) {
       type <- "field_sheet_ti"; confidence <- "low"
     }
 
-    headers <- cols$header
-    # coluna reconhecida para cada campo do formulário; só é sugerida no
-    # seletor quando o nome não é o padrão (aí o pacote já a encontra sozinho)
+    # opções dos seletores, na ordem da planilha: valor = nome na leitura;
+    # rótulo = o cabeçalho, com a posição quando o nome é vazio ou repetido
+    dup_header <- duplicated(cols$header) | duplicated(cols$header, fromLast = TRUE)
+    label <- ifelse(!nzchar(cols$header), paste0("(coluna ", cols$position, ", sem nome)"),
+                    ifelse(dup_header, paste0(cols$header, " (coluna ", cols$position, ")"), cols$header))
+    label_en <- ifelse(!nzchar(cols$header), paste0("(column ", cols$position, ", no name)"),
+                       ifelse(dup_header, paste0(cols$header, " (column ", cols$position, ")"), cols$header))
+    columns <- lapply(seq_len(nrow(cols)), function(i) {
+      list(value = cols$name[i], label = label[i], label_en = label_en[i], position = cols$position[i])
+    })
+
     mapped <- list(); missing <- list(); suggest <- list()
     if (type %in% c("field_sheet", "field_sheet_ti", "unknown")) {
-      nh <- .fp_norm(headers)
+      nh <- .fp_norm(cols$header)
       for (k in names(.fp_fields)) {
         std <- .fp_fields[[k]]
-        hit <- cols$header[!is.na(cols$canonical) & cols$canonical == std]
-        if (!length(hit)) {
-          # nome alternativo que o pacote não conhece, mas o site sim
-          alt <- which(nh %in% .fp_alias[[k]])
-          if (length(alt)) hit <- headers[alt[1]]
-        }
+        hit <- which(!is.na(cols$canonical) & cols$canonical == std)
+        # nome alternativo que o pacote não conhece, mas o site sim
+        if (!length(hit)) hit <- which(nh %in% .fp_alias[[k]])
         if (!length(hit)) {
           if (!(k %in% .fp_optional)) missing[[length(missing) + 1]] <- k
           next
         }
-        mapped[[k]] <- hit[1]
-        if (!identical(trimws(hit[1]), std)) suggest[[k]] <- hit[1]
+        mapped[[k]] <- cols$name[hit[1]]
+        if (!identical(trimws(cols$header[hit[1]]), std)) suggest[[k]] <- cols$name[hit[1]]
       }
     }
 
@@ -154,7 +176,7 @@ local_detect <- function(path, header_row = NULL) {
     renamed <- list()
 
     if (type == "monitora") {
-      full <- suppressMessages(readxl::read_excel(path, sheet = 1, col_types = "text", .name_repair = "minimal",
+      full <- suppressMessages(readxl::read_excel(path, sheet = sh, col_types = "text", .name_repair = "minimal",
                                                   skip = hdr - 1L))
       nn <- .fp_norm(names(full))
       sc2 <- which(nn %in% c("nome estacao", "estacao"))
@@ -165,7 +187,7 @@ local_detect <- function(path, header_row = NULL) {
       n_rows <- nrow(full)
     } else {
       # a tabela como o pacote a lê: linhas, subparcelas e nomes repetidos
-      tab <- tryCatch(suppressWarnings(forplotR::read_plot_sheet(path, sheet = 1, header_row = hdr, verbose = FALSE)),
+      tab <- tryCatch(suppressWarnings(forplotR::read_plot_sheet(path, sheet = sh, header_row = hdr, verbose = FALSE)),
                       error = function(e) NULL)
       if (!is.null(tab)) {
         n_rows <- nrow(tab)
@@ -176,8 +198,8 @@ local_detect <- function(path, header_row = NULL) {
           list(name = dup$duplicate_of[i], used = tc$header[first], used_position = tc$position[first],
                other = dup$header[i], other_position = dup$position[i])
         })
-        sub_col <- mapped$colname_subplot
-        sub <- if (!is.null(sub_col)) tab[[tc$column[match(sub_col, tc$header)]]] else tab[["T1"]]
+        sub_pos <- if (!is.null(mapped$colname_subplot)) cols$position[match(mapped$colname_subplot, cols$name)] else NA
+        sub <- if (!is.na(sub_pos)) tab[[tc$column[match(sub_pos, tc$position)]]] else tab[["T1"]]
         if (!is.null(sub)) {
           sv <- suppressWarnings(as.numeric(as.character(sub)))
           sv <- sv[!is.na(sv)]
@@ -190,6 +212,7 @@ local_detect <- function(path, header_row = NULL) {
     }
 
     list(ok = TRUE, type = type, confidence = confidence,
+         sheet = sh, sheet_name = sheets[sh], n_sheets = length(sheets),
          header_row = hdr, header_row_auto = if (is.na(auto)) NULL else auto,
          header_row_forced = !is.null(hr), header_rows = as.list(filled),
          has_meta = has_meta,
@@ -197,7 +220,8 @@ local_detect <- function(path, header_row = NULL) {
                      date = if (is.na(meta$date)) "" else format(meta$date, "%Y-%m-%d"),
                      team = as.list(meta$team),
                      census_no = if (is.na(meta$census_no)) "" else meta$census_no),
-         headers = as.list(headers), mapped = mapped, missing = missing, suggest = suggest,
+         columns = columns, headers = as.list(cols$name),
+         mapped = mapped, missing = missing, suggest = suggest,
          renamed = renamed,
          stations = as.list(utils::head(stations, 50)),
          plot_name = plot_name %||% "", plot_code = plot_code %||% "",
@@ -206,7 +230,8 @@ local_detect <- function(path, header_row = NULL) {
   jsonlite::toJSON(out, auto_unbox = TRUE, null = "null", na = "null")
 }
 
-# Leitura anterior, para versões do forplotR sem detect_header_row()
+# Leitura anterior, para versões do forplotR sem detect_header_row(). Só
+# sugere o formato; não lista colunas (o app avisa que o pacote está antigo).
 .local_detect_legacy <- function(path) {
   out <- tryCatch({
     raw <- suppressMessages(readxl::read_excel(path, sheet = 1, col_names = FALSE, n_max = 8,
@@ -289,8 +314,10 @@ local_detect <- function(path, header_row = NULL) {
       n_rows <- max(0L, nrow(full) - hdr)
     }
 
-    list(ok = TRUE, type = type, confidence = confidence, header_row = hdr, has_meta = has_meta,
-         headers = as.list(headers), missing = missing, suggest = suggest,
+    # Sem as funções de cabeçalho do pacote não há como saber, com segurança,
+    # qual linha é o cabeçalho: nenhuma coluna é oferecida nos seletores.
+    list(ok = TRUE, legacy = TRUE, type = type, confidence = "low", header_row = hdr, has_meta = has_meta,
+         columns = list(), headers = list(), missing = list(), suggest = list(),
          stations = as.list(utils::head(stations, 50)),
          plot_name = plot_name %||% "", plot_code = plot_code %||% "", n_rows = n_rows)
   }, error = function(e) list(ok = FALSE, error = conditionMessage(e)))

@@ -28,7 +28,7 @@ groups <- list(
   list(id = "labels", pt = "Etiquetas para o herbário", en = "Herbarium labels", rd = "forplot_sheets"),
   list(id = "determinations", pt = "Conferir determinações", en = "Check determinations", rd = "forplot_crossdet"),
   list(id = "formats", pt = "Ler a planilha", en = "Read the spreadsheet",
-       rd = c("detect_header_row", "read_plot_metadata", "read_plot_sheet")),
+       rd = c("detect_header_row", "read_plot_header", "read_plot_metadata", "read_plot_sheet")),
   list(id = "start", pt = "Dados de exemplo", en = "Example data", rd = c("RUS01", "TUM"))
 )
 # Rd do pacote instalado (instale a versão documentada antes: R CMD INSTALL <pkg>)
