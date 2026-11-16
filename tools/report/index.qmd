@@ -1,0 +1,14 @@
+---
+# gerado por scripts/sync_lang.R a partir de pt/ferramentas/relatorio/index.qmd
+title: '[Balanço de coleta no navegador]{data-lang=pt}[Collection balance in the browser]{data-lang=en}'
+description: '[Formulário que roda forplot_balance() no seu navegador (webR), sem
+  enviar os dados.]{data-lang=pt}[Form that runs forplot_balance() in your browser
+  (webR), without sending the data.]{data-lang=en}'
+page-id: tool-balance
+kicker: forplot_balance()
+schema: WebPage
+tool: true
+page-class: tool
+---
+
+{{< include ../../pt/ferramentas/relatorio/_body.qmd >}}

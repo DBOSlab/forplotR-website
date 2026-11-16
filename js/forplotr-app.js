@@ -41,8 +41,8 @@
   var PAGES_EN = { balance: 'report', map: 'map', sheets: 'herbarium', crossdet: 'determinations', vouchers: 'vouchers' };
   function toolPage(id) {
     return isEn()
-      ? ROOT + 'en/tools/' + (PAGES_EN[id] || id) + '/'
-      : ROOT + 'ferramentas/' + (PAGES[id] || id) + '/';
+      ? ROOT + 'tools/' + (PAGES_EN[id] || id) + '/'
+      : ROOT + 'pt/ferramentas/' + (PAGES[id] || id) + '/';
   }
   var STORE = 'forplotR_jobs_v1';
   var state = { tools: [], health: null, poll: null, logPoll: null, tick: null };

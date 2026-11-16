@@ -1,7 +1,7 @@
 # forplotR online
 
 Site do pacote R [forplotR](https://github.com/DBOSlab/forplotR), em **Quarto**,
-organizado pelas aplicações do pacote, em **português (`/`) e inglês (`/en/`)**.
+organizado pelas aplicações do pacote, em **inglês (`/`, idioma padrão) e português (`/pt/`)**.
 As funções também rodam **no navegador de quem acessa** (webR, o R compilado
 para WebAssembly), sem servidor e sem enviar os dados das parcelas a lugar
 nenhum. O servidor R (Plumber e fila) continua disponível como modo alternativo.
@@ -12,7 +12,7 @@ Domingos Cardoso (DBOSlab).
 
 Visual: Quarto sem Bootstrap (template próprio em `_tpl/page.html`, CSS com
 tokens em `assets/site.css`). Tipografia fontzz (SIL OFL 1.1, em `fonts/`):
-Folio (títulos), Halden (texto) e Signal (código). Paleta verde-mata, ipê,
+Vesper (títulos), Beacon (texto e interface) e Signal (código). Paleta verde-mata, ipê,
 urucum, rio e jabuticaba sobre papel de herbário, com tema claro e escuro e
 contraste AA. Todo exemplo (mapa, relatório, figuras, planilhas, árvore de
 pastas, panoramas e números do texto) é gerado pelo próprio pacote sobre os
@@ -38,23 +38,25 @@ _variables.yml             números do texto ({{< var rus01.arvores >}}), gerado
 assets/site.css, site.js   visual e comportamento comuns (tema, índice, cópia, busca)
 assets/tools.css           visual dos formulários das ferramentas
 assets/panorama.js         panoramas 3D (Three.js empacotado, gerado em _tools/)
-index.qmd + _body.qmd      página inicial
-comecar/                   instalação e formatos de planilha
-aplicacoes/                uma pasta por aplicação: mapa, balanco, fotos,
-                           etiquetas, determinacoes (index.qmd + _body.qmd + _doc.md)
-ferramentas/               as ferramentas no navegador (formulário + texto)
-referencia/                referência das funções (gerada do Rd do pacote)
-autoria/, citar/           autoria (mestrado, ORCID, Lattes, GitHub) e citação
-perguntas/, novidades/     perguntas frequentes e NEWS do pacote
-sobre/                     como funciona, privacidade
-en/                        páginas EN geradas por scripts/sync_en.R (não editar)
+pt/                        FONTES de todas as páginas (bilíngues) = páginas em português:
+  index.qmd + _body.qmd      página inicial
+  comecar/, formatos/        instalação; dados aceitos (formatos, colunas, detecção)
+  aplicacoes/                mapa, balanco, fotos, etiquetas, determinacoes
+                             (index.qmd + _body.qmd + _doc.md)
+  ferramentas/               as ferramentas no navegador (formulário + texto)
+  referencia/                referência das funções (gerada do Rd do pacote)
+  autoria/, citar/           autoria (mestrado, ORCID, Lattes, GitHub) e citação
+  perguntas/, novidades/     perguntas frequentes e NEWS do pacote
+  sobre/                     como funciona, privacidade
+index.qmd, get-started/, formats/, applications/, tools/, reference/, authors/,
+cite/, about/, news/, faq/   páginas EN (raiz), geradas por scripts/sync_lang.R (não editar)
 exemplos/                  saídas reais do pacote (mapa, relatório, planilhas, panoramas)
 figures/, fonts/           imagens e fontes
 js/forplotr-app.js         formulários e resultados (escolhe o motor)
 js/forplotr-local.js       motor local: webR no navegador
 _tools/                    Node: empacotamento dos panoramas e índice de busca
 scripts/
-  sync_en.R                pre-render: páginas EN a partir das PT
+  sync_lang.R              pre-render: páginas EN (raiz) a partir das fontes em pt/
   seo.R                    post-render: JSON-LD, meta tags, sitemap, robots, llms.txt,
                            redirecionamentos das URLs antigas
   build_assets.R           exemplos, panoramas e _variables.yml (roda o pacote)
@@ -71,7 +73,7 @@ webr-dev/index.html        teste de fumaça do webR (só nas prévias)
 
 ### Como as páginas são feitas
 
-Cada página em português é uma pasta com `index.qmd` (só o cabeçalho) e
+Cada página é uma pasta em `pt/` com `index.qmd` (só o cabeçalho) e
 `_body.qmd` (o texto). O cabeçalho é bilíngue e diz onde fica a versão em inglês:
 
 ```yaml
@@ -79,7 +81,7 @@ Cada página em português é uma pasta com `index.qmd` (só o cabeçalho) e
 title: "[Balanço de coleta]{data-lang=pt}[Collection balance]{data-lang=en}"
 description: "[...]{data-lang=pt}[...]{data-lang=en}"
 page-id: balance                 # usado nos links {{LINK:balance}}
-en-path: "applications/balance"  # gera en/applications/balance/
+en-path: "applications/balance"  # gera applications/balance/ (inglês, raiz)
 schema: TechArticle              # tipo do nó JSON-LD da página
 kicker: "forplot_balance()"
 toc: true
@@ -105,15 +107,17 @@ Paragraph in English.
 Use sempre `{#id}` explícito nos títulos (os ids automáticos misturariam os
 idiomas). Links internos: `{{LINK:page-id}}`, resolvido pelo `scripts/seo.R`
 para a página no mesmo idioma. Inclusões aninhadas usam caminhos a partir da
-raiz do projeto (`{{< include /aplicacoes/mapa/_doc.md >}}`).
+raiz do projeto (`{{< include /pt/aplicacoes/mapa/_doc.md >}}`).
 
-As URLs antigas (`artigos/*.html`) continuam funcionando: o `scripts/seo.R`
-grava páginas de redirecionamento que respeitam o idioma escolhido.
+As URLs do site anterior (`about.html`, `articles/*`, `reference/<função antiga>.html`)
+continuam funcionando: o `scripts/seo.R` grava páginas de redirecionamento
+(inglês por padrão; português se a pessoa escolheu o português ou com `?lang=pt`).
+`get-started/`, `faq/`, `news/`, `authors/` e `reference/` têm o mesmo endereço de antes.
 
 ### Construir o site
 
 ```bash
-quarto render                    # sync_en.R antes, seo.R depois (pacotes yaml e jsonlite)
+quarto render                    # sync_lang.R antes, seo.R depois (pacotes yaml e jsonlite)
 npm ci --prefix _tools           # uma vez
 npm run search --prefix _tools   # índice de busca (Pagefind) em _site/pagefind/
 ```

@@ -1,0 +1,14 @@
+---
+# gerado por scripts/sync_lang.R a partir de pt/ferramentas/mapa/index.qmd
+title: '[Mapa da parcela no navegador]{data-lang=pt}[Plot map in the browser]{data-lang=en}'
+description: '[Formulário que roda forplot_map() no seu navegador (webR), sem enviar
+  os dados.]{data-lang=pt}[Form that runs forplot_map() in your browser (webR), without
+  sending the data.]{data-lang=en}'
+page-id: tool-map
+kicker: forplot_map()
+schema: WebPage
+tool: true
+page-class: tool
+---
+
+{{< include ../../pt/ferramentas/mapa/_body.qmd >}}

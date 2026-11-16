@@ -1,11 +1,12 @@
 # Site do forplotR --------------------------------------------------------------
 #
 # Quarto sem Bootstrap: template próprio (_tpl/page.html) e CSS com tokens
-# (assets/site.css). Cada página é escrita uma vez, nas duas línguas, num
-# _body.qmd; a página em português (/) e a em inglês (/en/) incluem o mesmo
-# corpo e o filtro _tpl/lang.lua mantém só a língua da página.
+# (assets/site.css). Cada página é escrita uma vez, nas duas línguas, em
+# pt/<caminho>/_body.qmd. O inglês é o idioma padrão e fica na raiz; o português
+# fica em /pt/. As duas versões incluem o mesmo corpo e o filtro _tpl/lang.lua
+# mantém só a língua da página.
 #
-#   scripts/sync_en.R    (pré) gera as páginas em inglês a partir das portuguesas
+#   scripts/sync_lang.R  (pré) gera as páginas em inglês (raiz) a partir de pt/
 #   scripts/seo.R        (pós) canonical, hreflang, JSON-LD, sitemap, robots,
 #                        llms.txt e redirecionamentos dos endereços antigos
 #
@@ -15,20 +16,21 @@
 project:
   type: website
   output-dir: _site
-  pre-render: scripts/sync_en.R
+  pre-render: scripts/sync_lang.R
   post-render: scripts/seo.R
   render:
     - index.qmd
-    - comecar/index.qmd
-    - aplicacoes/**/index.qmd
-    - ferramentas/**/index.qmd
-    - referencia/index.qmd
-    - autoria/index.qmd
-    - citar/index.qmd
-    - sobre/index.qmd
-    - novidades/index.qmd
-    - perguntas/index.qmd
-    - en/**/index.qmd
+    - get-started/index.qmd
+    - applications/**/index.qmd
+    - formats/index.qmd
+    - tools/**/index.qmd
+    - reference/index.qmd
+    - authors/index.qmd
+    - cite/index.qmd
+    - about/index.qmd
+    - news/index.qmd
+    - faq/index.qmd
+    - pt/**/index.qmd
   resources:
     - assets/
     - js/
@@ -37,12 +39,12 @@ project:
     - exemplos/
     - "!_tools/"
 
-lang: pt-BR
+lang: en
 
 website:
   title: "forplotR"
   site-url: "https://dboslab.github.io/forplotR-website/"
-  description: "forplotR: pacote R para dados de parcelas florestais permanentes e documentação de espécimes de herbário."
+  description: "forplotR: an R package and browser app to manage the botanical collections of permanent vegetation monitoring plots."
 
 format:
   html:

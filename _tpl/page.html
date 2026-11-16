@@ -32,8 +32,8 @@ $endif$
   r.setAttribute('data-theme', t);
 })();
 </script>
-<link rel="preload" href="{{ROOT}}fonts/halden.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="{{ROOT}}fonts/source-serif-4.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="{{ROOT}}fonts/beacon.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="{{ROOT}}fonts/vesper.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="{{ROOT}}assets/site.css">
 $if(tool)$
 <link rel="stylesheet" href="{{ROOT}}assets/tools.css">
@@ -77,41 +77,43 @@ $endif$
   <nav class="site-nav">
 $if(lang-en)$
     <ul>
-      <li><a href="{{ROOT}}en/" data-nav="home">Home</a></li>
-      <li><a href="{{ROOT}}en/get-started/" data-nav="start">Get started</a></li>
-      <li class="group"><a href="{{ROOT}}en/applications/" data-nav="apps">Applications</a>
+      <li><a href="{{LINK:home}}" data-nav="home">Home</a></li>
+      <li><a href="{{LINK:start}}" data-nav="start">Get started</a></li>
+      <li><a href="{{LINK:formats}}" data-nav="formats">Supported data</a></li>
+      <li class="group"><a href="{{LINK:apps}}" data-nav="apps">Applications</a>
         <ul>
-          <li><a href="{{ROOT}}en/applications/map/" data-nav="map" style="--fn:var(--rio)">Map the plot</a></li>
-          <li><a href="{{ROOT}}en/applications/balance/" data-nav="balance" style="--fn:var(--ipe)">Collection balance</a></li>
-          <li><a href="{{ROOT}}en/applications/photos/" data-nav="photos" style="--fn:var(--folha-mark)">Organise photos</a></li>
-          <li><a href="{{ROOT}}en/applications/labels/" data-nav="labels" style="--fn:var(--urucum)">Herbarium labels</a></li>
-          <li><a href="{{ROOT}}en/applications/determinations/" data-nav="determinations" style="--fn:var(--jabuticaba)">Check determinations</a></li>
+          <li><a href="{{LINK:map}}" data-nav="map" style="--fn:var(--rio)">Map the plot</a></li>
+          <li><a href="{{LINK:balance}}" data-nav="balance" style="--fn:var(--ipe)">Collection balance</a></li>
+          <li><a href="{{LINK:photos}}" data-nav="photos" style="--fn:var(--folha-mark)">Organise photos</a></li>
+          <li><a href="{{LINK:labels}}" data-nav="labels" style="--fn:var(--urucum)">Herbarium labels</a></li>
+          <li><a href="{{LINK:determinations}}" data-nav="determinations" style="--fn:var(--jabuticaba)">Check determinations</a></li>
         </ul>
       </li>
-      <li><a href="{{ROOT}}en/tools/" data-nav="tools">Run in the browser</a></li>
-      <li><a href="{{ROOT}}en/reference/" data-nav="reference">Reference</a></li>
-      <li><a href="{{ROOT}}en/authors/" data-nav="authors">Authors</a></li>
-      <li><a href="{{ROOT}}en/cite/" data-nav="cite">Cite</a></li>
-      <li><a href="{{ROOT}}en/about/" data-nav="about">About &amp; privacy</a></li>
+      <li><a href="{{LINK:tools}}" data-nav="tools">Run in the browser</a></li>
+      <li><a href="{{LINK:reference}}" data-nav="reference">Reference</a></li>
+      <li><a href="{{LINK:authors}}" data-nav="authors">Authors</a></li>
+      <li><a href="{{LINK:cite}}" data-nav="cite">Cite</a></li>
+      <li><a href="{{LINK:about}}" data-nav="about">About &amp; privacy</a></li>
     </ul>
 $else$
     <ul>
-      <li><a href="{{ROOT}}" data-nav="home">Início</a></li>
-      <li><a href="{{ROOT}}comecar/" data-nav="start">Começar</a></li>
-      <li class="group"><a href="{{ROOT}}aplicacoes/" data-nav="apps">Aplicações</a>
+      <li><a href="{{LINK:home}}" data-nav="home">Início</a></li>
+      <li><a href="{{LINK:start}}" data-nav="start">Começar</a></li>
+      <li><a href="{{LINK:formats}}" data-nav="formats">Dados aceitos</a></li>
+      <li class="group"><a href="{{LINK:apps}}" data-nav="apps">Aplicações</a>
         <ul>
-          <li><a href="{{ROOT}}aplicacoes/mapa/" data-nav="map" style="--fn:var(--rio)">Mapear a parcela</a></li>
-          <li><a href="{{ROOT}}aplicacoes/balanco/" data-nav="balance" style="--fn:var(--ipe)">Balanço de coleta</a></li>
-          <li><a href="{{ROOT}}aplicacoes/fotos/" data-nav="photos" style="--fn:var(--folha-mark)">Organizar as fotos</a></li>
-          <li><a href="{{ROOT}}aplicacoes/etiquetas/" data-nav="labels" style="--fn:var(--urucum)">Etiquetas de herbário</a></li>
-          <li><a href="{{ROOT}}aplicacoes/determinacoes/" data-nav="determinations" style="--fn:var(--jabuticaba)">Conferir determinações</a></li>
+          <li><a href="{{LINK:map}}" data-nav="map" style="--fn:var(--rio)">Mapear a parcela</a></li>
+          <li><a href="{{LINK:balance}}" data-nav="balance" style="--fn:var(--ipe)">Balanço de coleta</a></li>
+          <li><a href="{{LINK:photos}}" data-nav="photos" style="--fn:var(--folha-mark)">Organizar as fotos</a></li>
+          <li><a href="{{LINK:labels}}" data-nav="labels" style="--fn:var(--urucum)">Etiquetas de herbário</a></li>
+          <li><a href="{{LINK:determinations}}" data-nav="determinations" style="--fn:var(--jabuticaba)">Conferir determinações</a></li>
         </ul>
       </li>
-      <li><a href="{{ROOT}}ferramentas/" data-nav="tools">Rodar no navegador</a></li>
-      <li><a href="{{ROOT}}referencia/" data-nav="reference">Referência</a></li>
-      <li><a href="{{ROOT}}autoria/" data-nav="authors">Autoria</a></li>
-      <li><a href="{{ROOT}}citar/" data-nav="cite">Como citar</a></li>
-      <li><a href="{{ROOT}}sobre/" data-nav="about">Sobre e privacidade</a></li>
+      <li><a href="{{LINK:tools}}" data-nav="tools">Rodar no navegador</a></li>
+      <li><a href="{{LINK:reference}}" data-nav="reference">Referência</a></li>
+      <li><a href="{{LINK:authors}}" data-nav="authors">Autoria</a></li>
+      <li><a href="{{LINK:cite}}" data-nav="cite">Como citar</a></li>
+      <li><a href="{{LINK:about}}" data-nav="about">Sobre e privacidade</a></li>
     </ul>
 $endif$
   </nav>
@@ -150,9 +152,9 @@ $body$
     <p class="foot-auth">{{AUTHOR_LINE}}</p>
     <p class="foot-meta">
 $if(lang-en)$
-      <a href="{{ROOT}}en/authors/">Authors</a> · <a href="{{ROOT}}en/cite/">Cite</a> · <a href="{{ROOT}}en/news/">News</a> · <a href="{{ROOT}}en/faq/">FAQ</a> · <a href="https://github.com/DBOSlab/forplotR">GitHub</a> · <a href="https://github.com/DBOSlab/forplotR-website">site source</a> · MIT licence
+      <a href="{{LINK:authors}}">Authors</a> · <a href="{{LINK:cite}}">Cite</a> · <a href="{{LINK:news}}">News</a> · <a href="{{LINK:faq}}">FAQ</a> · <a href="https://github.com/DBOSlab/forplotR">GitHub</a> · <a href="https://github.com/DBOSlab/forplotR-website">site source</a> · MIT licence
 $else$
-      <a href="{{ROOT}}autoria/">Autoria</a> · <a href="{{ROOT}}citar/">Como citar</a> · <a href="{{ROOT}}novidades/">Novidades</a> · <a href="{{ROOT}}perguntas/">Perguntas frequentes</a> · <a href="https://github.com/DBOSlab/forplotR">GitHub</a> · <a href="https://github.com/DBOSlab/forplotR-website">código do site</a> · Licença MIT
+      <a href="{{LINK:authors}}">Autoria</a> · <a href="{{LINK:cite}}">Como citar</a> · <a href="{{LINK:news}}">Novidades</a> · <a href="{{LINK:faq}}">Perguntas frequentes</a> · <a href="https://github.com/DBOSlab/forplotR">GitHub</a> · <a href="https://github.com/DBOSlab/forplotR-website">código do site</a> · Licença MIT
 $endif$
     </p>
   </div>
@@ -161,40 +163,42 @@ $endif$
 <!-- Celular: barra inferior compacta. Funciona sem JavaScript (<details>). -->
 <nav class="bottom-bar" $if(lang-en)$aria-label="Quick navigation"$else$aria-label="Navegação rápida"$endif$>
 $if(lang-en)$
-  <a href="{{ROOT}}en/" data-nav="home">Home</a>
-  <a href="{{ROOT}}en/applications/" data-nav="apps">Applications</a>
-  <a href="{{ROOT}}en/tools/" data-nav="tools">Browser</a>
+  <a href="{{LINK:home}}" data-nav="home">Home</a>
+  <a href="{{LINK:apps}}" data-nav="apps">Applications</a>
+  <a href="{{LINK:tools}}" data-nav="tools">Browser</a>
   <details class="more"><summary>Menu</summary>
     <div class="more-panel">
-      <a href="{{ROOT}}en/get-started/">Get started</a>
-      <a href="{{ROOT}}en/applications/map/">Map the plot</a>
-      <a href="{{ROOT}}en/applications/balance/">Collection balance</a>
-      <a href="{{ROOT}}en/applications/photos/">Organise photos</a>
-      <a href="{{ROOT}}en/applications/labels/">Herbarium labels</a>
-      <a href="{{ROOT}}en/applications/determinations/">Check determinations</a>
-      <a href="{{ROOT}}en/reference/">Reference</a>
-      <a href="{{ROOT}}en/authors/">Authors</a>
-      <a href="{{ROOT}}en/cite/">Cite</a>
-      <a href="{{ROOT}}en/about/">About &amp; privacy</a>
+      <a href="{{LINK:start}}">Get started</a>
+      <a href="{{LINK:formats}}">Supported data</a>
+      <a href="{{LINK:map}}">Map the plot</a>
+      <a href="{{LINK:balance}}">Collection balance</a>
+      <a href="{{LINK:photos}}">Organise photos</a>
+      <a href="{{LINK:labels}}">Herbarium labels</a>
+      <a href="{{LINK:determinations}}">Check determinations</a>
+      <a href="{{LINK:reference}}">Reference</a>
+      <a href="{{LINK:authors}}">Authors</a>
+      <a href="{{LINK:cite}}">Cite</a>
+      <a href="{{LINK:about}}">About &amp; privacy</a>
       <a href="{{ALT_URL}}" hreflang="pt-BR" lang="pt-BR" data-set-lang="pt">Português</a>
     </div>
   </details>
 $else$
-  <a href="{{ROOT}}" data-nav="home">Início</a>
-  <a href="{{ROOT}}aplicacoes/" data-nav="apps">Aplicações</a>
-  <a href="{{ROOT}}ferramentas/" data-nav="tools">Navegador</a>
+  <a href="{{LINK:home}}" data-nav="home">Início</a>
+  <a href="{{LINK:apps}}" data-nav="apps">Aplicações</a>
+  <a href="{{LINK:tools}}" data-nav="tools">Navegador</a>
   <details class="more"><summary>Menu</summary>
     <div class="more-panel">
-      <a href="{{ROOT}}comecar/">Começar</a>
-      <a href="{{ROOT}}aplicacoes/mapa/">Mapear a parcela</a>
-      <a href="{{ROOT}}aplicacoes/balanco/">Balanço de coleta</a>
-      <a href="{{ROOT}}aplicacoes/fotos/">Organizar as fotos</a>
-      <a href="{{ROOT}}aplicacoes/etiquetas/">Etiquetas de herbário</a>
-      <a href="{{ROOT}}aplicacoes/determinacoes/">Conferir determinações</a>
-      <a href="{{ROOT}}referencia/">Referência</a>
-      <a href="{{ROOT}}autoria/">Autoria</a>
-      <a href="{{ROOT}}citar/">Como citar</a>
-      <a href="{{ROOT}}sobre/">Sobre e privacidade</a>
+      <a href="{{LINK:start}}">Começar</a>
+      <a href="{{LINK:formats}}">Dados aceitos</a>
+      <a href="{{LINK:map}}">Mapear a parcela</a>
+      <a href="{{LINK:balance}}">Balanço de coleta</a>
+      <a href="{{LINK:photos}}">Organizar as fotos</a>
+      <a href="{{LINK:labels}}">Etiquetas de herbário</a>
+      <a href="{{LINK:determinations}}">Conferir determinações</a>
+      <a href="{{LINK:reference}}">Referência</a>
+      <a href="{{LINK:authors}}">Autoria</a>
+      <a href="{{LINK:cite}}">Como citar</a>
+      <a href="{{LINK:about}}">Sobre e privacidade</a>
       <a href="{{ALT_URL}}" hreflang="en" lang="en" data-set-lang="en">English</a>
     </div>
   </details>

@@ -1,0 +1,11 @@
+---
+# gerado por scripts/sync_lang.R a partir de pt/perguntas/index.qmd
+title: '[Perguntas frequentes]{data-lang=pt}[Frequently asked questions]{data-lang=en}'
+description: '[Respostas curtas sobre o forplotR: formatos, dados, navegador, privacidade
+  e citação.]{data-lang=pt}[Short answers about forplotR: formats, data, browser,
+  privacy and citation.]{data-lang=en}'
+page-id: faq
+schema: FAQPage
+---
+
+{{< include ../pt/perguntas/_body.qmd >}}

@@ -1,0 +1,119 @@
+::: {.lead}
+[O forplotR lê parcelas permanentes divididas em subparcelas, em que cada árvore marcada tem uma subparcela, uma posição x–y e um diâmetro.]{data-lang=pt}[forplotR reads permanent plots divided into subplots, in which each tagged tree has a subplot, an x–y position and a diameter.]{data-lang=en}
+:::
+
+::: {data-lang="pt"}
+Não importa de que programa ou projeto vêm os dados: se a planilha tem as colunas abaixo, o pacote trabalha com ela. Quatro formatos de planilha são reconhecidos diretamente; os outros funcionam informando o nome de cada coluna.
+:::
+::: {data-lang="en"}
+It does not matter which programme or project the data come from: if the spreadsheet has the columns below, the package works with it. Four spreadsheet layouts are recognised directly; others work once you name each column.
+:::
+
+## [O que a planilha precisa ter]{data-lang=pt}[What the spreadsheet needs]{data-lang=en} {#colunas}
+
+::: {data-lang="pt"}
+| Informação | Nome padrão | Argumento no R | Observação |
+|---|---|---|---|
+| Plaqueta | `New Tag No` | `colname_tagno` | identifica a árvore |
+| Subparcela | `T1` | `colname_subplot` | número da subparcela |
+| Posição | `X`, `Y` | `colname_x`, `colname_y` | em metros, dentro da subparcela |
+| Família | `Family` | `colname_family` | |
+| Determinação | `Original determination` | `colname_species` | nome de campo |
+| Diâmetro | `D` | `colname_dbh` | em milímetros (no MONITORA, circunferência `CAP` em cm) |
+| Voucher | `Voucher` | `colname_voucher` | código da coleta, quando houver |
+| Coletado | `Collected` | `colname_collected` | preenchido quando há material |
+
+Para o mapa, são necessários também os vértices da parcela em graus decimais; para as etiquetas, a localidade (país, estado, município, coordenadas e altitude).
+:::
+::: {data-lang="en"}
+| Information | Default name | R argument | Note |
+|---|---|---|---|
+| Tag | `New Tag No` | `colname_tagno` | identifies the tree |
+| Subplot | `T1` | `colname_subplot` | subplot number |
+| Position | `X`, `Y` | `colname_x`, `colname_y` | in metres, within the subplot |
+| Family | `Family` | `colname_family` | |
+| Determination | `Original determination` | `colname_species` | field name |
+| Diameter | `D` | `colname_dbh` | in millimetres (in MONITORA, circumference `CAP` in cm) |
+| Voucher | `Voucher` | `colname_voucher` | collection code, when there is one |
+| Collected | `Collected` | `colname_collected` | filled in when material exists |
+
+The map also needs the plot corners in decimal degrees; the labels need the locality (country, state, municipality, coordinates and elevation).
+:::
+
+## [Formatos reconhecidos]{data-lang=pt}[Recognised layouts]{data-lang=en} {#formatos}
+
+::: {data-lang="pt"}
+| Formato | `input_type` | Como o forplotR reconhece |
+|---|---|---|
+| Ficha de campo no padrão ForestPlots.net | `"field_sheet"` | linha de metadados (`Plotcode:`, `Plot Name:`, `Team:`) e cabeçalho com `New Tag No`, `T1`, `X`, `Y`, `Family`, `D` |
+| Exportação da Query Library do ForestPlots.net | `"fp_query_sheet"` | colunas como `Plot Code`, `Sub Plot T1`, `Standardised X`, `Census No` |
+| Ficha de campo de Terra Indígena | `"field_sheet_ti"` | ficha com linha de metadados e colunas em ordem fixa |
+| Protocolo MONITORA (ICMBio) | `"monitora"` | uma linha por árvore, com estação, subunidade, parcela e `CAP` |
+
+Na planilha de etiquetas (`forplot_sheets()`), os três primeiros entram como `"forestplots"`.
+:::
+::: {data-lang="en"}
+| Layout | `input_type` | How forplotR recognises it |
+|---|---|---|
+| Field sheet in the ForestPlots.net layout | `"field_sheet"` | a metadata row (`Plotcode:`, `Plot Name:`, `Team:`) and a header with `New Tag No`, `T1`, `X`, `Y`, `Family`, `D` |
+| ForestPlots.net Query Library export | `"fp_query_sheet"` | columns such as `Plot Code`, `Sub Plot T1`, `Standardised X`, `Census No` |
+| Indigenous Land field sheet | `"field_sheet_ti"` | a field sheet with a metadata row and columns in a fixed order |
+| MONITORA protocol (ICMBio) | `"monitora"` | one row per tree, with station, subunit, plot and `CAP` |
+
+For the label spreadsheet (`forplot_sheets()`), the first three are given as `"forestplots"`.
+:::
+
+## [Detecção automática no navegador]{data-lang=pt}[Automatic detection in the browser]{data-lang=en} {#deteccao}
+
+::: {data-lang="pt"}
+Nas ferramentas do navegador, ao escolher a planilha, o forplotR lê as primeiras linhas no seu computador e sugere o formato, o nome e o código da parcela, as estações (no MONITORA) e as colunas que não encontrou com o nome padrão. A sugestão pode ser trocada: é uma leitura do cabeçalho, não uma verificação dos dados.
+:::
+::: {data-lang="en"}
+In the browser tools, when you choose the spreadsheet, forplotR reads its first rows on your computer and suggests the layout, the plot name and code, the stations (for MONITORA) and the columns it did not find under their default names. You can change the suggestion: it is a reading of the header, not a check of the data.
+:::
+
+## [Colunas com outros nomes]{data-lang=pt}[Columns with other names]{data-lang=en} {#outros-nomes}
+
+[Se a planilha usa outros nomes, informe-os. No R:]{data-lang=pt}[If the spreadsheet uses other names, give them. In R:]{data-lang=en}
+
+```{.r .offline}
+forplot_balance(
+  "my_plot.xlsx",
+  input_type = "field_sheet",
+  colname_tagno = "Placa",
+  colname_subplot = "Subparcela",
+  colname_x = "Coord X",
+  colname_y = "Coord Y",
+  colname_family = "Familia",
+  colname_species = "Especie",
+  colname_dbh = "DAP_mm",
+  colname_collected = "Coletado"
+)
+```
+
+[No navegador, a mesma escolha aparece em “Colunas da planilha”, com as colunas do seu arquivo para selecionar.]{data-lang=pt}[In the browser, the same choice appears under “Spreadsheet columns”, listing the columns of your file to pick from.]{data-lang=en}
+
+## [Geometria da parcela]{data-lang=pt}[Plot geometry]{data-lang=en} {#geometria}
+
+::: {data-lang="pt"}
+Parcelas retangulares são descritas pela área (ha) e pelo lado da subparcela (m), ou pela largura e pelo comprimento. O padrão é 1 ha com subparcelas de 10 × 10 m. No MONITORA, vale o desenho do protocolo. Levantamentos que não se organizam em subparcelas com coordenadas locais (por exemplo, quadrantes centrados em pontos) estão fora do que o forplotR lê hoje.
+:::
+::: {data-lang="en"}
+Rectangular plots are described by their area (ha) and subplot side (m), or by width and length. The default is 1 ha with 10 × 10 m subplots. For MONITORA, the protocol's design applies. Surveys that are not organised in subplots with local coordinates (for example, point-centred quarters) are outside what forplotR reads today.
+:::
+
+## [Dados de exemplo]{data-lang=pt}[Example data]{data-lang=en} {#exemplos}
+
+::: {data-lang="pt"}
+O pacote traz dois conjuntos para testar sem dados próprios: `RUS01`, uma parcela de 1 ha na Mata Atlântica (REBIO Augusto Ruschi, Espírito Santo), em ficha de campo; e `TUM`, estações do MONITORA na Amazônia (PARNA Montanhas do Tumucumaque, Amapá).
+:::
+::: {data-lang="en"}
+The package ships with two datasets to try without your own data: `RUS01`, a 1-ha Atlantic Forest plot (REBIO Augusto Ruschi, Espírito Santo, Brazil) as a field sheet; and `TUM`, MONITORA stations in the Amazon (PARNA Montanhas do Tumucumaque, Amapá, Brazil).
+:::
+
+```{.r .offline}
+library(forplotR)
+
+openxlsx::write.xlsx(RUS01, "RUS01.xlsx")
+openxlsx::write.xlsx(TUM, "TUM.xlsx")
+```

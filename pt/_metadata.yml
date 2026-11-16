@@ -1,0 +1,3 @@
+# Páginas em português: língua da página (o filtro _tpl/lang.lua usa este campo).
+lang: pt-BR
+lang-en: false

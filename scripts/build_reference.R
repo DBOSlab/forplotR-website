@@ -64,7 +64,7 @@ for (g in groups) {
       "```{=html}", '<div class="rd" lang="en">', x$html, "</div>", "```", "")
   }
 }
-write_utf8(lines, "referencia/_rd.md")
+write_utf8(lines, "pt/referencia/_rd.md")
 
 # ------------------------------------------------------------------ novidades ---
 news <- readLines(file.path(pkg, "NEWS.md"), encoding = "UTF-8", warn = FALSE)
@@ -74,7 +74,7 @@ news <- vapply(news, function(l) {
   if (grepl("^#{2,} ", l)) { k <<- k + 1; paste0(l, " {#news-", k, "}") } else l
 }, "", USE.NAMES = FALSE)
 write_utf8(c("<!-- gerado por scripts/build_reference.R a partir de NEWS.md; não edite -->", "",
-             '::: {lang="en"}', news, ":::"), "novidades/_news.md")
+             '::: {lang="en"}', news, ":::"), "pt/novidades/_news.md")
 
 # ------------------------------------------------------------------- citação ----
 cit <- utils::readCitationFile(file.path(pkg, "inst", "CITATION"), meta = list(Version = version, Encoding = "UTF-8"))
@@ -87,5 +87,5 @@ write_utf8(bib, "exemplos/citacao/forplotR.bib")
 file.copy(file.path(pkg, "CITATION.cff"), "exemplos/citacao/CITATION.cff", overwrite = TRUE)
 write_utf8(c("<!-- gerado por scripts/build_reference.R a partir de inst/CITATION; não edite -->", "",
              '::: {.cite-box #cite-text}', txt, ":::", "",
-             "```{.bibtex}", bib, "```"), "citar/_bib.md")
+             "```{.bibtex}", bib, "```"), "pt/citar/_bib.md")
 message(sprintf("build_reference.R: forplotR %s; %d páginas de ajuda", version, sum(lengths(lapply(groups, `[[`, "rd")))))

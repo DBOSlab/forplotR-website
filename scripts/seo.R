@@ -12,7 +12,7 @@
 #     de que o pacote é produto, as instituições e a própria página;
 # e gera sitemap.xml (com as versões PT/EN de cada página), robots.txt,
 # llms.txt e llms-full.txt (resumo e texto integral para assistentes de IA) e
-# as páginas de redirecionamento dos endereços antigos (artigos/...).
+# as páginas de redirecionamento dos endereços do site anterior.
 #
 # Uso manual: Rscript scripts/seo.R [_site]
 
@@ -102,11 +102,13 @@ th <- ent$thesis
 sw <- ent$software
 thesis_ok <- has(th$title) && has(th$program) && has(th$institution)
 
-id_person <- function(k) paste0(base, "autoria/#", gsub("[^a-z]+", "-", tolower(iconv(P[[k]]$name, to = "ASCII//TRANSLIT"))))
+id_person <- function(k) paste0(base, "authors/#", gsub("[^a-z]+", "-", tolower(iconv(P[[k]]$name, to = "ASCII//TRANSLIT"))))
 id_org <- function(k) paste0(base, "#org-", k)
 id_sw <- paste0(base, "#software")
 id_site <- paste0(base, "#website")
-id_thesis <- paste0(base, "autoria/#dissertacao")
+id_thesis <- paste0(base, "authors/#dissertacao")
+# endereço da página de autoria em cada língua (inglês na raiz, português em pt/)
+authors_path <- function(lang) { r <- page_of("authors", lang); if (is.null(r)) (if (lang == "en") "authors/" else "pt/autoria/") else r$clean }
 
 person_node <- function(k, lang) {
   p <- P[[k]]
@@ -119,7 +121,7 @@ person_node <- function(k, lang) {
     sameAs = unique(c(unlist(p$same_as), if (has(p$lattes)) p$lattes)),
     affiliation = if (has(p$affiliation)) list("@id" = id_org(p$affiliation)),
     alumniOf = if (has(p$alumni_of)) list("@id" = id_org(p$alumni_of)),
-    url = paste0(base, if (lang == "en") "en/authors/" else "autoria/")
+    url = paste0(base, authors_path(lang))
   ))
 }
 org_node <- function(k) {
@@ -180,7 +182,7 @@ thesis_node <- function(lang) {
 
 # Frase de autoria do rodapé (texto visível: é o que buscadores e assistentes leem).
 author_line <- function(lang, root) {
-  a <- paste0(root, if (lang == "en") "en/authors/" else "autoria/")
+  a <- paste0(root, authors_path(lang))
   yr <- if (thesis_ok && has(th$year)) paste0(", ", th$year) else ""
   if (lang == "en") {
     detail <- if (thesis_ok) sprintf(' as the product of her <a href="%s#dissertacao">master\'s degree in Botany</a> at the National School of Tropical Botany (ENBT/JBRJ%s)', a, yr) else " during her master's degree"
@@ -242,7 +244,7 @@ faq_entities <- function(h) {
 breadcrumb <- function(row) {
   segs <- strsplit(sub("/$", "", row$clean), "/")[[1]]
   segs <- segs[nzchar(segs)]
-  home <- if (row$lang == "en") "en/" else ""
+  home <- if (row$lang == "en") "" else "pt/"
   crumbs <- list()
   add <- function(clean, name) crumbs[[length(crumbs) + 1]] <<- list("@type" = "ListItem", position = length(crumbs) + 1, name = name, item = paste0(base, clean))
   add(home, if (row$lang == "en") "forplotR" else "forplotR")
@@ -307,7 +309,7 @@ head_block <- function(row, h) {
     sprintf('<link rel="canonical" href="%s">', row$url),
     if (!is.null(pt)) sprintf('<link rel="alternate" hreflang="pt-BR" href="%s">', pt$url),
     if (!is.null(en)) sprintf('<link rel="alternate" hreflang="en" href="%s">', en$url),
-    if (!is.null(pt)) sprintf('<link rel="alternate" hreflang="x-default" href="%s">', pt$url),
+    if (!is.null(en)) sprintf('<link rel="alternate" hreflang="x-default" href="%s">', en$url),
     sprintf('<meta name="author" content="%s, %s">', P$ottino$name, P$cardoso$name),
     '<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">',
     sprintf('<meta property="og:site_name" content="%s">', ent$site$name),
@@ -323,7 +325,7 @@ head_block <- function(row, h) {
     '<meta name="twitter:card" content="summary">',
     sprintf('<meta name="twitter:title" content="%s">', html_escape(t)),
     if (nzchar(row$description)) sprintf('<meta name="twitter:description" content="%s">', html_escape(row$description)),
-    sprintf('<link rel="author" href="%s">', paste0(base, if (row$lang == "en") "en/authors/" else "autoria/")),
+    sprintf('<link rel="author" href="%s">', paste0(base, authors_path(row$lang))),
     sprintf('<link rel="license" href="%s">', sw$license),
     sprintf('<link rel="sitemap" type="application/xml" href="%ssitemap.xml">', base)
   )
@@ -354,9 +356,9 @@ for (i in seq_len(nrow(pages))) {
   h <- read_utf8(f)
   depth <- lengths(regmatches(row$path, gregexpr("/", row$path)))
   root <- if (depth == 0) "./" else strrep("../", depth)
-  langroot <- if (row$lang == "en") paste0(root, "en/") else root
+  langroot <- if (row$lang == "en") root else paste0(root, "pt/")
   alt <- alt_of(row$id, row$lang)
-  alt_href <- if (!is.null(alt)) paste0(root, alt$clean) else if (row$lang == "en") root else paste0(root, "en/")
+  alt_href <- if (!is.null(alt)) paste0(root, alt$clean) else if (row$lang == "en") paste0(root, "pt/") else root
   if (identical(alt_href, "./")) alt_href <- "./"
   # num link Markdown o Pandoc codifica as chaves dos marcadores (%7B%7BROOT%7D%7D)
   h <- gsub("%7B%7B([A-Z_]+|LINK:[A-Za-z0-9_-]+)%7D%7D", "{{\\1}}", h, perl = TRUE)
@@ -386,37 +388,45 @@ for (i in seq_len(nrow(pages))) {
 }
 
 # ---------------------------------------------------------- redirecionamentos --
-# Endereços publicados antes da reforma (citados em textos e e-mails).
+# Endereços do site anterior (main:/docs, indexados pelos buscadores) que não
+# existem mais. Os que continuam iguais (get-started/, faq/, news/, authors/,
+# reference/) não precisam de nada: o inglês ficou na raiz justamente por isso.
+# Destino: page-id e âncora; inglês por padrão, português se a pessoa escolheu
+# o português antes (localStorage) ou se o endereço traz ?lang=pt.
 redirects <- list(
-  "artigos/index.html"            = "apps",
-  "artigos/comecar.html"          = "start",
-  "artigos/forplot_map.html"      = "map",
-  "artigos/forplot_balance.html"  = "balance",
-  "artigos/forplot_vouchers.html" = "photos",
-  "artigos/forplot_sheets.html"   = "labels",
-  "artigos/forplot_crossdet.html" = "determinations",
-  "artigos/faq.html"              = "faq",
-  "artigos/novidades.html"        = "news"
+  "about.html"                                    = c("about", ""),
+  "LICENSE.html"                                  = c("about", ""),
+  "articles/index.html"                           = c("apps", ""),
+  "articles/plot_html_map_general_usage.html"     = c("map", ""),
+  "articles/plot_for_balance_general_usage.html"  = c("balance", ""),
+  "articles/mk_voucher_dirs_general_usage.html"   = c("photos", ""),
+  "articles/fp_herb_converter_general_usage.html" = c("labels", ""),
+  "reference/plot_html_map.html"                  = c("reference", "#forplot_map"),
+  "reference/plot_for_balance.html"               = c("reference", "#forplot_balance"),
+  "reference/mk_voucher_dirs.html"                = c("reference", "#forplot_vouchers"),
+  "reference/fp_herb_converter.html"              = c("reference", "#forplot_sheets")
 )
 n_red <- 0
 for (old in names(redirects)) {
   if (file.exists(file.path(site_dir, old)) && grepl("data-page-id", read_utf8(file.path(site_dir, old)), fixed = TRUE)) next
-  pt <- page_of(redirects[[old]], "pt"); en <- page_of(redirects[[old]], "en")
-  if (is.null(pt)) next
+  tid <- redirects[[old]][[1]]; anchor <- redirects[[old]][[2]]
+  en <- page_of(tid, "en"); pt <- page_of(tid, "pt")
+  if (is.null(en)) next
   depth <- lengths(regmatches(old, gregexpr("/", old)))
   root <- if (depth == 0) "./" else strrep("../", depth)
-  to_pt <- paste0(root, pt$clean); to_en <- if (!is.null(en)) paste0(root, en$clean) else to_pt
+  to_en <- paste0(root, en$clean); to_pt <- if (!is.null(pt)) paste0(root, pt$clean) else to_en
   html <- paste0(
-    '<!DOCTYPE html>\n<html lang="pt-BR">\n<head>\n<meta charset="utf-8">\n',
-    '<title>', html_escape(pt$title), '</title>\n',
+    '<!DOCTYPE html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n',
+    '<title>', html_escape(en$title), '</title>\n',
     '<meta name="robots" content="noindex, follow">\n',
-    '<link rel="canonical" href="', pt$url, '">\n',
-    '<meta http-equiv="refresh" content="0; url=', to_pt, '">\n',
+    '<link rel="canonical" href="', en$url, '">\n',
+    '<meta http-equiv="refresh" content="0; url=', to_en, anchor, '">\n',
     '<script>(function(){var l=null;try{l=localStorage.getItem("forplotR_lang")}catch(e){}',
-    'if(/[?&]lang=en\\b/.test(location.search)||l==="en"){location.replace("', to_en, '"+location.hash)}',
-    'else{location.replace("', to_pt, '"+location.hash)}})();</script>\n',
-    '</head>\n<body>\n<p>Esta página mudou de endereço: <a href="', to_pt, '">', html_escape(pt$title), '</a>.',
-    if (!is.null(en)) paste0(' English: <a href="', to_en, '">', html_escape(en$title), '</a>.') else '',
+    'var h=location.hash||"', anchor, '";',
+    'if(/[?&]lang=pt\\b/.test(location.search)||l==="pt"){location.replace("', to_pt, '"+h)}',
+    'else{location.replace("', to_en, '"+h)}})();</script>\n',
+    '</head>\n<body>\n<p>This page has moved: <a href="', to_en, anchor, '">', html_escape(en$title), '</a>.',
+    if (!is.null(pt)) paste0(' Português: <a href="', to_pt, anchor, '">', html_escape(pt$title), '</a>.') else '',
     '</p>\n</body>\n</html>\n')
   write_utf8(html, file.path(site_dir, old))
   n_red <- n_red + 1
@@ -430,8 +440,9 @@ git_date <- function(path) {
 }
 src_dir <- function(row) {
   pt <- if (row$lang == "pt") row else alt_of(row$id, row$lang)
+  # a fonte de cada página é o _body.qmd em pt/ (as páginas EN são geradas)
   d <- if (is.null(pt)) dirname(row$path) else dirname(pt$path)
-  if (d == ".") "index.qmd" else d
+  file.path(d, "_body.qmd")
 }
 urls <- vapply(seq_len(nrow(pages)), function(i) {
   row <- pages[i, ]
@@ -444,7 +455,7 @@ urls <- vapply(seq_len(nrow(pages)), function(i) {
     if (!is.na(lm)) paste0("    <lastmod>", lm, "</lastmod>\n") else "",
     if (!is.null(pt)) paste0('    <xhtml:link rel="alternate" hreflang="pt-BR" href="', pt$url, '"/>\n') else "",
     if (!is.null(en)) paste0('    <xhtml:link rel="alternate" hreflang="en" href="', en$url, '"/>\n') else "",
-    if (!is.null(pt)) paste0('    <xhtml:link rel="alternate" hreflang="x-default" href="', pt$url, '"/>\n') else "",
+    if (!is.null(en)) paste0('    <xhtml:link rel="alternate" hreflang="x-default" href="', en$url, '"/>\n') else "",
     "  </url>")
 }, character(1))
 write_utf8(paste0('<?xml version="1.0" encoding="UTF-8"?>\n',

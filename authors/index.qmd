@@ -1,0 +1,14 @@
+---
+# gerado por scripts/sync_lang.R a partir de pt/autoria/index.qmd
+title: '[Autoria]{data-lang=pt}[Authors]{data-lang=en}'
+description: '[O forplotR foi desenvolvido por Giulia C. Ottino como produto de seu
+  mestrado em Botânica na Escola Nacional de Botânica Tropical (ENBT/JBRJ), sob orientação
+  de Domingos Cardoso, no Jardim Botânico do Rio de Janeiro.]{data-lang=pt}[forplotR
+  was developed by Giulia C. Ottino as the product of her master''s degree in Botany
+  at the National School of Tropical Botany (ENBT/JBRJ), supervised by Domingos Cardoso,
+  at the Rio de Janeiro Botanical Garden.]{data-lang=en}'
+page-id: authors
+schema: AboutPage
+---
+
+{{< include ../pt/autoria/_body.qmd >}}
