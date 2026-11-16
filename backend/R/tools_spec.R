@@ -4,7 +4,7 @@
 # valores e os argumentos fixos que o servidor impõe (pastas de saída etc.).
 #
 # Tipos de campo: file, example, select, number, bool, text, text_vec, vertices
-# Grupos: "principal" (sempre visível), "avancado", "colunas" (recolhidos)
+# Grupos: "principal" (sempre visível), "avancado", "logos", "colunas" (recolhidos)
 #
 # Dois motores usam este arquivo:
 #   "http"  servidor Plumber (backend/plumber.R);
@@ -100,6 +100,31 @@ f_header_row <- function() {
       help = "Linha da planilha com os nomes das colunas. Vazio: detectada automaticamente.")
 }
 
+# Logos no cabeçalho do relatório e do mapa. A do forplotR entra sempre; cada
+# caixa acrescenta uma das logos que vêm com o pacote (inst/logos). O app marca
+# CI e Iakiô sozinho quando detecta a ficha de Terra Indígena (forplotr-app.js).
+LOGO_FIELDS <- c(logo_jbrj = "jbrj", logo_ci = "ci", logo_iakio = "iakio",
+                 logo_monitora = "monitora", logo_forestplots = "forestplots")
+f_logos <- function(jbrj = TRUE) {
+  lab <- c(
+    logo_jbrj = "Logo do Jardim Botânico do Rio de Janeiro (JBRJ)",
+    logo_ci = "Logo da Conservação Internacional (CI)",
+    logo_iakio = "Logo da Associação Iakiô Panará",
+    logo_monitora = "Logo do Programa MONITORA",
+    logo_forestplots = "Logo do ForestPlots.net"
+  )
+  lapply(names(lab), function(nm) {
+    fld(nm, lab[[nm]], "bool", default = identical(nm, "logo_jbrj") && isTRUE(jbrj), group = "logos")
+  })
+}
+# caixas marcadas -> argumento logos do forplot_balance() e do forplot_map()
+logos_param <- function(params) {
+  on <- names(LOGO_FIELDS)[vapply(names(LOGO_FIELDS), function(nm) isTRUE(params[[nm]]), logical(1))]
+  params$logos <- c("forplotR", unname(LOGO_FIELDS[on]))
+  params[names(LOGO_FIELDS)] <- NULL
+  params
+}
+
 f_colnames <- function() {
   lab <- c(
     colname_tagno = "Coluna da plaqueta (New Tag No)",
@@ -176,26 +201,17 @@ TOOLS <- list(
           help = "Exige Chrome, Chromium ou Edge no servidor.", local = FALSE),
       fld("write_xlsx", "Gerar planilha de balanço (XLSX)", "bool", default = TRUE,
           help = "Não disponível para MONITORA."),
-      # O relatório sempre leva as logos do forplotR e do JBRJ; esta opção troca
-      # para o preset "panara" (mais CI e Iakiô). O app a marca sozinho quando
-      # detecta a ficha de Terra Indígena, e a pessoa pode desmarcar.
-      fld("logos_partner", "Incluir as logos da CI e da Iakiô", "bool", default = FALSE,
-          help = "No cabeçalho do relatório, além das logos do forplotR e do JBRJ. Sugerido para a ficha de Terra Indígena (Panará)."),
       fld("highlight_palms", "Destacar palmeiras (Arecaceae)", "bool", default = TRUE,
           group = "avancado"),
       f_plot_meta(),
       fld("plot_census_no", "Número do censo", "text", group = "avancado"),
+      f_logos(jbrj = TRUE),
       f_header_row(),
       f_colnames()
     ),
     fixed = function(ctx, params) list(dir = ctx$outputs, filename = "relatorio_parcela",
                                        verbose = TRUE),
-    # caixa "logos da CI e da Iakiô" -> argumento logos do forplot_balance()
-    check = function(params, ctx) {
-      params$logos <- if (isTRUE(params$logos_partner)) "panara" else c("forplotR", "jbrj")
-      params$logos_partner <- NULL
-      params
-    }
+    check = function(params, ctx) logos_param(params)
   ),
 
   map = list(
@@ -236,6 +252,7 @@ TOOLS <- list(
       fld("highlight_palms", "Destacar palmeiras (Arecaceae)", "bool", default = TRUE,
           group = "avancado"),
       f_plot_meta(),
+      f_logos(jbrj = FALSE),
       f_header_row(),
       f_colnames()
     ),
@@ -245,7 +262,7 @@ TOOLS <- list(
       if (is.null(params$vertex_coords)) {
         user_error("Informe as coordenadas da parcela (digitadas ou em planilha).")
       }
-      params
+      logos_param(params)
     }
   ),
 

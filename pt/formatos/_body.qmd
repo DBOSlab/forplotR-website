@@ -47,7 +47,7 @@ The map also needs the plot corners in decimal degrees; the labels need the loca
 |---|---|---|
 | Ficha de campo no padrão ForestPlots.net | `"field_sheet"` | linha de metadados (`Plotcode:`, `Plot Name:`, `Team:`) e cabeçalho com `New Tag No`, `T1`, `X`, `Y`, `Family`, `D` |
 | Exportação da Query Library do ForestPlots.net | `"fp_query_sheet"` | colunas como `Plot Code`, `Sub Plot T1`, `Standardised X`, `Census No` |
-| Ficha de campo de Terra Indígena | `"field_sheet_ti"` | linha de metadados (`Plotcode \| Kypa kukâri: SKR01`) e, abaixo, cabeçalho bilíngue (`D \| Wy`); a linha do cabeçalho é detectada e as colunas são reconhecidas pelo nome |
+| Ficha de campo de Terra Indígena | `"field_sheet_ti"` | linha de metadados (`Plotcode \| Kypa kukâri: ABC01`) e, abaixo, cabeçalho bilíngue (`D \| Wy`); a linha do cabeçalho é detectada e as colunas são reconhecidas pelo nome |
 | Protocolo MONITORA (ICMBio) | `"monitora"` | uma linha por árvore, com estação, subunidade, parcela e `CAP` |
 
 Na planilha de etiquetas (`forplot_sheets()`), os três primeiros entram como `"forestplots"`.
@@ -57,7 +57,7 @@ Na planilha de etiquetas (`forplot_sheets()`), os três primeiros entram como `"
 |---|---|---|
 | Field sheet in the ForestPlots.net layout | `"field_sheet"` | a metadata row (`Plotcode:`, `Plot Name:`, `Team:`) and a header with `New Tag No`, `T1`, `X`, `Y`, `Family`, `D` |
 | ForestPlots.net Query Library export | `"fp_query_sheet"` | columns such as `Plot Code`, `Sub Plot T1`, `Standardised X`, `Census No` |
-| Indigenous Land field sheet | `"field_sheet_ti"` | a metadata row (`Plotcode \| Kypa kukâri: SKR01`) and, below it, a bilingual header (`D \| Wy`); the header row is detected and columns are recognised by name |
+| Indigenous Land field sheet | `"field_sheet_ti"` | a metadata row (`Plotcode \| Kypa kukâri: ABC01`) and, below it, a bilingual header (`D \| Wy`); the header row is detected and columns are recognised by name |
 | MONITORA protocol (ICMBio) | `"monitora"` | one row per tree, with station, subunit, plot and `CAP` |
 
 For the label spreadsheet (`forplot_sheets()`), the first three are given as `"forestplots"`.

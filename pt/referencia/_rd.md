@@ -52,6 +52,7 @@ shareable HTML map to disk.
   language = c("en", "pt", "es", "fr", "ma", "pa"),
   embed_voucher_imgs = FALSE,
   dir = NULL,
+  logos = NULL,
   header_row = NULL,
   colname_tagno = NULL,
   colname_stemgroup = NULL,
@@ -221,6 +222,17 @@ copied next to the HTML file and linked.</p>
 (default), the HTML file is written to a session temporary directory
 (<code>tempdir()</code>), which is deleted when the R session ends; supply a path
 to keep the map.</p>
+</td></tr>
+<tr><td><code id="logos">logos</code></td>
+<td>
+<p>Logos shown in the header of the map. A character vector that
+may mix logo names (<code>"forplotR"</code>, <code>"jbrj"</code>, <code>"ci"</code>,
+<code>"iakio"</code>, <code>"monitora"</code>, <code>"forestplots"</code>), presets
+(<code>"default"</code>, <code>"panara"</code>, <code>"monitora"</code>,
+<code>"forestplots"</code>) and paths to your own image files, as in
+<code>forplot_balance()</code>. The first logo sits beside the plot name and the
+others in a row below it. The default <code>NULL</code> shows the forplotR logo
+alone; <code>FALSE</code> or <code>"none"</code> shows no logo.</p>
 </td></tr>
 <tr><td><code id="header_row">header_row</code></td>
 <td>
@@ -609,16 +621,19 @@ session ends; supply a path to keep the outputs.</p>
 <tr><td><code id="logos">logos</code></td>
 <td>
 <p>Logos shown at the top of the HTML and PDF report. A character
-vector that may mix logo names (<code>"forplotR"</code>, <code>"jbrj"</code>,
-<code>"ci"</code>, <code>"iakio"</code>), presets and paths to your own image files
-(PNG, SVG or JPEG), in the order they should appear. Presets:
-<code>"default"</code> is forplotR + JBRJ; <code>"panara"</code> adds Conservação
-Internacional and the Iakiô Panará association. The default <code>NULL</code>
-uses <code>"default"</code>, or <code>"panara"</code> when
-<code>input_type = "field_sheet_ti"</code>; pass <code>c("forplotR", "jbrj")</code> to
-keep only the two standard logos there. <code>FALSE</code> or <code>"none"</code>
-leaves the report without logos. Logos keep their proportions and share
-one height.</p>
+vector that may mix logo names, presets and paths to your own image files
+(PNG, SVG or JPEG), in the order they should appear. Logos shipped with the
+package: <code>"forplotR"</code>, <code>"jbrj"</code> (Jardim Botânico do Rio de
+Janeiro), <code>"ci"</code> (Conservação Internacional), <code>"iakio"</code>
+(Associação Iakiô Panará), <code>"monitora"</code> (Programa MONITORA, ICMBio)
+and <code>"forestplots"</code> (ForestPlots.net). Presets: <code>"default"</code> is
+forplotR + JBRJ; <code>"panara"</code> adds CI and Iakiô; <code>"monitora"</code> and
+<code>"forestplots"</code>, given alone, add that partner logo to the two
+standard ones. The default <code>NULL</code> uses <code>"default"</code>, or
+<code>"panara"</code> when <code>input_type = "field_sheet_ti"</code>; pass
+<code>c("forplotR", "jbrj")</code> to keep only the two standard logos there.
+<code>FALSE</code> or <code>"none"</code> leaves the report without logos. Logos keep
+their proportions and share one height.</p>
 </td></tr>
 <tr><td><code id="header_row">header_row</code></td>
 <td>
@@ -1605,7 +1620,7 @@ out2 &lt;- forplot_crossdet(
 
 <p>Finds the row that holds the column names of a field sheet. Some templates,
 such as the Indigenous Land (Panará) field sheet, start with one or more rows
-of plot metadata (<code>"Plotcode | Kypa kukâri: SKR01"</code>) before the header.
+of plot metadata (<code>"Plotcode | Kypa kukâri: ABC01"</code>) before the header.
 The first <code>max_scan</code> rows are read as text and each one is scored by the
 number of cells that match a column name known to the package (tag, stem
 grouping, subplot, X, Y, family, species, diameter, POM, flag, height,
@@ -1658,7 +1673,10 @@ first row of the worksheet.
 
 <h4>Examples</h4>
 
-<pre><code class='language-R'>f &lt;- system.file("extdata", "panara_SKR01.xlsx", package = "forplotR")
+<pre><code class='language-R'># Blank template of the Panará field sheet: metadata labels on row 1,
+# bilingual header on row 2
+f &lt;- system.file("extdata", "panara_field_sheet_template.xlsx",
+                 package = "forplotR")
 detect_header_row(f)
 
 </code></pre>
@@ -1745,11 +1763,22 @@ cell found.</p>
 
 <h4>Examples</h4>
 
-<pre><code class='language-R'>f &lt;- system.file("extdata", "panara_SKR01.xlsx", package = "forplotR")
+<pre><code class='language-R'># A sheet with one metadata row above the header
+f &lt;- tempfile(fileext = ".xlsx")
+openxlsx::write.xlsx(
+  data.frame(
+    a = c("Plotcode | Kypa kukâri: ABC01", "New Tag No", "1"),
+    b = c("Date | Haka: 26/11/2014", "T1", "1"),
+    c = c("Team | Sâpêrãtê: Ana Souza, Bia Lima &amp; Caio Reis", "X", "2.5"),
+    d = c(NA, "Y", "3")
+  ),
+  f, colNames = FALSE
+)
 meta &lt;- read_plot_metadata(f)
 meta$plot_code
 meta$date
-length(meta$team)
+meta$team
+meta$header_row
 
 </code></pre>
 </div>
@@ -1841,12 +1870,13 @@ repeated name, the column it duplicates.</p>
 
 <h4>Examples</h4>
 
-<pre><code class='language-R'>f &lt;- system.file("extdata", "panara_SKR01.xlsx", package = "forplotR")
-skr &lt;- read_plot_sheet(f, verbose = FALSE)
-dim(skr)
-attr(skr, "header_row")
-attr(skr, "metadata")$plot_code
-subset(attr(skr, "columns"), !is.na(canonical), c(header, column))
+<pre><code class='language-R'># The blank Panará template has no trees yet, but shows how each
+# bilingual header is named after reading
+f &lt;- system.file("extdata", "panara_field_sheet_template.xlsx",
+                 package = "forplotR")
+tpl &lt;- read_plot_sheet(f)
+attr(tpl, "header_row")
+attr(tpl, "columns")[, c("position", "header", "column")]
 
 </code></pre>
 </div>

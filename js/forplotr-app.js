@@ -69,8 +69,11 @@
     'Para demonstração: usa RUS01 (field sheet) ou TUM (MONITORA) no lugar da planilha.': 'For demonstration: uses RUS01 (field sheet) or TUM (MONITORA) instead of a spreadsheet.',
     'Formato da planilha': 'Spreadsheet layout',
     'Linha do cabeçalho': 'Header row',
-    'Incluir as logos da CI e da Iakiô': 'Include CI + Iakiô logos',
-    'No cabeçalho do relatório, além das logos do forplotR e do JBRJ. Sugerido para a ficha de Terra Indígena (Panará).': 'In the report header, next to the forplotR and JBRJ logos. Suggested for the Indigenous Land field sheet (Panará).',
+    'Logo do Jardim Botânico do Rio de Janeiro (JBRJ)': 'Rio de Janeiro Botanical Garden (JBRJ) logo',
+    'Logo da Conservação Internacional (CI)': 'Conservation International (CI) logo',
+    'Logo da Associação Iakiô Panará': 'Iakiô Panará Association logo',
+    'Logo do Programa MONITORA': 'MONITORA Programme logo',
+    'Logo do ForestPlots.net': 'ForestPlots.net logo',
     'Linha da planilha com os nomes das colunas. Vazio: detectada automaticamente.': 'Row of the spreadsheet with the column names. Empty: detected automatically.',
     'Field sheet de Terra Indígena': 'Indigenous Land field sheet',
     'Idioma dos resultados': 'Output language',
@@ -651,7 +654,8 @@
 
     // demais campos, cada um na sua etapa
     var groups = {};
-    var titles = { avancado: ['Opções avançadas', 'Advanced options'], colunas: ['Colunas da planilha', 'Spreadsheet columns'] };
+    var titles = { avancado: ['Opções avançadas', 'Advanced options'], colunas: ['Colunas da planilha', 'Spreadsheet columns'],
+                   logos: ['Logos no cabeçalho', 'Logos in the header'] };
     var plotInputs = null;
     tool.fields.forEach(function (f) {
       if (f.name === 'fp_file' || f.name === 'usar_exemplo') return;
@@ -662,6 +666,9 @@
           var det = el('details', { class: 'adv-group', id: 'group-' + g });
           var t = titles[g] || [g, g];
           det.appendChild(biEl('summary', null, t[0], t[1]));
+          if (g === 'logos') det.appendChild(biEl('p', { class: 'muted-note' },
+            'A logo do forplotR entra sempre. Marque as outras que devem aparecer no cabeçalho do resultado.',
+            'The forplotR logo is always there. Tick the others that should appear in the header of the result.'));
           if (g === 'colunas') det.appendChild(biEl('p', { class: 'muted-note' },
             'Só é preciso preencher se a planilha usa nomes diferentes dos padrões (veja Dados aceitos).',
             'Only needed if the spreadsheet uses names other than the defaults (see Supported data).'));
@@ -687,7 +694,7 @@
       (secs[step] || secs.options).appendChild(fieldNode(f));
     });
     if (secs.options && secs.options.children.length < 2) { secs.options.remove(); }
-    ['avancado', 'colunas'].forEach(function (g) { if (groups['_' + g]) form.appendChild(groups['_' + g]); });
+    ['logos', 'avancado', 'colunas'].forEach(function (g) { if (groups['_' + g]) form.appendChild(groups['_' + g]); });
 
     // barra de execução
     var bar = el('div', { class: 'run-bar' });
@@ -699,7 +706,7 @@
     form.appendChild(biEl('p', { class: 'muted-note form-req' }, '* campo obrigatório', '* required field'));
 
     form.addEventListener('change', function (e) {
-      if (e.isTrusted && e.target && e.target.id === 'f_logos_partner') e.target.setAttribute('data-touched', '1');
+      if (e.isTrusted && e.target && /^f_logo_/.test(e.target.id || '')) e.target.setAttribute('data-touched', '1');
       applyVisibility(tool);
     });
     form.addEventListener('input', function (e) { if (e.target && /^(plot_|subplot_size)/.test(e.target.name || '')) applyVisibility(tool); });
@@ -965,8 +972,18 @@
     if (stations.length) stationChips(stations);
     // Logos da CI e da Iakiô: sugeridas para a ficha de Terra Indígena, até a
     // pessoa mexer na caixa (aí vale a escolha dela).
-    var lp = $('f_logos_partner');
-    if (lp && lp.getAttribute('data-touched') !== '1') lp.checked = d.type === 'field_sheet_ti';
+    var ti = d.type === 'field_sheet_ti', suggested = false;
+    ['f_logo_ci', 'f_logo_iakio'].forEach(function (id) {
+      var lp = $(id);
+      if (!lp || lp.getAttribute('data-touched') === '1') return;
+      lp.checked = ti; suggested = suggested || ti;
+    });
+    if (suggested && $('group-logos')) {
+      $('group-logos').open = true;
+      box.appendChild(biEl('p', { class: 'detect-note' },
+        'Ficha de Terra Indígena: as logos da CI e da Iakiô foram marcadas em “Logos no cabeçalho”. Desmarque se não quiser.',
+        'Indigenous Land field sheet: the CI and Iakiô logos were ticked under “Logos in the header”. Untick them if you prefer.'));
+    }
 
     // Os seletores de coluna mostram sempre o cabeçalho lido pelo R
     var missing = arr(d.missing);
