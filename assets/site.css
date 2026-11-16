@@ -7,8 +7,9 @@
    Espaçamento em múltiplos de 4px (--s1 a --s10). Temas claro e escuro por
    html[data-theme]. Contraste AA conferido nos dois temas.
 
-   Tipografia (fonts/, fontzz, SIL OFL 1.1): Vesper (títulos e marca),
-   Beacon (texto e interface; distingue l, I e 1), Signal (código e rótulos).
+   Tipografia: sans-serif do sistema (na linha da Arial) em texto, interface
+   e títulos; Signal (fonts/, fontzz, SIL OFL 1.1) em código e rótulos.
+   A escolha fica só em --font-sans e --font-mono, logo abaixo.
 
    1. Fontes e tokens     5. Conteúdo (prosa, código, tabelas, notas)
    2. Base                6. Componentes (cartões, fluxo, figuras)
@@ -27,10 +28,15 @@
   --rail:248px; --measure:720px; --content:720px; --wide:1080px; --gutter:clamp(16px,4vw,48px);
   --ease:cubic-bezier(.2,.6,.2,1); --fast:120ms; --mid:200ms;
 
-  --font-display:"Vesper",system-ui,-apple-system,"Segoe UI",sans-serif;
-  --font-body:"Beacon",system-ui,-apple-system,"Segoe UI",sans-serif;
+  /* Fonte do site e do app: mude só --font-sans (texto, interface e títulos)
+     e --font-mono (código). Para voltar às fontes anteriores, use
+     --font-display:"Vesper",var(--font-sans); --font-body:"Beacon",var(--font-sans);
+     e restaure os dois <link rel="preload"> em _tpl/page.html. */
+  --font-sans:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
   --font-mono:"Signal",ui-monospace,"SF Mono",Consolas,monospace;
-  --font-brand:"Vesper",system-ui,sans-serif;
+  --font-display:var(--font-sans);
+  --font-body:var(--font-sans);
+  --font-brand:var(--font-sans);
 
   --mata:#0E3B2C; --ipe:#E9B425; --agua:#7FC8A9;
 
@@ -259,6 +265,11 @@ figcaption .src{font-family:var(--font-mono); font-size:12px;}
 .person .affil{color:var(--muted); font-size:15px; margin:0 0 var(--s2);}
 .person ul{list-style:none; padding:0; margin:0; font-size:15px; display:flex; flex-wrap:wrap; gap:0 var(--s4);}
 .person li{margin:0;}
+/* ORCID, Lattes e GitHub como ícones clicáveis (gerados por scripts/seo.R) */
+.person ul.person-links{gap:var(--s2); margin-top:var(--s2);}
+.icon-link{display:inline-flex; align-items:center; justify-content:center; width:36px; height:36px; border-radius:50%; color:var(--muted); border:1px solid var(--rule); background:var(--surface); transition:color var(--fast) var(--ease),border-color var(--fast) var(--ease),transform var(--fast) var(--ease);}
+.icon-link svg{width:20px; height:20px; display:block;}
+.icon-link:hover,.icon-link:focus-visible{color:var(--text-strong); border-color:var(--rule-hover); transform:translateY(-1px);}
 @media (max-width:480px){
   .person{grid-template-columns:80px minmax(0,1fr); gap:var(--s4);}
   .person-photo{width:80px; height:80px;}
@@ -289,11 +300,18 @@ html.no-js .needs-js{display:none!important;}
 
 /* ---------- 7. Rodapé ---------- */
 .site-foot{border-top:1px solid var(--rule); padding:var(--s7) var(--gutter) var(--s8); margin-left:var(--rail);}
-.foot-inner{max-width:var(--content); margin:0 auto;}
-.foot-brand{display:flex; align-items:flex-start; gap:var(--s3); margin-bottom:var(--s3);}
-.foot-brand img{width:29px; height:auto; flex-shrink:0; margin-top:-3px;}
-.foot-auth{font:400 16px/1.6 var(--font-display); color:var(--text-strong); max-width:70ch;}
-.foot-meta{font-size:14px; color:var(--muted);}
+.foot-inner{max-width:var(--content); margin:0 auto; display:flex; align-items:center; flex-wrap:wrap; gap:var(--s3) var(--s5);}
+/* Logos do rodapé: pequenas e neutras (cinza), com a cor de volta ao passar o
+   mouse ou focar. A do JBRJ tem letras pretas: no tema escuro é invertida. */
+.foot-logos{display:flex; align-items:center; gap:var(--s4); margin:0; flex:none;}
+.foot-logos a{display:block; line-height:0; border-radius:var(--r1);}
+.foot-logo{display:block; height:30px; width:auto; filter:grayscale(1); opacity:.72; transition:filter var(--mid) var(--ease),opacity var(--mid) var(--ease);}
+.foot-logos a:hover .foot-logo,.foot-logos a:focus-visible .foot-logo{filter:none; opacity:1;}
+:root[data-theme="dark"] .foot-logo{opacity:.8;}
+:root[data-theme="dark"] .foot-logo-mono,
+:root[data-theme="dark"] .foot-logos a:hover .foot-logo-mono,
+:root[data-theme="dark"] .foot-logos a:focus-visible .foot-logo-mono{filter:grayscale(1) invert(1) brightness(1.6);}
+.foot-meta{font-size:14px; color:var(--muted); margin:0; flex:1 1 320px; min-width:0;}
 .foot-meta a{color:var(--muted);}
 .foot-meta a:hover{color:var(--text-strong);}
 
@@ -404,6 +422,8 @@ pre.tree{margin:var(--s5) auto; border:1px solid var(--rule); border-radius:var(
 .thesis{margin:var(--s5) auto; padding:var(--s4) var(--s5); border-left:2px solid var(--ipe); background:var(--surface-2); max-width:var(--content);}
 .thesis-label{font:600 12px/1.4 var(--font-body); letter-spacing:.06em; text-transform:uppercase; color:var(--muted); margin-bottom:var(--s1);}
 .lead{margin-bottom:var(--s5);}
+.license-text{font-size:15px; line-height:1.6; padding:var(--s5); border:1px solid var(--rule); border-radius:var(--r3); background:var(--surface);}
+.license-text p{margin:0 0 var(--s3);} .license-text p:last-child{margin-bottom:0;}
 .person-full{font-size:14px; color:var(--muted); margin:0 0 var(--s2);}
 .thesis-title{font:500 18px/1.45 var(--font-display); color:var(--text-strong); margin-bottom:var(--s2);}
 /* título fora do bloco do Quarto (quando ele não o move) */

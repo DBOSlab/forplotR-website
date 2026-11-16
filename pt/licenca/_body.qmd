@@ -1,0 +1,25 @@
+::: {data-lang="pt"}
+O pacote **forplotR** e este site são software livre, distribuídos sob a licença MIT: é permitido usar, copiar, modificar e redistribuir, inclusive comercialmente, desde que o aviso de direitos autorais e o texto abaixo acompanhem as cópias. Não há garantia de nenhum tipo. O texto da licença vale em inglês, como abaixo.
+:::
+::: {data-lang="en"}
+The **forplotR** package and this site are free software, distributed under the MIT licence: you may use, copy, modify and redistribute them, including commercially, as long as the copyright notice and the text below go with the copies. There is no warranty of any kind.
+:::
+
+## [Texto da licença]{data-lang=pt}[Licence text]{data-lang=en} {#texto}
+
+```{=html}
+<div class="license-text" lang="en">
+<p><strong>MIT License</strong></p>
+<p>Copyright (c) 2025 forplotR authors</p>
+<p>Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:</p>
+<p>The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.</p>
+<p>THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p>
+</div>
+```
+
+::: {data-lang="pt"}
+Os mesmos termos estão nos repositórios: [`LICENSE.md` do pacote](https://github.com/DBOSlab/forplotR/blob/main/LICENSE.md) e [`LICENSE.md` do site](https://github.com/DBOSlab/forplotR-website/blob/main/LICENSE.md). No `DESCRIPTION` do pacote: `License: MIT + file LICENSE`.
+:::
+::: {data-lang="en"}
+The same terms are in the repositories: [the package `LICENSE.md`](https://github.com/DBOSlab/forplotR/blob/main/LICENSE.md) and [the site `LICENSE.md`](https://github.com/DBOSlab/forplotR-website/blob/main/LICENSE.md). In the package `DESCRIPTION`: `License: MIT + file LICENSE`.
+:::

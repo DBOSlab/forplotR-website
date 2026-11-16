@@ -4,6 +4,12 @@
 # dados: só lê o cabeçalho para sugerir o formato e as colunas (local_detect) e,
 # depois de uma execução, conta o que a planilha harmonizada tem (local_summary).
 # São sugestões para a pessoa conferir, não verificações.
+#
+# A linha do cabeçalho, os metadados acima dela e o significado de cada coluna
+# vêm do próprio forplotR (detect_header_row(), read_plot_metadata(),
+# read_plot_sheet()): o formulário mostra exatamente o que o pacote vai ler.
+# Não há leitura de cabeçalho em JavaScript. Com um forplotR anterior a essas
+# funções, vale a leitura antiga (.local_detect_legacy).
 
 .fp_norm <- function(x) {
   x <- as.character(x)
@@ -16,6 +22,7 @@
 # Campos que o forplotR usa e os nomes padrão (como em .forplot_colname_registry)
 .fp_fields <- list(
   colname_tagno      = "New Tag No",
+  colname_stemgroup  = "New Stem Grouping",
   colname_subplot    = "T1",
   colname_x          = "X",
   colname_y          = "Y",
@@ -29,6 +36,7 @@
 # Nomes alternativos comuns, para sugerir a coluna quando o padrão não existe
 .fp_alias <- list(
   colname_tagno     = c("new tag no", "tag no", "tag", "tag number", "placa", "plaqueta", "n arvore", "numero", "tree id"),
+  colname_stemgroup = c("new stem grouping", "stem grouping", "stem group", "grupo de fustes"),
   colname_subplot   = c("t1", "sub plot t1", "standardised subplot t1", "standardized subplot t1", "subplot", "subparcela", "subunidades", "subunidade", "parcela"),
   colname_x         = c("x", "standardised x", "standardized x", "coord x", "coordx", "x m", "x local", "coordenada x"),
   colname_y         = c("y", "standardised y", "standardized y", "coord y", "coordy", "y m", "y local", "coordenada y"),
@@ -39,7 +47,167 @@
   colname_collected = c("collected", "voucher collected", "coletado", "individuo coletado")
 )
 
-local_detect <- function(path) {
+# Campos opcionais: a falta deles não é um problema a avisar
+.fp_optional <- c("colname_stemgroup")
+
+.fp_has_header_api <- function() {
+  ns <- asNamespace("forplotR")
+  all(vapply(c("detect_header_row", "read_plot_sheet", ".score_header_rows",
+               ".canonical_header", ".parse_plot_metadata", ".read_raw_rows"),
+             exists, logical(1), envir = ns, inherits = FALSE))
+}
+
+# header_row: NULL, "" ou "auto" = automático; número = linha escolhida na tela
+local_detect <- function(path, header_row = NULL) {
+  hr <- suppressWarnings(as.integer(header_row))
+  if (!length(hr) || is.na(hr) || hr < 1L) hr <- NULL
+  if (!.fp_has_header_api()) return(.local_detect_legacy(path))
+
+  out <- tryCatch({
+    fp <- asNamespace("forplotR")
+    raw <- fp$.read_raw_rows(path, sheet = 1, n_max = 20L)
+    if (!nrow(raw)) stop("planilha vazia")
+
+    sc <- fp$.score_header_rows(raw)
+    auto <- sc$row
+    # linhas com algum texto: as que podem ser escolhidas como cabeçalho
+    filled <- which(vapply(seq_len(nrow(raw)), function(i) {
+      r <- as.character(unlist(raw[i, , drop = TRUE]))
+      any(!is.na(r) & nzchar(trimws(r)))
+    }, logical(1)))
+    if (!is.null(hr) && !(hr %in% filled)) hr <- NULL
+
+    # formatos de uma linha só de cabeçalho (MONITORA, Query Library)
+    row_names <- function(i) {
+      r <- as.character(unlist(raw[i, , drop = TRUE]))
+      .fp_norm(unlist(strsplit(r[!is.na(r)], "|", fixed = TRUE)))
+    }
+    mo_t <- c("cduc", "nomeuc", "n estacao", "nome estacao", "n ua", "subunidades", "n parcela", "n arvore",
+              "cap tot", "cap 1", "arvore morta", "familia", "genero", "especie", "individuo coletado")
+    ql_t <- c("plot code", "plotcode", "plot name", "sub plot t1", "standardised subplot t1", "standardized subplot t1",
+              "standardised x", "standardized x", "census no", "recommended voucher family", "voucher code", "tag no")
+
+    hdr <- hr %||% (if (!is.na(auto)) auto else NA_integer_)
+    if (is.na(hdr)) {
+      # nenhum nome conhecido: a primeira linha com mais texto que números
+      txt <- vapply(filled, function(i) {
+        r <- as.character(unlist(raw[i, , drop = TRUE]))
+        r <- r[!is.na(r) & nzchar(trimws(r))]
+        mean(is.na(suppressWarnings(as.numeric(r))))
+      }, numeric(1))
+      hdr <- filled[which(txt >= 0.6)[1]]
+      if (is.na(hdr)) hdr <- filled[1]
+    }
+    hn <- row_names(hdr)
+    mo_score <- sum(mo_t %in% hn)
+    ql_score <- sum(ql_t %in% hn)
+
+    meta <- fp$.parse_plot_metadata(raw[seq_len(hdr - 1L), , drop = FALSE])
+    has_meta <- !is.na(meta$plot_code) || !is.na(meta$plot_name) || length(meta$team) > 0
+
+    header_cells <- as.character(unlist(raw[hdr, , drop = TRUE]))
+    cols <- fp$.canonical_header(header_cells)
+    cols <- cols[nzchar(cols$header), , drop = FALSE]
+    n_known <- sum(!is.na(cols$canonical))
+    bilingual <- any(grepl("|", c(cols$header, as.character(unlist(raw[seq_len(hdr - 1L), , drop = TRUE]))),
+                           fixed = TRUE), na.rm = TRUE)
+
+    type <- "unknown"; confidence <- "low"
+    if (mo_score >= 4) {
+      type <- "monitora"; confidence <- if (mo_score >= 7) "high" else "medium"
+    } else if (ql_score >= 3) {
+      type <- "fp_query_sheet"; confidence <- if (ql_score >= 5) "high" else "medium"
+    } else if (n_known >= 4) {
+      type <- if (bilingual) "field_sheet_ti" else "field_sheet"
+      confidence <- if (has_meta && n_known >= 6) "high" else "medium"
+    } else if (has_meta && nrow(raw) >= 2) {
+      type <- "field_sheet_ti"; confidence <- "low"
+    }
+
+    headers <- cols$header
+    # coluna reconhecida para cada campo do formulário; só é sugerida no
+    # seletor quando o nome não é o padrão (aí o pacote já a encontra sozinho)
+    mapped <- list(); missing <- list(); suggest <- list()
+    if (type %in% c("field_sheet", "field_sheet_ti", "unknown")) {
+      nh <- .fp_norm(headers)
+      for (k in names(.fp_fields)) {
+        std <- .fp_fields[[k]]
+        hit <- cols$header[!is.na(cols$canonical) & cols$canonical == std]
+        if (!length(hit)) {
+          # nome alternativo que o pacote não conhece, mas o site sim
+          alt <- which(nh %in% .fp_alias[[k]])
+          if (length(alt)) hit <- headers[alt[1]]
+        }
+        if (!length(hit)) {
+          if (!(k %in% .fp_optional)) missing[[length(missing) + 1]] <- k
+          next
+        }
+        mapped[[k]] <- hit[1]
+        if (!identical(trimws(hit[1]), std)) suggest[[k]] <- hit[1]
+      }
+    }
+
+    stations <- character()
+    plot_name <- if (is.na(meta$plot_name)) "" else meta$plot_name
+    plot_code <- if (is.na(meta$plot_code)) "" else meta$plot_code
+    n_rows <- NA_integer_; n_subplots <- NA_integer_; subplot_max <- NA_integer_
+    renamed <- list()
+
+    if (type == "monitora") {
+      full <- suppressMessages(readxl::read_excel(path, sheet = 1, col_types = "text", .name_repair = "minimal",
+                                                  skip = hdr - 1L))
+      nn <- .fp_norm(names(full))
+      sc2 <- which(nn %in% c("nome estacao", "estacao"))
+      if (!length(sc2)) sc2 <- which(nn %in% c("n estacao", "numero estacao"))
+      if (length(sc2)) stations <- sort(unique(stats::na.omit(trimws(full[[sc2[[1]]]]))))
+      uc <- which(nn %in% c("nomeuc", "nome uc", "uc"))
+      if (length(uc)) plot_name <- as.character(stats::na.omit(full[[uc[[1]]]])[1] %||% "")
+      n_rows <- nrow(full)
+    } else {
+      # a tabela como o pacote a lê: linhas, subparcelas e nomes repetidos
+      tab <- tryCatch(suppressWarnings(forplotR::read_plot_sheet(path, sheet = 1, header_row = hdr, verbose = FALSE)),
+                      error = function(e) NULL)
+      if (!is.null(tab)) {
+        n_rows <- nrow(tab)
+        tc <- attr(tab, "columns")
+        dup <- tc[!is.na(tc$duplicate_of), , drop = FALSE]
+        renamed <- lapply(seq_len(nrow(dup)), function(i) {
+          first <- match(dup$duplicate_of[i], tc$column)
+          list(name = dup$duplicate_of[i], used = tc$header[first], used_position = tc$position[first],
+               other = dup$header[i], other_position = dup$position[i])
+        })
+        sub_col <- mapped$colname_subplot
+        sub <- if (!is.null(sub_col)) tab[[tc$column[match(sub_col, tc$header)]]] else tab[["T1"]]
+        if (!is.null(sub)) {
+          sv <- suppressWarnings(as.numeric(as.character(sub)))
+          sv <- sv[!is.na(sv)]
+          if (length(sv)) {
+            n_subplots <- length(unique(sv))
+            subplot_max <- as.integer(max(sv))
+          }
+        }
+      }
+    }
+
+    list(ok = TRUE, type = type, confidence = confidence,
+         header_row = hdr, header_row_auto = if (is.na(auto)) NULL else auto,
+         header_row_forced = !is.null(hr), header_rows = as.list(filled),
+         has_meta = has_meta,
+         meta = list(plot_code = plot_code, plot_name = plot_name,
+                     date = if (is.na(meta$date)) "" else format(meta$date, "%Y-%m-%d"),
+                     team = as.list(meta$team),
+                     census_no = if (is.na(meta$census_no)) "" else meta$census_no),
+         headers = as.list(headers), mapped = mapped, missing = missing, suggest = suggest,
+         renamed = renamed,
+         stations = as.list(utils::head(stations, 50)),
+         plot_name = plot_name %||% "", plot_code = plot_code %||% "",
+         n_rows = n_rows, n_subplots = n_subplots, subplot_max = subplot_max)
+  }, error = function(e) list(ok = FALSE, error = conditionMessage(e)))
+  jsonlite::toJSON(out, auto_unbox = TRUE, null = "null", na = "null")
+}
+
+# Leitura anterior, para versões do forplotR sem detect_header_row()
+.local_detect_legacy <- function(path) {
   out <- tryCatch({
     raw <- suppressMessages(readxl::read_excel(path, sheet = 1, col_names = FALSE, n_max = 8,
                                                col_types = "text", .name_repair = "minimal"))
@@ -143,9 +311,14 @@ local_summary <- function(params) {
     col_map <- if (length(cm)) do.call(forplotR:::.build_col_map, cm) else NULL
     st <- params$station_name
     if (length(st) > 1) st <- st[[1]]
-    h <- suppressMessages(forplotR:::.harmonize_plot_input(path, input_type = type, station_name = st,
-                                                           verbose = FALSE, require_spatial = FALSE,
-                                                           col_map = col_map, has_user_meta = TRUE))
+    if (!("header_row" %in% names(formals(forplotR:::.harmonize_plot_input)))) params$header_row <- NULL
+    harmonize <- function(...) {
+      if (is.null(params$header_row)) forplotR:::.harmonize_plot_input(...)
+      else forplotR:::.harmonize_plot_input(..., header_row = params$header_row)
+    }
+    h <- suppressMessages(harmonize(path, input_type = type, station_name = st,
+                                  verbose = FALSE, require_spatial = FALSE,
+                                  col_map = col_map, has_user_meta = TRUE))
     s <- h$fp_sheet
     tag <- trimws(as.character(s[["New Tag No"]]))
     s <- s[!is.na(tag) & nzchar(tag) & !is.na(suppressWarnings(as.numeric(s$T1))), , drop = FALSE]

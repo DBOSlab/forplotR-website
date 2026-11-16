@@ -11,8 +11,9 @@ Botânica na Escola Nacional de Botânica Tropical (ENBT/JBRJ), sob orientação
 Domingos Cardoso (DBOSlab).
 
 Visual: Quarto sem Bootstrap (template próprio em `_tpl/page.html`, CSS com
-tokens em `assets/site.css`). Tipografia fontzz (SIL OFL 1.1, em `fonts/`):
-Vesper (títulos), Beacon (texto e interface) e Signal (código). Paleta verde-mata, ipê,
+tokens em `assets/site.css`). Tipografia: sans-serif do sistema em texto,
+interface e títulos (`--font-sans`) e Signal (fontzz, SIL OFL 1.1, em `fonts/`)
+em código (`--font-mono`); a escolha fica só nesses dois tokens. Paleta verde-mata, ipê,
 urucum, rio e jabuticaba sobre papel de herbário, com tema claro e escuro e
 contraste AA. Todo exemplo (mapa, relatório, figuras, planilhas, árvore de
 pastas, panoramas e números do texto) é gerado pelo próprio pacote sobre os

@@ -82,6 +82,7 @@ people:
     affiliation: jbrj
     image: "assets/authors/domingos-cardoso.jpg"
     github: "https://github.com/DBOSlab"
+    github_label: "DBOSlab"                      # o GitHub é o do laboratório
     same_as:
       - "https://orcid.org/0000-0001-7072-2656"
       - "https://github.com/DBOSlab"

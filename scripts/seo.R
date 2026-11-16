@@ -3,8 +3,7 @@
 #
 # Roda depois do `quarto render` (project.post-render no _quarto.yml) sobre a
 # pasta de saída inteira. Para cada página com data-page-id:
-#   - resolve os marcadores do template ({{ROOT}}, {{LANGROOT}}, {{ALT_URL}},
-#     {{AUTHOR_LINE}});
+#   - resolve os marcadores do template ({{ROOT}}, {{LANGROOT}}, {{ALT_URL}});
 #   - grava em <!--fp:seo--> o canonical, os hreflang (pt-BR, en, x-default),
 #     Open Graph, as meta tags de autoria e de citação e o JSON-LD (schema.org)
 #     com o grafo de entidades de _data/entities.yml: o forplotR, a autoria
@@ -181,25 +180,42 @@ thesis_node <- function(lang) {
   ))
 }
 
-# Coorientação na frase de autoria (só com o coorientador em _data/entities.yml).
-co_line <- function(lang, a) {
-  if (!(thesis_ok && has(th$co_advisor))) return("")
-  k <- th$co_advisor
-  anchor <- sub(".*#", "", id_person(k))
-  sprintf(if (lang == "en") ' and co-supervised by <a href="%s#%s">%s</a>' else ' e coorientação de <a href="%s#%s">%s</a>', a, anchor, P[[k]]$name)
-}
-
-# Frase de autoria do rodapé (texto visível: é o que buscadores e assistentes leem).
-author_line <- function(lang, root) {
-  a <- paste0(root, authors_path(lang))
-  yr <- if (thesis_ok && has(th$year)) paste0(", ", th$year) else ""
-  if (lang == "en") {
-    detail <- if (thesis_ok) sprintf(' as the product of her <a href="%s#dissertacao">master\'s degree in Botany</a> at the National School of Tropical Botany (ENBT/JBRJ%s)', a, yr) else " during her master's degree"
-    sprintf('forplotR was developed by <a href="%s#giulia-c-ottino">Giulia C. Ottino</a>%s, supervised by <a href="%s#domingos-cardoso">Domingos Cardoso</a>%s, at the Rio de Janeiro Botanical Garden (DBOSlab).', a, detail, a, co_line(lang, a))
-  } else {
-    detail <- if (thesis_ok) sprintf(' como produto de seu <a href="%s#dissertacao">mestrado em Botânica</a> na Escola Nacional de Botânica Tropical (ENBT/JBRJ%s)', a, yr) else " como produto de seu mestrado"
-    sprintf('O forplotR foi desenvolvido por <a href="%s#giulia-c-ottino">Giulia C. Ottino</a>%s, sob orientação de <a href="%s#domingos-cardoso">Domingos Cardoso</a>%s, no Jardim Botânico do Rio de Janeiro (DBOSlab).', a, detail, a, co_line(lang, a))
+# Ícones clicáveis de uma pessoa (página de autoria): ORCID, Lattes e GitHub, a
+# partir de _data/entities.yml. Os SVG ficam em assets/icons/ e entram embutidos
+# (seguem as cores do tema); cada link abre em nova aba e tem title/aria-label.
+icon_svg <- local({
+  cache <- list()
+  function(name) {
+    if (is.null(cache[[name]])) {
+      f <- file.path("assets", "icons", paste0(name, ".svg"))
+      cache[[name]] <<- if (file.exists(f)) paste(read_utf8(f), collapse = "") else ""
+    }
+    cache[[name]]
   }
+})
+person_links <- function(k, lang) {
+  p <- P[[k]]
+  if (is.null(p)) return("")
+  en <- lang == "en"
+  of <- function(what, who) if (en) sprintf("%s of %s", what, who) else sprintf("%s de %s", what, who)
+  item <- function(icon, url, what, id) {
+    lab <- html_escape(of(what, p$name))
+    sprintf('<li><a class="icon-link icon-%s" href="%s" target="_blank" rel="me noopener noreferrer" title="%s" aria-label="%s (%s)">%s</a></li>',
+            icon, html_escape(url), lab, lab, html_escape(id), icon_svg(icon))
+  }
+  out <- c(
+    if (has(p$orcid)) item("orcid", p$orcid, "ORCID", sub("^https?://orcid\\.org/", "", p$orcid)),
+    if (has(p$lattes)) item("lattes", p$lattes, if (en) "Lattes CV" else "Currículo Lattes", sub("^https?://lattes\\.cnpq\\.br/", "", p$lattes)),
+    if (has(p$github)) {
+      gh <- sub("^https?://github\\.com/", "", p$github)
+      who <- if (has(p$github_label)) paste0(p$github_label, " (", p$name, ")") else p$name
+      lab <- html_escape(if (en) sprintf("GitHub of %s", who) else sprintf("GitHub de %s", who))
+      sprintf('<li><a class="icon-link icon-github" href="%s" target="_blank" rel="me noopener noreferrer" title="%s" aria-label="%s (%s)">%s</a></li>',
+              html_escape(p$github), lab, lab, html_escape(gh), icon_svg("github"))
+    }
+  )
+  if (!length(out)) return("")
+  paste0('<ul class="person-links">', paste(out, collapse = ""), "</ul>")
 }
 
 # Artigo (página "Como citar"): DOI quando publicado.
@@ -405,8 +421,10 @@ for (i in seq_len(nrow(pages))) {
   h <- gsub("{{ROOT}}", root, h, fixed = TRUE)
   h <- gsub("{{LANGROOT}}", langroot, h, fixed = TRUE)
   h <- gsub("{{ALT_URL}}", alt_href, h, fixed = TRUE)
-  h <- gsub("{{AUTHOR_LINE}}", author_line(row$lang, root), h, fixed = TRUE)
   h <- gsub("<p>{{THESIS_BLOCK}}</p>", thesis_block(row$lang), h, fixed = TRUE)
+  for (pl in unique(regmatches(h, gregexpr("\\{\\{PERSON_LINKS:[a-z_]+\\}\\}", h, perl = TRUE))[[1]])) {
+    h <- gsub(pl, person_links(sub("^\\{\\{PERSON_LINKS:([a-z_]+)\\}\\}$", "\\1", pl), row$lang), h, fixed = TRUE)
+  }
   h <- gsub("<p>{{PAPER_BLOCK}}</p>", paper_block(row$lang), h, fixed = TRUE)
   # {{LINK:id}}: endereço relativo da página com esse page-id, na língua da página
   for (lk in unique(regmatches(h, gregexpr("\\{\\{LINK:[A-Za-z0-9_-]+\\}\\}", h, perl = TRUE))[[1]])) {
@@ -435,7 +453,9 @@ for (i in seq_len(nrow(pages))) {
 # o português antes (localStorage) ou se o endereço traz ?lang=pt.
 redirects <- list(
   "about.html"                                    = c("about", ""),
-  "LICENSE.html"                                  = c("about", ""),
+  "LICENSE.html"                                  = c("license", ""),
+  "LICENSE-text.html"                             = c("license", ""),
+  "license.html"                                  = c("license", ""),
   "articles/index.html"                           = c("apps", ""),
   "articles/plot_html_map_general_usage.html"     = c("map", ""),
   "articles/plot_for_balance_general_usage.html"  = c("balance", ""),

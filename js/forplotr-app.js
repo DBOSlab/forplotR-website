@@ -68,6 +68,13 @@
     'Usar os dados de exemplo do pacote (RUS01 ou TUM)': 'Use the package example data (RUS01 or TUM)',
     'Para demonstração: usa RUS01 (field sheet) ou TUM (MONITORA) no lugar da planilha.': 'For demonstration: uses RUS01 (field sheet) or TUM (MONITORA) instead of a spreadsheet.',
     'Formato da planilha': 'Spreadsheet layout',
+    'Linha do cabeçalho': 'Header row',
+    'Logo do Jardim Botânico do Rio de Janeiro (JBRJ)': 'Rio de Janeiro Botanical Garden (JBRJ) logo',
+    'Logo da Conservação Internacional (CI)': 'Conservation International (CI) logo',
+    'Logo da Associação Iakiô Panará': 'Iakiô Panará Association logo',
+    'Logo do Programa MONITORA': 'MONITORA Programme logo',
+    'Logo do ForestPlots.net': 'ForestPlots.net logo',
+    'Linha da planilha com os nomes das colunas. Vazio: detectada automaticamente.': 'Row of the spreadsheet with the column names. Empty: detected automatically.',
     'Field sheet de Terra Indígena': 'Indigenous Land field sheet',
     'Idioma dos resultados': 'Output language',
     'Português': 'Portuguese', 'English': 'English', 'Español': 'Spanish', 'Français': 'French', 'Mandarim': 'Mandarin', 'Panará': 'Panará',
@@ -383,8 +390,8 @@
                    en: ['Field sheet', 'ForestPlots.net layout: a metadata row and a header with New Tag No, T1, X, Y.'], icon: 'grid' },
     fp_query_sheet: { pt: ['Exportação da Query Library', 'ForestPlots.net: Plot Code, Sub Plot T1, Standardised X e Y.'],
                       en: ['Query Library export', 'ForestPlots.net: Plot Code, Sub Plot T1, Standardised X and Y.'], icon: 'rows' },
-    field_sheet_ti: { pt: ['Ficha de Terra Indígena', 'Ficha com metadados e colunas em ordem fixa.'],
-                      en: ['Indigenous Land field sheet', 'A field sheet with metadata and columns in a fixed order.'], icon: 'cols' },
+    field_sheet_ti: { pt: ['Ficha de Terra Indígena', 'Linha de metadados e cabeçalho bilíngue (ex.: Panará); colunas reconhecidas pelo nome.'],
+                      en: ['Indigenous Land field sheet', 'A metadata row and a bilingual header (e.g. Panará); columns recognised by name.'], icon: 'cols' },
     monitora: { pt: ['Protocolo MONITORA', 'Estações com quatro subunidades em cruz (ICMBio).'],
                 en: ['MONITORA protocol', 'Stations with four subunits in a cross (ICMBio).'], icon: 'cross' },
     forestplots: { pt: ['Planilha no padrão ForestPlots.net', 'Ficha de campo, exportação da Query Library ou ficha de Terra Indígena.'],
@@ -412,6 +419,10 @@
   ];
   var MONITORA_COLS = ['colname_subplot_t2', 'colname_cap', 'colname_station', 'colname_census_year'];
   var PLOT_FIELDS = ['plot_size', 'subplot_size', 'plot_width_m', 'plot_length_m'];
+  // Última leitura da planilha feita pelo forplotR no navegador (detect.R):
+  // linha do cabeçalho, metadados, colunas e subparcelas. null = sem leitura.
+  var detected = null;
+  var HEADER_ROW_MAX = 12;
 
   function fieldNode(f) {
     if (f.type === 'select' && (f.name === 'input_type' || arr(f.options).length <= 6)) return choiceGroup(f);
@@ -606,6 +617,7 @@
       up.querySelector('input[type=file]').addEventListener('change', function (e) {
         var fl = e.target.files && e.target.files[0];
         if (fl && $('f_usar_exemplo')) { $('f_usar_exemplo').checked = false; }
+        var hrSel = $('f_header_row'); if (hrSel && hrSel.tagName === 'SELECT') hrSel.value = '';
         onFileChosen(tool, fl);
         form.dispatchEvent(new Event('change'));
       });
@@ -637,19 +649,26 @@
       secs.data.appendChild(pick);
     }
     secs.data.appendChild(el('div', { class: 'detect-box', id: 'detect-box', hidden: true, 'aria-live': 'polite' }));
+    var localHeaderRow = !!(by.header_row && LOCAL && LOCAL.detect);
+    if (localHeaderRow) secs.data.appendChild(headerRowControl(tool, by.header_row));
 
     // demais campos, cada um na sua etapa
     var groups = {};
-    var titles = { avancado: ['Opções avançadas', 'Advanced options'], colunas: ['Colunas da planilha', 'Spreadsheet columns'] };
+    var titles = { avancado: ['Opções avançadas', 'Advanced options'], colunas: ['Colunas da planilha', 'Spreadsheet columns'],
+                   logos: ['Logos no cabeçalho', 'Logos in the header'] };
     var plotInputs = null;
     tool.fields.forEach(function (f) {
       if (f.name === 'fp_file' || f.name === 'usar_exemplo') return;
+      if (f.name === 'header_row' && localHeaderRow) return; // fica junto da leitura da planilha
       var g = f.group || 'principal';
       if (g !== 'principal') {
         if (!groups[g]) {
           var det = el('details', { class: 'adv-group', id: 'group-' + g });
           var t = titles[g] || [g, g];
           det.appendChild(biEl('summary', null, t[0], t[1]));
+          if (g === 'logos') det.appendChild(biEl('p', { class: 'muted-note' },
+            'A logo do forplotR entra sempre. Marque as outras que devem aparecer no cabeçalho do resultado.',
+            'The forplotR logo is always there. Tick the others that should appear in the header of the result.'));
           if (g === 'colunas') det.appendChild(biEl('p', { class: 'muted-note' },
             'Só é preciso preencher se a planilha usa nomes diferentes dos padrões (veja Dados aceitos).',
             'Only needed if the spreadsheet uses names other than the defaults (see Supported data).'));
@@ -675,7 +694,7 @@
       (secs[step] || secs.options).appendChild(fieldNode(f));
     });
     if (secs.options && secs.options.children.length < 2) { secs.options.remove(); }
-    ['avancado', 'colunas'].forEach(function (g) { if (groups['_' + g]) form.appendChild(groups['_' + g]); });
+    ['logos', 'avancado', 'colunas'].forEach(function (g) { if (groups['_' + g]) form.appendChild(groups['_' + g]); });
 
     // barra de execução
     var bar = el('div', { class: 'run-bar' });
@@ -686,7 +705,10 @@
     form.appendChild(bar);
     form.appendChild(biEl('p', { class: 'muted-note form-req' }, '* campo obrigatório', '* required field'));
 
-    form.addEventListener('change', function () { applyVisibility(tool); });
+    form.addEventListener('change', function (e) {
+      if (e.isTrusted && e.target && /^f_logo_/.test(e.target.id || '')) e.target.setAttribute('data-touched', '1');
+      applyVisibility(tool);
+    });
     form.addEventListener('input', function (e) { if (e.target && /^(plot_|subplot_size)/.test(e.target.name || '')) applyVisibility(tool); });
     applyVisibility(tool);
     form.addEventListener('submit', function (ev) { ev.preventDefault(); submit(tool); });
@@ -776,9 +798,21 @@
     else if (fi) { pt.push('Nenhuma planilha escolhida'); en.push('No spreadsheet chosen'); }
     var L = LAYOUTS[currentValue('input_type')];
     if (L) { pt.push(L.pt[0]); en.push(L.en[0]); }
+    var warn = false;
     if ($('plot-diagram') && currentValue('input_type') !== 'monitora') {
-      var g = plotDims(); pt.push((g.nx * g.ny) + ' subparcelas'); en.push((g.nx * g.ny) + ' subplots');
+      var g = plotDims(), grid = g.nx * g.ny;
+      var inSheet = !ex && fl && detected && detected.n_subplots;
+      if (inSheet) {
+        // o que a planilha tem, não o que a geometria do formulário comporta
+        pt.push(inSheet + ' subparcelas'); en.push(inSheet + ' subplots');
+        if (detected.subplot_max > grid) {
+          warn = true;
+          pt.push('a geometria informada só comporta ' + grid + ' (a planilha vai até a subparcela ' + detected.subplot_max + ')');
+          en.push('the geometry given only holds ' + grid + ' (the sheet goes up to subplot ' + detected.subplot_max + ')');
+        }
+      } else { pt.push(grid + ' subparcelas'); en.push(grid + ' subplots'); }
     }
+    s.classList.toggle('is-warn', warn);
     s.innerHTML = '';
     s.appendChild(bi(pt.join(' · '), en.join(' · ')));
   }
@@ -808,67 +842,174 @@
       pick.querySelectorAll('.ex-opt').forEach(function (b) { b.setAttribute('aria-pressed', b.getAttribute('data-layout') === lay ? 'true' : 'false'); });
     }
     if (useEx && $('detect-box')) $('detect-box').hidden = true;
+    var hrField = document.querySelector('.header-row-field');
+    if (hrField) hrField.hidden = !!useEx || !detected;
     drawPlot(tool);
     updateRunSum(tool);
   }
   function isHidden(f) { var node = document.querySelector('[data-field="' + f.name + '"]'); return !node || node.hidden; }
 
   // ---------- leitura do cabeçalho (só no navegador) ----------
-  function onFileChosen(tool, file) {
+  // Quem lê a planilha é o forplotR, dentro do webR (backend/webr/detect.R):
+  // a linha do cabeçalho, os metadados acima dela e as colunas mostradas aqui
+  // são as que o pacote vai usar. Não há leitura de planilha em JavaScript.
+  function onFileChosen(tool, file, headerRow) {
     var box = $('detect-box');
     if (!box) return;
-    if (!LOCAL || !LOCAL.detect || !file || !/\.xlsx?$/i.test(file.name)) { box.hidden = true; return; }
+    if (!LOCAL || !LOCAL.detect || !file || !/\.xlsx?$/i.test(file.name)) {
+      detected = null; box.hidden = true; applyVisibility(tool); return;
+    }
     box.hidden = false; box.className = 'detect-box is-busy'; box.innerHTML = '';
     var ready = LOCAL.stage && LOCAL.stage() === 'ready';
     box.appendChild(biEl('p', { class: 'detect-head' },
       ready ? 'Lendo o cabeçalho da planilha…' : 'Carregando o R no navegador para ler o cabeçalho…',
       ready ? 'Reading the spreadsheet header…' : 'Loading R in your browser to read the header…'));
-    LOCAL.detect(file).then(function (d) {
+    LOCAL.detect(file, headerRow || '').then(function (d) {
       var cur = $('f_fp_file'); var now = cur && cur.files && cur.files[0];
       if (now !== file) return; // outro arquivo foi escolhido nesse meio-tempo
-      if (d) renderDetect(tool, d); else box.hidden = true;
-    }).catch(function () { box.hidden = true; });
+      if (d) renderDetect(tool, d); else { detected = null; box.hidden = true; applyVisibility(tool); }
+    }).catch(function () { detected = null; box.hidden = true; applyVisibility(tool); });
+  }
+
+  // "Linha do cabeçalho: [automática / 1 / 2 / 3 …]": reprocessa ao mudar
+  function headerRowControl(tool, f) {
+    var wrap = el('div', { class: 'form-field header-row-field', 'data-field': 'header_row', hidden: true });
+    var lab = el('label', { for: 'f_header_row' });
+    lab.appendChild(bi('Linha do cabeçalho', 'Header row'));
+    wrap.appendChild(lab);
+    var sel = el('select', { id: 'f_header_row', name: f.name });
+    sel.appendChild(el('option', { value: '' }, isEn() ? 'automatic' : 'automática'));
+    wrap.appendChild(sel);
+    sel.addEventListener('change', function () {
+      var cur = $('f_fp_file'); var file = cur && cur.files && cur.files[0];
+      if (file) onFileChosen(tool, file, sel.value);
+    });
+    return wrap;
+  }
+  function syncHeaderRow(d) {
+    var sel = $('f_header_row');
+    if (!sel || sel.tagName !== 'SELECT') return;
+    var rows = arr(d.header_rows).slice(0, HEADER_ROW_MAX);
+    if (rows.indexOf(d.header_row) < 0) rows.push(d.header_row);
+    rows.sort(function (a, b) { return a - b; });
+    sel.innerHTML = '';
+    var auto = d.header_row_auto;
+    var op0 = el('option', { value: '' });
+    op0.appendChild(bi(auto ? 'automática (linha ' + auto + ')' : 'automática', auto ? 'automatic (row ' + auto + ')' : 'automatic'));
+    op0.textContent = isEn() ? (auto ? 'automatic (row ' + auto + ')' : 'automatic') : (auto ? 'automática (linha ' + auto + ')' : 'automática');
+    sel.appendChild(op0);
+    rows.forEach(function (r) { sel.appendChild(el('option', { value: String(r) }, String(r))); });
+    sel.value = d.header_row_forced ? String(d.header_row) : '';
+  }
+
+  function fmtDate(iso, en) {
+    var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso || '');
+    if (!m) return iso || '';
+    return en ? iso : m[3] + '/' + m[2] + '/' + m[1];
+  }
+  // Metadados lidos acima do cabeçalho: código, nome, data e equipe
+  function metaCard(m) {
+    var team = arr(m.team);
+    if (!m.plot_code && !m.plot_name && !m.date && !team.length) return null;
+    var dl = el('dl', { class: 'meta-card' });
+    var row = function (pt, en, node) {
+      var d = el('div');
+      d.appendChild(biEl('dt', null, pt, en));
+      var dd = el('dd'); dd.appendChild(node); d.appendChild(dd);
+      dl.appendChild(d);
+    };
+    if (m.plot_code) row('Código da parcela', 'Plot code', el('span', { class: 'meta-code' }, m.plot_code));
+    if (m.plot_name) row('Nome', 'Name', el('span', null, m.plot_name));
+    if (m.date) row('Data', 'Date', bi(fmtDate(m.date, false), fmtDate(m.date, true)));
+    if (team.length) {
+      var sp = el('span');
+      sp.appendChild(biEl('strong', null, team.length + (team.length === 1 ? ' pessoa' : ' pessoas'), team.length + (team.length === 1 ? ' person' : ' people')));
+      sp.appendChild(document.createTextNode(' · ' + team.join(', ')));
+      row('Equipe', 'Team', sp);
+    }
+    return dl;
   }
 
   function renderDetect(tool, d) {
     var box = $('detect-box');
     box.innerHTML = ''; box.className = 'detect-box';
     if (!d.ok) {
+      detected = null;
       box.classList.add('is-warn');
       box.appendChild(biEl('p', { class: 'detect-head' }, 'Não foi possível ler o cabeçalho. Escolha o formato abaixo.', 'Could not read the header. Choose the layout below.'));
+      applyVisibility(tool);
       return;
     }
+    detected = d;
+    syncHeaderRow(d);
     var lay = mapLayout(tool, d.type);
     var L = LAYOUTS[d.type] || LAYOUTS.unknown;
     var head = el('p', { class: 'detect-head' }, [svg(d.type === 'unknown' ? IC_INFO : IC_OK)]);
     if (d.type === 'unknown') {
       box.classList.add('is-warn');
-      head.appendChild(bi('O cabeçalho não corresponde a um formato reconhecido. Indique as colunas abaixo.',
-                          'The header does not match a recognised layout. Map the columns below.'));
+      head.appendChild(bi('O cabeçalho não corresponde a um formato reconhecido. Confira a linha do cabeçalho e indique as colunas abaixo.',
+                          'The header does not match a recognised layout. Check the header row and map the columns below.'));
     } else {
       head.appendChild(bi('Formato sugerido: ' + L.pt[0] + '.' + (d.confidence === 'low' ? ' Confira abaixo.' : ''),
                           'Suggested layout: ' + L.en[0] + '.' + (d.confidence === 'low' ? ' Please check below.' : '')));
     }
     box.appendChild(head);
+
+    var meta = d.meta || { plot_code: d.plot_code, plot_name: d.plot_name };
+    var card = metaCard(meta);
+    if (card) box.appendChild(card);
+
     var ul = el('ul', { class: 'detect-facts' });
     var who = [d.plot_code, d.plot_name].filter(function (x) { return x; }).join(' · ');
-    if (who) ul.appendChild(el('li', null, who));
+    if (who && !card) ul.appendChild(el('li', null, who));
+    if (d.header_row) ul.appendChild(biEl('li', null, 'Cabeçalho na linha ' + d.header_row, 'Header on row ' + d.header_row));
     if (d.n_rows) ul.appendChild(biEl('li', null, d.n_rows + ' linhas', d.n_rows + ' rows'));
+    if (d.n_subplots) ul.appendChild(biEl('li', null, d.n_subplots + ' subparcelas', d.n_subplots + ' subplots'));
     var stations = arr(d.stations);
     if (stations.length) ul.appendChild(biEl('li', null, 'Estações: ' + stations.join(', '), 'Stations: ' + stations.join(', ')));
     if (ul.children.length) box.appendChild(ul);
     if (lay) setLayout(lay);
     if (stations.length) stationChips(stations);
-
-    var missing = arr(d.missing);
-    if (missing.length && document.querySelector('[data-field^="colname_"]')) {
-      columnSelects(arr(d.headers), d.suggest || {});
-      var det = $('group-colunas'); if (det) det.open = true;
-      var nSug = Object.keys(d.suggest || {}).length;
+    // Logos da CI e da Iakiô: sugeridas para a ficha de Terra Indígena, até a
+    // pessoa mexer na caixa (aí vale a escolha dela).
+    var ti = d.type === 'field_sheet_ti', suggested = false;
+    ['f_logo_ci', 'f_logo_iakio'].forEach(function (id) {
+      var lp = $(id);
+      if (!lp || lp.getAttribute('data-touched') === '1') return;
+      lp.checked = ti; suggested = suggested || ti;
+    });
+    if (suggested && $('group-logos')) {
+      $('group-logos').open = true;
       box.appendChild(biEl('p', { class: 'detect-note' },
-        missing.length + ' coluna(s) com nome padrão não encontrada(s)' + (nSug ? '; sugerimos ' + nSug + ' correspondência(s)' : '') + ' em “Colunas da planilha”. Confira antes de processar.',
-        missing.length + ' default column name(s) not found' + (nSug ? '; ' + nSug + ' match(es) suggested' : '') + ' under “Spreadsheet columns”. Check them before running.'));
+        'Ficha de Terra Indígena: as logos da CI e da Iakiô foram marcadas em “Logos no cabeçalho”. Desmarque se não quiser.',
+        'Indigenous Land field sheet: the CI and Iakiô logos were ticked under “Logos in the header”. Untick them if you prefer.'));
     }
+
+    // Os seletores de coluna mostram sempre o cabeçalho lido pelo R
+    var missing = arr(d.missing);
+    var headers = arr(d.headers);
+    var nSug = Object.keys(d.suggest || {}).length;
+    if (headers.length && d.type !== 'monitora' && document.querySelector('[data-field^="colname_"]')) {
+      // Planilha com nomes diferentes do padrão: todos os campos reconhecidos
+      // aparecem já escolhidos. Com os nomes padrão, nada precisa ser indicado.
+      columnSelects(headers, nSug ? (d.mapped || d.suggest || {}) : {});
+      var det = $('group-colunas');
+      if (missing.length) {
+        if (det) det.open = true;
+        box.appendChild(biEl('p', { class: 'detect-note' },
+          missing.length + ' coluna(s) não encontrada(s) nesta linha de cabeçalho' + (nSug ? '; ' + nSug + ' reconhecida(s) pelo nome' : '') + '. Indique-as em “Colunas da planilha” antes de processar.',
+          missing.length + ' column(s) not found on this header row' + (nSug ? '; ' + nSug + ' recognised by name' : '') + '. Map them under “Spreadsheet columns” before running.'));
+      } else if (nSug) {
+        box.appendChild(biEl('p', { class: 'detect-note' },
+          'Todas as colunas foram reconhecidas pelo nome; ' + nSug + ' com nome diferente do padrão já estão indicadas em “Colunas da planilha”.',
+          'All columns were recognised by name; ' + nSug + ' with a name other than the default are already set under “Spreadsheet columns”.'));
+      }
+    }
+    arr(d.renamed).forEach(function (r) {
+      box.appendChild(biEl('p', { class: 'detect-note' },
+        'Duas colunas são lidas como “' + r.name + '”: usamos a coluna ' + r.used_position + ' (“' + r.used + '”); a coluna ' + r.other_position + ' (“' + r.other + '”) é ignorada.',
+        'Two columns read as “' + r.name + '”: column ' + r.used_position + ' (“' + r.used + '”) is used; column ' + r.other_position + ' (“' + r.other + '”) is ignored.'));
+    });
     if (/^(field_sheet|unknown)$/.test(d.type) && !d.has_meta && $('f_plot_name')) {
       var adv = $('group-avancado'); if (adv) adv.open = true;
       box.appendChild(biEl('p', { class: 'detect-note' },
@@ -916,7 +1057,9 @@
       var sel = el('select', { id: old.id, name: name });
       sel.appendChild(el('option', { value: '' }, isEn() ? '(default name)' : '(nome padrão)'));
       headers.forEach(function (h) { sel.appendChild(el('option', { value: h }, h)); });
-      var v = suggest[name] || (old.tagName === 'SELECT' ? old.value : old.value.trim());
+      // sugestão do R; senão, o que a pessoa digitou (mas não a sugestão de outra planilha)
+      var typed = old.tagName === 'SELECT' ? (node.classList.contains('is-suggested') ? '' : old.value) : old.value.trim();
+      var v = suggest[name] || (headers.indexOf(typed) >= 0 || old.tagName !== 'SELECT' ? typed : '');
       if (v && headers.indexOf(v) < 0) sel.appendChild(el('option', { value: v }, v));
       sel.value = v || '';
       node.classList.toggle('is-suggested', !!suggest[name]);

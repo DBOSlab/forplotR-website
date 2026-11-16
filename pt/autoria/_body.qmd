@@ -12,6 +12,8 @@ The package brings together, in a single source, what work with permanent forest
 :::
 
 ```{=html}
+<!-- Os ícones de cada pessoa (ORCID, Lattes, GitHub) são gerados por scripts/seo.R
+     a partir de _data/entities.yml: {{PERSON_LINKS:<chave>}}. Não digite os links aqui. -->
 <div class="people">
   <section class="person" id="giulia-c-ottino">
     <img class="person-photo" src="{{ROOT}}assets/authors/giulia-c-ottino.jpg" alt="Giulia C. Ottino" width="400" height="400" loading="lazy">
@@ -22,11 +24,7 @@ The package brings together, in a single source, what work with permanent forest
       <p class="role" data-lang="en">Author and maintainer. Developed forplotR as the product of her master's degree in Botany at the National School of Tropical Botany (ENBT/JBRJ).</p>
       <p class="affil" data-lang="pt">Jardim Botânico do Rio de Janeiro</p>
       <p class="affil" data-lang="en">Rio de Janeiro Botanical Garden</p>
-      <ul>
-        <li>ORCID <a href="https://orcid.org/0009-0001-4352-1733" rel="me">0009-0001-4352-1733</a></li>
-        <li>Lattes <a href="http://lattes.cnpq.br/0819473317412079" rel="me">0819473317412079</a></li>
-        <li>GitHub <a href="https://github.com/giuliaottino" rel="me">giuliaottino</a></li>
-      </ul>
+      {{PERSON_LINKS:ottino}}
     </div>
   </section>
   <section class="person" id="domingos-cardoso">
@@ -38,10 +36,7 @@ The package brings together, in a single source, what work with permanent forest
       <p class="role" data-lang="en">Co-author and master's supervisor.</p>
       <p class="affil" data-lang="pt">Jardim Botânico do Rio de Janeiro</p>
       <p class="affil" data-lang="en">Rio de Janeiro Botanical Garden</p>
-      <ul>
-        <li>ORCID <a href="https://orcid.org/0000-0001-7072-2656">0000-0001-7072-2656</a></li>
-        <li>DBOSlab · <a href="https://github.com/DBOSlab">github.com/DBOSlab</a></li>
-      </ul>
+      {{PERSON_LINKS:cardoso}}
     </div>
   </section>
   <section class="person" id="pedro-lage-viana">
@@ -51,9 +46,7 @@ The package brings together, in a single source, what work with permanent forest
       <p class="role" data-lang="pt">Coorientador do mestrado.</p>
       <p class="role" data-lang="en">Master's co-supervisor.</p>
       <p class="affil">Instituto Nacional da Mata Atlântica (INMA)</p>
-      <ul>
-        <li>Lattes <a href="http://lattes.cnpq.br/8375441896375273">8375441896375273</a></li>
-      </ul>
+      {{PERSON_LINKS:viana}}
     </div>
   </section>
 </div>
