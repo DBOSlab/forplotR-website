@@ -149,10 +149,17 @@ $body$
 
 <footer class="site-foot">
   <div class="foot-inner">
-    <div class="foot-brand">
-      <img src="{{ROOT}}figures/forplotR_hex_64.png" alt="" width="29" height="32" loading="lazy">
-      <p class="foot-auth">{{AUTHOR_LINE}}</p>
-    </div>
+    <!-- Logos (forplotR e JBRJ) à esquerda dos links: ~30 px de altura, em tons
+         neutros; no tema escuro a do JBRJ é clareada por CSS (.foot-logo-mono). -->
+    <p class="foot-logos">
+$if(lang-en)$
+      <a href="{{LANGROOT}}"><img class="foot-logo" src="{{ROOT}}figures/forplotR_hex_192.png" alt="forplotR logo: hexagonal sticker of the R package" width="27" height="30" loading="lazy"></a>
+      <a href="https://www.gov.br/jbrj/pt-br"><img class="foot-logo foot-logo-mono" src="{{ROOT}}figures/jbrj_logo.png" alt="Logo of the Rio de Janeiro Botanical Garden Research Institute (JBRJ)" width="17" height="30" loading="lazy"></a>
+$else$
+      <a href="{{LANGROOT}}"><img class="foot-logo" src="{{ROOT}}figures/forplotR_hex_192.png" alt="Logo do forplotR: adesivo hexagonal do pacote R" width="27" height="30" loading="lazy"></a>
+      <a href="https://www.gov.br/jbrj/pt-br"><img class="foot-logo foot-logo-mono" src="{{ROOT}}figures/jbrj_logo.png" alt="Logo do Instituto de Pesquisas Jardim Botânico do Rio de Janeiro (JBRJ)" width="17" height="30" loading="lazy"></a>
+$endif$
+    </p>
     <p class="foot-meta">
 $if(lang-en)$
       <a href="{{LINK:authors}}">Authors</a> · <a href="{{LINK:cite}}">Cite</a> · <a href="{{LINK:news}}">News</a> · <a href="{{LINK:faq}}">FAQ</a> · <a href="https://github.com/DBOSlab/forplotR">GitHub</a> · <a href="https://github.com/DBOSlab/forplotR-website">site source</a> · MIT licence

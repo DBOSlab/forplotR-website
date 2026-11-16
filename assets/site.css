@@ -295,11 +295,18 @@ html.no-js .needs-js{display:none!important;}
 
 /* ---------- 7. Rodapé ---------- */
 .site-foot{border-top:1px solid var(--rule); padding:var(--s7) var(--gutter) var(--s8); margin-left:var(--rail);}
-.foot-inner{max-width:var(--content); margin:0 auto;}
-.foot-brand{display:flex; align-items:flex-start; gap:var(--s3); margin-bottom:var(--s3);}
-.foot-brand img{width:29px; height:auto; flex-shrink:0; margin-top:-3px;}
-.foot-auth{font:400 16px/1.6 var(--font-display); color:var(--text-strong); max-width:70ch;}
-.foot-meta{font-size:14px; color:var(--muted);}
+.foot-inner{max-width:var(--content); margin:0 auto; display:flex; align-items:center; flex-wrap:wrap; gap:var(--s3) var(--s5);}
+/* Logos do rodapé: pequenas e neutras (cinza), com a cor de volta ao passar o
+   mouse ou focar. A do JBRJ tem letras pretas: no tema escuro é invertida. */
+.foot-logos{display:flex; align-items:center; gap:var(--s4); margin:0; flex:none;}
+.foot-logos a{display:block; line-height:0; border-radius:var(--r1);}
+.foot-logo{display:block; height:30px; width:auto; filter:grayscale(1); opacity:.72; transition:filter var(--mid) var(--ease),opacity var(--mid) var(--ease);}
+.foot-logos a:hover .foot-logo,.foot-logos a:focus-visible .foot-logo{filter:none; opacity:1;}
+:root[data-theme="dark"] .foot-logo{opacity:.8;}
+:root[data-theme="dark"] .foot-logo-mono,
+:root[data-theme="dark"] .foot-logos a:hover .foot-logo-mono,
+:root[data-theme="dark"] .foot-logos a:focus-visible .foot-logo-mono{filter:grayscale(1) invert(1) brightness(1.6);}
+.foot-meta{font-size:14px; color:var(--muted); margin:0; flex:1 1 320px; min-width:0;}
 .foot-meta a{color:var(--muted);}
 .foot-meta a:hover{color:var(--text-strong);}
 

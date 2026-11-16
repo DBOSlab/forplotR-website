@@ -3,8 +3,7 @@
 #
 # Roda depois do `quarto render` (project.post-render no _quarto.yml) sobre a
 # pasta de saída inteira. Para cada página com data-page-id:
-#   - resolve os marcadores do template ({{ROOT}}, {{LANGROOT}}, {{ALT_URL}},
-#     {{AUTHOR_LINE}});
+#   - resolve os marcadores do template ({{ROOT}}, {{LANGROOT}}, {{ALT_URL}});
 #   - grava em <!--fp:seo--> o canonical, os hreflang (pt-BR, en, x-default),
 #     Open Graph, as meta tags de autoria e de citação e o JSON-LD (schema.org)
 #     com o grafo de entidades de _data/entities.yml: o forplotR, a autoria
@@ -179,27 +178,6 @@ thesis_node <- function(lang) {
     dateCreated = th$year, url = th$url, about = list("@id" = id_sw),
     workExample = list("@id" = id_sw)
   ))
-}
-
-# Coorientação na frase de autoria (só com o coorientador em _data/entities.yml).
-co_line <- function(lang, a) {
-  if (!(thesis_ok && has(th$co_advisor))) return("")
-  k <- th$co_advisor
-  anchor <- sub(".*#", "", id_person(k))
-  sprintf(if (lang == "en") ' and co-supervised by <a href="%s#%s">%s</a>' else ' e coorientação de <a href="%s#%s">%s</a>', a, anchor, P[[k]]$name)
-}
-
-# Frase de autoria do rodapé (texto visível: é o que buscadores e assistentes leem).
-author_line <- function(lang, root) {
-  a <- paste0(root, authors_path(lang))
-  yr <- if (thesis_ok && has(th$year)) paste0(", ", th$year) else ""
-  if (lang == "en") {
-    detail <- if (thesis_ok) sprintf(' as the product of her <a href="%s#dissertacao">master\'s degree in Botany</a> at the National School of Tropical Botany (ENBT/JBRJ%s)', a, yr) else " during her master's degree"
-    sprintf('forplotR was developed by <a href="%s#giulia-c-ottino">Giulia C. Ottino</a>%s, supervised by <a href="%s#domingos-cardoso">Domingos Cardoso</a>%s, at the Rio de Janeiro Botanical Garden (DBOSlab).', a, detail, a, co_line(lang, a))
-  } else {
-    detail <- if (thesis_ok) sprintf(' como produto de seu <a href="%s#dissertacao">mestrado em Botânica</a> na Escola Nacional de Botânica Tropical (ENBT/JBRJ%s)', a, yr) else " como produto de seu mestrado"
-    sprintf('O forplotR foi desenvolvido por <a href="%s#giulia-c-ottino">Giulia C. Ottino</a>%s, sob orientação de <a href="%s#domingos-cardoso">Domingos Cardoso</a>%s, no Jardim Botânico do Rio de Janeiro (DBOSlab).', a, detail, a, co_line(lang, a))
-  }
 }
 
 # Artigo (página "Como citar"): DOI quando publicado.
@@ -405,7 +383,6 @@ for (i in seq_len(nrow(pages))) {
   h <- gsub("{{ROOT}}", root, h, fixed = TRUE)
   h <- gsub("{{LANGROOT}}", langroot, h, fixed = TRUE)
   h <- gsub("{{ALT_URL}}", alt_href, h, fixed = TRUE)
-  h <- gsub("{{AUTHOR_LINE}}", author_line(row$lang, root), h, fixed = TRUE)
   h <- gsub("<p>{{THESIS_BLOCK}}</p>", thesis_block(row$lang), h, fixed = TRUE)
   h <- gsub("<p>{{PAPER_BLOCK}}</p>", paper_block(row$lang), h, fixed = TRUE)
   # {{LINK:id}}: endereço relativo da página com esse page-id, na língua da página
