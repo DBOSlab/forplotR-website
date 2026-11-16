@@ -7,7 +7,6 @@ description: '[Como o forplotR roda no navegador sem enviar dados, o que fica s√
   data from Indigenous Lands and protected areas, and partners.]{data-lang=en}'
 page-id: about
 schema: AboutPage
-hide-title: true
 ---
 
 {{< include ../../sobre/_body.qmd >}}

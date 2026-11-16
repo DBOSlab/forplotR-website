@@ -3,8 +3,8 @@ title: "[Planilha do herbário no navegador]{data-lang=pt}[Herbarium spreadsheet
 description: "[Formulário que roda forplot_sheets() no seu navegador (webR), sem enviar os dados.]{data-lang=pt}[Form that runs forplot_sheets() in your browser (webR), without sending the data.]{data-lang=en}"
 page-id: tool-labels
 en-path: "tools/herbarium"
+kicker: "forplot_sheets()"
 schema: WebPage
-hide-title: true
 tool: true
 page-class: tool
 ---

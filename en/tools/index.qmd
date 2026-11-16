@@ -6,7 +6,6 @@ description: '[As funções do forplotR no navegador (webR), sem instalar o R e 
   (webR), without installing R and without sending the plot data.]{data-lang=en}'
 page-id: tools
 schema: CollectionPage
-hide-title: true
 tool: true
 page-class: tool
 ---

@@ -5,8 +5,8 @@ description: '[Formulário que roda forplot_vouchers() no seu navegador (webR), 
   enviar os dados.]{data-lang=pt}[Form that runs forplot_vouchers() in your browser
   (webR), without sending the data.]{data-lang=en}'
 page-id: tool-photos
+kicker: forplot_vouchers()
 schema: WebPage
-hide-title: true
 tool: true
 page-class: tool
 ---

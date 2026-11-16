@@ -1,10 +1,10 @@
 ---
-title: "[Conferir determinações]{data-lang=pt}[Check determinations]{data-lang=en}"
-description: "[Formulário que roda forplot_crossdet() no seu navegador (webR), sem enviar os dados.]{data-lang=pt}[Form that runs forplot_crossdet() in your browser (webR), without sending the data.]{data-lang=en}"
+title: "[Cruzamento de determinações]{data-lang=pt}[Determination cross-check]{data-lang=en}"
+description: "[Formulário de forplot_crossdet(): cruza os vouchers da parcela com o herbário (JABOT). Usa rede, por isso roda no R ou no modo servidor.]{data-lang=pt}[Form for forplot_crossdet(): cross-checks the plot vouchers against the herbarium (JABOT). It needs the network, so it runs in R or in server mode.]{data-lang=en}"
 page-id: tool-determinations
 en-path: "tools/determinations"
+kicker: "forplot_crossdet()"
 schema: WebPage
-hide-title: true
 tool: true
 page-class: tool
 ---

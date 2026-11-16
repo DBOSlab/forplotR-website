@@ -1,17 +1,14 @@
 
-```{=html}
-<section class="fp-hero" style="--fn:var(--ipe)">
-  <div class="fp-hero-inner">
-    <p class="fp-hero-kicker"><span class="fn-mark"></span>forplotR::forplot_balance()</p>
-    <h1 class="fp-hero-title"><span data-lang="pt">Relatório e balanço de coleta</span><span data-lang="en">Report and collection balance</span></h1>
-    <p class="fp-hero-deck" data-lang="pt">Relatório que sintetiza a estrutura da parcela, a composição de espécies e a cobertura de vouchers: mapas da parcela e das subparcelas, situação de coleta, checklist e subparcelas prioritárias para a próxima campanha.</p>
-    <p class="fp-hero-deck" data-lang="en">A report summarising plot structure, species composition and voucher coverage: maps of the plot and of each subplot, collection status, checklist and the priority subplots for the next campaign.</p>
-    <div class="fp-hero-actions"><a class="fx-btn fx-btn-primary" href="#ferramenta"><span data-lang="pt">Ir ao formulário</span><span data-lang="en">Go to the form</span></a><a class="fx-btn fx-btn-secondary" href="{{LINK:balance}}"><span data-lang="pt">Documentação da função</span><span data-lang="en">Function documentation</span></a></div>
-  </div>
-</section>
-```
+::: {data-lang="pt"}
+Relatório que sintetiza a estrutura da parcela, a composição de espécies e a cobertura de vouchers: mapas da parcela e das subparcelas, situação de coleta, checklist e subparcelas prioritárias para a próxima campanha.
+:::
+::: {data-lang="en"}
+A report summarising plot structure, species composition and voucher coverage: maps of the plot and of each subplot, collection status, checklist and the priority subplots for the next campaign.
+:::
 
-::: {.fp-section}
+::: {.actions}
+[[Ir ao formulário](#ferramenta){.btn .btn-primary} [Documentação da função]({{LINK:balance}}){.btn}]{data-lang=pt}[[Go to the form](#ferramenta){.btn .btn-primary} [Function documentation]({{LINK:balance}}){.btn}]{data-lang=en}
+:::
 
 ## [Procedimento]{data-lang=pt}[Procedure]{data-lang=en} {#procedimento}
 
@@ -34,10 +31,6 @@ To run without your own spreadsheet, tick **Use the example data**.
 <div id="ferramenta" class="fp-tool-app" data-tool="balance"></div>
 ```
 
-:::
-
-::: {.fp-section}
-
 ## [Saídas]{data-lang=pt}[Outputs]{data-lang=en} {#saidas}
 
 ::: {data-lang="pt"}
@@ -51,8 +44,6 @@ To run without your own spreadsheet, tick **Use the example data**.
 - **PDF** for printing and field use: open the downloaded HTML report and use Print > Save as PDF. The package, in R, can also build the PDF directly (with LaTeX).
 - **PNG figures**: overall map, collected, not collected, palms, priority subplots, most abundant species and families.
 - **XLSX spreadsheet** with the collection percentage per subplot and the collected and uncollected tags (not available for Monitora).
-:::
-
 :::
 
 ```{=html}

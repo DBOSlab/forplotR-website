@@ -5,8 +5,8 @@ description: '[Formulário que roda forplot_balance() no seu navegador (webR), s
   enviar os dados.]{data-lang=pt}[Form that runs forplot_balance() in your browser
   (webR), without sending the data.]{data-lang=en}'
 page-id: tool-balance
+kicker: forplot_balance()
 schema: WebPage
-hide-title: true
 tool: true
 page-class: tool
 ---

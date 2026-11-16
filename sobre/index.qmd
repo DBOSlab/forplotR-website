@@ -4,7 +4,6 @@ description: "[Como o forplotR roda no navegador sem enviar dados, o que fica s√
 page-id: about
 en-path: "about"
 schema: AboutPage
-hide-title: true
 ---
 
 {{< include _body.qmd >}}

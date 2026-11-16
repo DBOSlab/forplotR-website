@@ -4,7 +4,6 @@ description: "[As funções do forplotR no navegador (webR), sem instalar o R e 
 page-id: tools
 en-path: "tools"
 schema: CollectionPage
-hide-title: true
 tool: true
 page-class: tool
 ---
