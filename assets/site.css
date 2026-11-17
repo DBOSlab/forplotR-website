@@ -125,6 +125,21 @@ main > .full{max-width:none;}
 /* ---------- 4. Navegação ---------- */
 .rail{position:sticky; top:0; height:100vh; overflow-y:auto; display:flex; flex-direction:column; gap:var(--s6);
   padding:var(--s6) var(--s5); border-right:1px solid var(--rule); font-size:14px; scrollbar-width:thin;}
+.rail-top{display:flex; align-items:center; justify-content:space-between; gap:var(--s2);}
+.rail-body{display:flex; flex-direction:column; gap:var(--s6); flex:1 0 auto;}
+.rail-toggle{display:inline-grid; place-items:center; width:32px; height:32px; padding:0; flex:none; border:1px solid transparent; border-radius:var(--r2);
+  background:transparent; color:var(--muted); cursor:pointer;}
+.rail-toggle:hover{color:var(--text-strong); border-color:var(--rule-strong); background:var(--surface);}
+.rail-toggle svg{width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:1.5; stroke-linecap:round; stroke-linejoin:round; transition:transform var(--fast) var(--ease);}
+html.no-js .rail-toggle{display:none;}
+/* Barra recolhida (botão .rail-toggle, salvo em forplotR_rail): fica só uma
+   faixa estreita com o logo e o botão para abrir de novo. */
+.shell{transition:grid-template-columns var(--fast) var(--ease);}
+:root.rail-min{--rail:60px;}
+.rail-min .rail{padding:var(--s5) var(--s2); align-items:center; overflow:hidden;}
+.rail-min .rail-top{flex-direction:column; gap:var(--s3);}
+.rail-min .rail .brand span,.rail-min .rail-body{display:none;}
+.rail-min .rail-toggle svg{transform:scaleX(-1);}
 .brand{display:inline-flex; align-items:center; gap:var(--s2); min-width:0; text-decoration:none; color:var(--text-strong);}
 .brand img{width:28px; height:auto; flex-shrink:0;}
 .brand span{font:600 21px/1.2 var(--font-brand); letter-spacing:-.01em; white-space:nowrap;}
@@ -314,7 +329,10 @@ html.no-js .needs-js{display:none!important;}
 .foot-meta a:hover{color:var(--text-strong);}
 
 /* ---------- 8. Celular, impressão, movimento reduzido ---------- */
-@media (max-width:1079.98px){
+/* Abaixo de 992 px (celular, tablet, janela em meia tela) a barra lateral dá
+   lugar à faixa do topo e à barra inferior; acima, a barra lateral é o padrão. */
+@media (max-width:991.98px){
+  :root.rail-min{--rail:248px;}
   .shell{grid-template-columns:minmax(0,1fr);}
   .rail{display:none;}
   /* faixa do topo: altura mínima (não fixa), acima do conteúdo que vem depois */
@@ -345,6 +363,7 @@ html.no-js .needs-js{display:none!important;}
   .app-list code{grid-column:2; grid-row:auto;}
 }
 @media (prefers-reduced-motion:reduce){
+  .shell,.rail-toggle svg{transition:none;}
   *,*::before,*::after{animation-duration:.01ms!important; animation-iteration-count:1!important; transition-duration:.01ms!important; scroll-behavior:auto!important;}
 }
 @media print{

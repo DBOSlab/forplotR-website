@@ -21,7 +21,7 @@ $endif$
 <!-- Modo servidor: onde está a API ("/v1" = mesma origem). -->
 <meta name="forplotr-api" content="/v1">
 <!-- Tema aplicado antes de desenhar a página: a escolha salva (forplotR_theme)
-     ou, sem escolha, o sistema. -->
+     ou, sem escolha, o sistema. O mesmo vale para a barra lateral recolhida. -->
 <script>
 (function () {
   var r = document.documentElement, t = null;
@@ -30,6 +30,8 @@ $endif$
   var q = /[?&]theme=(dark|light)\b/.exec(location.search); if (q) t = q[1];
   if (t !== 'light' && t !== 'dark') t = window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
   r.setAttribute('data-theme', t);
+  // barra lateral recolhida (forplotR_rail = "min"), também antes de desenhar
+  try { if (localStorage.getItem('forplotR_rail') === 'min') r.className += ' rail-min'; } catch (e) {}
 })();
 </script>
 <!-- Texto e títulos usam a sans-serif do sistema (--font-sans em assets/site.css):
@@ -66,10 +68,17 @@ $endif$
 </header>
 <div class="shell">
 <aside class="rail" $if(lang-en)$aria-label="Site navigation"$else$aria-label="Navegação do site"$endif$>
-  <a class="brand" href="{{LANGROOT}}" $if(lang-en)$aria-label="forplotR, home"$else$aria-label="forplotR, início"$endif$>
-    <img src="{{ROOT}}figures/forplotR_hex_64.png" alt="" width="28" height="31">
-    <span>forplotR</span>
-  </a>
+  <div class="rail-top">
+    <a class="brand" href="{{LANGROOT}}" $if(lang-en)$aria-label="forplotR, home"$else$aria-label="forplotR, início"$endif$>
+      <img src="{{ROOT}}figures/forplotR_hex_64.png" alt="" width="28" height="31">
+      <span>forplotR</span>
+    </a>
+    <!-- Recolhe ou abre a barra lateral; a escolha fica salva (forplotR_rail). -->
+    <button type="button" class="rail-toggle" aria-controls="rail-body" aria-expanded="true" data-label-hide="$if(lang-en)$Collapse sidebar$else$Recolher a barra lateral$endif$" data-label-show="$if(lang-en)$Expand sidebar$else$Abrir a barra lateral$endif$">
+      <svg viewBox="0 0 16 16" aria-hidden="true"><rect x="1.75" y="2.75" width="12.5" height="10.5" rx="1.5"/><path d="M6 2.75v10.5M11 6.5 9.5 8l1.5 1.5"/></svg>
+    </button>
+  </div>
+  <div class="rail-body" id="rail-body">
   <button type="button" class="search-btn needs-js" data-search-open aria-haspopup="dialog">
     <svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="4.5"/><path d="m10.5 10.5 3.5 3.5"/></svg>
     <span>$if(lang-en)$Search$else$Buscar$endif$</span><kbd>/</kbd>
@@ -131,6 +140,7 @@ $endif$
       <svg class="i-sun" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3"/><path d="M8 1v1.5M8 13.5V15M1 8h1.5M13.5 8H15M3 3l1.1 1.1M11.9 11.9 13 13M3 13l1.1-1.1M11.9 4.1 13 3"/></svg>
     </button>
   </div>
+  </div>
 </aside>
 
 <main id="content" tabindex="-1" data-pagefind-body>
@@ -170,7 +180,7 @@ $endif$
   </div>
 </footer>
 
-<!-- Celular: barra inferior compacta. Funciona sem JavaScript (<details>). -->
+<!-- Celular e meia tela (< 992 px): barra inferior compacta. Funciona sem JavaScript (<details>). -->
 <nav class="bottom-bar" $if(lang-en)$aria-label="Quick navigation"$else$aria-label="Navegação rápida"$endif$>
 $if(lang-en)$
   <a href="{{LINK:home}}" data-nav="home">Home</a>

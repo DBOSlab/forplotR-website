@@ -351,9 +351,9 @@
 .file-kind.kind-image{background:var(--folha-tint); color:var(--folha-ink);}
 .output-card > div{flex:1;}
 
-/* abaixo de 1080 px há a barra de navegação fixa no pé (52 px): a barra de
+/* abaixo de 992 px há a barra de navegação fixa no pé (52 px): a barra de
    execução fica logo acima dela, nunca por baixo */
-@media (max-width:1079.98px){
+@media (max-width:991.98px){
   .run-bar{bottom:calc(53px + env(safe-area-inset-bottom));}
 }
 @media (max-width:760px){
