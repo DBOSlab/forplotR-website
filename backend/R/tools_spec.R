@@ -209,8 +209,9 @@ TOOLS <- list(
       f_header_row(),
       f_colnames()
     ),
-    fixed = function(ctx, params) list(dir = ctx$outputs, filename = "relatorio_parcela",
-                                       verbose = TRUE),
+    # sem `filename`: o pacote usa o prefixo do idioma (parcela_, plot_, ...),
+    # e os nomes dos arquivos saem inteiros no idioma escolhido
+    fixed = function(ctx, params) list(dir = ctx$outputs, verbose = TRUE),
     check = function(params, ctx) logos_param(params)
   ),
 
