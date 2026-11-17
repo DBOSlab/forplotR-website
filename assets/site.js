@@ -3,6 +3,7 @@
  * O site funciona sem JavaScript: navegação, textos, código e imagens estáticas
  * estão no HTML. Este arquivo só acrescenta:
  *   - troca de tema claro/escuro (salva em localStorage: forplotR_theme);
+ *   - barra lateral recolhível (forplotR_rail);
  *   - preferência de idioma (forplotR_lang), usada pelos redirecionamentos;
  *   - índice da página com a seção atual e o arco de progresso da leitura;
  *   - botão "Copiar" nos blocos de código;
@@ -43,6 +44,22 @@
     };
     if (mq.addEventListener) mq.addEventListener('change', follow);
   }
+
+  // ---------- barra lateral: recolher / abrir (salvo em forplotR_rail) ----------
+  function railLabel(btn) {
+    var min = root.classList.contains('rail-min');
+    var t = min ? btn.getAttribute('data-label-show') : btn.getAttribute('data-label-hide');
+    btn.setAttribute('aria-label', t); btn.title = t;
+    btn.setAttribute('aria-expanded', min ? 'false' : 'true');
+  }
+  document.querySelectorAll('.rail-toggle').forEach(function (b) {
+    railLabel(b);
+    b.addEventListener('click', function () {
+      var min = root.classList.toggle('rail-min');
+      store('forplotR_rail', min ? 'min' : 'open');
+      railLabel(b);
+    });
+  });
 
   // ---------- idioma: a troca é um link para a página equivalente ----------
   document.querySelectorAll('[data-set-lang]').forEach(function (a) {
