@@ -18,7 +18,8 @@
 
 <p>Generate an interactive HTML map of vouchered individuals in a forest plot
 using Leaflet. The function supports standard ForestPlots.net layouts defined
-by plot vertices and MONITORA layouts defined by a single central coordinate.
+by plot vertices, MONITORA layouts defined by a single central coordinate and
+GigaFlor field sheets, whose trees already carry their own coordinates.
 It harmonizes specimen records, converts local plot coordinates to geographic
 coordinates, draws plot geometry and subplot boundaries, and writes a
 shareable HTML map to disk.
@@ -29,7 +30,8 @@ shareable HTML map to disk.
 
 <pre><code class='language-R'>forplot_map(
   fp_file_path = NULL,
-  input_type = c("field_sheet", "field_sheet_ti", "fp_query_sheet", "monitora"),
+  input_type = c("field_sheet", "field_sheet_ti", "fp_query_sheet", "monitora",
+    "gigaflor"),
   vertex_coords = NULL,
   plot_size = 1,
   subplot_size = 10,
@@ -83,7 +85,8 @@ data in ForestPlots.net field-sheet, Query Library, or MONITORA format.</p>
 <tr><td><code id="input_type">input_type</code></td>
 <td>
 <p>Input layout. One of <code>"field_sheet"</code>,
-<code>"field_sheet_ti"</code>, <code>"fp_query_sheet"</code>, or <code>"monitora"</code>.</p>
+<code>"field_sheet_ti"</code>, <code>"fp_query_sheet"</code>, <code>"monitora"</code>, or
+<code>"gigaflor"</code>.</p>
 </td></tr>
 <tr><td><code id="vertex_coords">vertex_coords</code></td>
 <td>
@@ -99,7 +102,8 @@ interpreted as <code>c(lat, lon)</code> unless named with <code>lat</code>/<code
 and <code>lon</code>/<code>longitude</code>. When several MONITORA stations are
 requested, supply one center per station: a named list, a data frame with
 one row per station (in the order of <code>station_name</code>), or a data frame
-with a station column.</p>
+with a station column. Optional for <code>"gigaflor"</code> (estimated from the
+trees' coordinates when <code>NULL</code>).</p>
 </td></tr>
 <tr><td><code id="plot_size">plot_size</code></td>
 <td>
@@ -108,7 +112,9 @@ non-MONITORA inputs.</p>
 </td></tr>
 <tr><td><code id="subplot_size">subplot_size</code></td>
 <td>
-<p>Numeric scalar. Side length of each subplot in meters.</p>
+<p>Numeric scalar. Side length of each subplot in meters.
+Defaults to 10, or to 20 (GigaFlor protocol 1) when
+<code>input_type = "gigaflor"</code> and the argument is not given.</p>
 </td></tr>
 <tr><td><code id="plot_width_m">plot_width_m</code></td>
 <td>
@@ -371,6 +377,16 @@ that, by their fixed position in the template.</p>
 </dd>
 <dt><code>"monitora"</code></dt><dd><p>MONITORA layout converted internally and plotted using MONITORA geometry.</p>
 </dd>
+<dt><code>"gigaflor"</code></dt><dd><p>GigaFlor network field sheet (protocol 1: 25
+subplots of 20 x 20 m; see <code>forplot_balance()</code>). Each tree is drawn at its
+own <code>X</code> (longitude) / <code>Y</code> (latitude) in decimal degrees, as
+given in the sheet. <code>vertex_coords</code> is optional: when it is
+<code>NULL</code>, the four plot corners, and so the subplot grid, are
+estimated from the trees' coordinates and their <code>T1</code> subplots
+with the plot dimensions (<code>plot_size</code>, <code>subplot_size</code>). Give
+<code>vertex_coords</code> to draw the grid from the corners marked in the
+survey instead. <code>subplot_size</code> defaults to 20 m.</p>
+</dd>
 </dl>
 
 
@@ -464,6 +480,7 @@ forplot_map(
 <p>Generate specimen collection-balance maps and reports from
 <a href="https://forestplots.net/">ForestPlots.net</a> or
 <a href="https://www.gov.br/icmbio/pt-br/assuntos/monitoramento/programa-monitora">MONITORA program</a>
+or <a href="https://robson-lima2023.github.io/page-gigaflor/">GigaFlor network</a>
 field data. The function reads plot data, standardizes coordinates and
 specimen metadata, builds plot and subplot maps, and optionally exports
 HTML/PDF reports and an Excel summary workbook.
@@ -475,7 +492,8 @@ HTML/PDF reports and an Excel summary workbook.
 <pre><code class='language-R'>forplot_balance(
   fp_file_path = NULL,
   language = c("en", "pt", "es", "fr", "ma", "pa"),
-  input_type = c("field_sheet", "field_sheet_ti", "fp_query_sheet", "monitora"),
+  input_type = c("field_sheet", "field_sheet_ti", "fp_query_sheet", "monitora",
+    "gigaflor"),
   plot_size = 1,
   subplot_size = 10,
   plot_width_m = NULL,
@@ -491,7 +509,7 @@ HTML/PDF reports and an Excel summary workbook.
   write_xlsx = TRUE,
   verbose = TRUE,
   dir = file.path(tempdir(), "Results_map_plot"),
-  filename = "plot_specimen",
+  filename = NULL,
   logos = NULL,
   header_row = NULL,
   colname_tagno = NULL,
@@ -529,7 +547,8 @@ field-sheet, Query Library, or MONITORA format.</p>
 <tr><td><code id="input_type">input_type</code></td>
 <td>
 <p>Input layout. One of <code>"field_sheet"</code>,
-<code>"field_sheet_ti"</code>, <code>"fp_query_sheet"</code>, or <code>"monitora"</code>.</p>
+<code>"field_sheet_ti"</code>, <code>"fp_query_sheet"</code>, <code>"monitora"</code>, or
+<code>"gigaflor"</code>.</p>
 </td></tr>
 <tr><td><code id="plot_size">plot_size</code></td>
 <td>
@@ -539,7 +558,9 @@ and <code>"fp_query_sheet"</code> inputs. Ignored when
 </td></tr>
 <tr><td><code id="subplot_size">subplot_size</code></td>
 <td>
-<p>Side length of each subplot in meters.</p>
+<p>Side length of each subplot in meters. Defaults to 10,
+or to 20 (GigaFlor protocol 1) when <code>input_type = "gigaflor"</code> and the
+argument is not given.</p>
 </td></tr>
 <tr><td><code id="plot_width_m">plot_width_m</code></td>
 <td>
@@ -616,7 +637,11 @@ session ends; supply a path to keep the outputs.</p>
 </td></tr>
 <tr><td><code id="filename">filename</code></td>
 <td>
-<p>Basename for generated output files, without extension.</p>
+<p>Prefix of the names of the output files, without
+extension. The default <code>NULL</code> uses the word for &quot;plot&quot; in the report
+language (<code>"parcela"</code> in Portuguese, Panará and Spanish,
+<code>"plot"</code> in English and Mandarin, <code>"parcelle"</code> in French). See
+<em>Output files</em>.</p>
 </td></tr>
 <tr><td><code id="logos">logos</code></td>
 <td>
@@ -648,7 +673,8 @@ number to force it.</p>
 respectively: tree tag (<code>"New Tag No"</code>), stem group
 (<code>"New Stem Grouping"</code>), subplot (<code>"T1"</code>; for MONITORA, the
 subunit N/S/L/O), local X and Y coordinates (m), family, species
-(<code>"Original determination"</code>), diameter in mm (<code>"D"</code>), voucher,
+(<code>"Original determination"</code>), diameter in mm (<code>"D"</code>; in cm for
+<code>input_type = "gigaflor"</code>), voucher,
 and collection status. Use them when your file uses different column names.
 The default <code>NULL</code> keeps automatic detection. Matching ignores case,
 accents, and punctuation. A supplied column always overrides automatic
@@ -681,7 +707,7 @@ date. Only the most recent census is plotted.</p>
 <h4>Details</h4>
 
 <p>Supported inputs include ForestPlots.net field sheets, Indigenous Land field
-sheets, Query Library exports, and MONITORA layouts. Depending on the selected
+sheets, Query Library exports, MONITORA layouts and GigaFlor field sheets. Depending on the selected
 <code>input_type</code>, the function:
 </p>
 
@@ -755,7 +781,47 @@ that, by their fixed position in the template.</p>
 </dd>
 <dt><code>"monitora"</code></dt><dd><p>MONITORA layout, converted internally and plotted using MONITORA geometry.</p>
 </dd>
+<dt><code>"gigaflor"</code></dt><dd><p>GigaFlor network field sheet (see <em>GigaFlor
+field sheets</em>).</p>
+</dd>
 </dl>
+
+
+
+<h4>GigaFlor field sheets</h4>
+
+<p>The <a href="https://robson-lima2023.github.io/page-gigaflor/">GigaFlor</a>
+spreadsheet is read from its <code>"Data"</code> worksheet (the first sheet when
+there is none), with the plot metadata (<code>"Plotcode:"</code>,
+<code>"Plot Name:"</code>, <code>"Date:"</code>, <code>"Team:"</code>) above the header.
+It follows GigaFlor protocol 1: a 1-ha plot of 25 subplots of
+20 x 20 m (<code>T1</code>, numbered in serpentine order as in ForestPlots), each
+split into four 10 x 10 m quadrants (<code>T2</code>). With
+<code>input_type = "gigaflor"</code>, <code>subplot_size</code> defaults to 20 m.
+Differences from a ForestPlots field sheet are handled automatically:
+</p>
+
+<ul>
+<li> <p><code>"Tag Number"</code> is the tree tag (<code>"New Tag No"</code>),
+<code>"Species"</code> the determination (<code>"Original determination"</code>)
+and <code>"Main Stem Tag"</code> groups the stems of a multi-stemmed tree;
+</p>
+</li>
+<li> <p><code>D</code> is in centimetres (converted to millimetres internally;
+taken from <code>"CAP (cm)"</code> / pi when empty);
+</p>
+</li>
+<li> <p><code>X</code> and <code>Y</code> are the geographic coordinates of each tree
+in decimal degrees (<code>X</code> = longitude, <code>Y</code> = latitude). They are
+projected to metres and fitted onto the subplot grid by a rotation and a
+translation that bring each tree closest to the centre of its own
+<code>T1</code> subplot, which recovers the orientation of the plot on the
+ground. Trees are then drawn at that position inside their subplot
+(kept inside it when GPS error places them just outside). A warning is
+given when the coordinates fit the grid poorly. Trees without
+coordinates are drawn at the centre of their subplot.
+</p>
+</li></ul>
 
 
 
@@ -779,18 +845,66 @@ the cross of four arms of the protocol.
 Ellenberg (1974), with the subplot as the sampling unit for frequency. It
 gives richness (species, genera, families), density and basal area per
 hectare, Shannon <code class="reqn">H'</code>, Simpson <code class="reqn">1 - D</code> and Pielou <code class="reqn">J'</code>; the
-families and species with the highest importance value (IVI = relative
-density + relative frequency + relative dominance) as stacked bar charts;
+species with the most individuals; the families and species with the
+highest importance value (IVI = relative density + relative frequency +
+relative dominance) as stacked bar charts;
 the distribution of stems per diameter class; and the full tables of
 phytosociological parameters of every family and species. A name used in
 more than one family (e.g. &quot;Indet indet&quot;) is treated as one taxon per
-family. The same charts are also saved as PNG files.
+family. Each bar ends with its value (number of individuals as an integer,
+IVI with one decimal). When the sheet has a vernacular name (the
+<code>"Local name"</code> column of the Indigenous Land template, or a
+<code>"Vernacular name"</code> column), species are labelled
+<code>"vernacular | scientific"</code>, with the scientific name in italics. The
+same charts are also saved as PNG files.
 </p>
 <p>The PDF report is the same HTML printed by a headless Chrome, Chromium or
 Microsoft Edge, one A4 page per subplot. The browser is found automatically
 or through the <code>FORPLOTR_CHROME</code> environment variable. When none is
 available, the PDF is skipped with a warning; the HTML report can then be
 printed to PDF from any browser.
+</p>
+
+
+<h4>Output files</h4>
+
+<p>Every file is named <code>&lt;filename&gt;_&lt;name&gt;.&lt;ext&gt;</code>, where <code>&lt;name&gt;</code>
+follows <code>language</code>: Portuguese for <code>"pt"</code> and <code>"pa"</code>
+(Panará), Spanish for <code>"es"</code>, French for <code>"fr"</code> and English for
+<code>"en"</code> and <code>"ma"</code> (Mandarin, whose characters cannot be used in
+file names). Names are in snake_case, without accents or spaces, so that
+they can be published as URLs. In Portuguese / English:
+</p>
+
+<dl>
+<dt><code>relatorio_completo.html</code> / <code>full_report.html</code></dt><dd><p>Field report (also <code>.pdf</code>).</p>
+</dd>
+<dt><code>geral.png</code> / <code>general.png</code></dt><dd><p>Map of all stems.</p>
+</dd>
+<dt><code>coletados.png</code> / <code>collected.png</code></dt><dd><p>Map of the stems with voucher.</p>
+</dd>
+<dt><code>nao_coletados.png</code> / <code>uncollected.png</code></dt><dd><p>Map of the stems pending collection.</p>
+</dd>
+<dt><code>palmeiras_nao_coletadas.png</code> / <code>uncollected_palms.png</code></dt><dd><p>Map of the palms.</p>
+</dd>
+<dt><code>especies_prioritarias_nao_coletadas.png</code> / <code>priority_uncollected_species.png</code></dt><dd><p>Priority subplots.</p>
+</dd>
+<dt><code>familias_ivi.png</code> / <code>families_ivi.png</code></dt><dd><p>Families with the highest IVI.</p>
+</dd>
+<dt><code>especies_abundancia.png</code> / <code>species_abundance.png</code></dt><dd><p>Species with the most individuals.</p>
+</dd>
+<dt><code>especies_ivi.png</code> / <code>species_ivi.png</code></dt><dd><p>Species with the highest IVI.</p>
+</dd>
+<dt><code>classes_dap.png</code> / <code>dbh_classes.png</code></dt><dd><p>Stems per diameter class.</p>
+</dd>
+<dt><code>balanco_coleta.xlsx</code> / <code>collection_balance.xlsx</code></dt><dd><p>Collection balance per subplot.</p>
+</dd>
+</dl>
+
+<p>With several MONITORA stations, the prefix gets the station:
+<code>&lt;filename&gt;_estacao_&lt;station&gt;</code> (<code>_station_</code> in English).
+A PDF printed from the HTML report in a browser is offered with the name of
+the report file instead of the page title.
 </p>
 
 
@@ -841,6 +955,14 @@ forplot_balance(
 
 
 ## Not run: 
+# GigaFlor field sheet (protocol 1: 25 subplots of 20 x 20 m, X/Y in
+# decimal degrees, D in cm)
+forplot_balance(
+  "PNMT_01.xlsx",
+  input_type = "gigaflor",
+  dir = "path/to/output"
+)
+
 # Field sheet with non-standard column names
 forplot_balance(
   "my_plot.xlsx",
@@ -888,7 +1010,10 @@ schema used elsewhere in the package. For <code>input_type = "fp_query_sheet"</c
 and <code>input_type = "monitora"</code>, the function relies on the existing internal
 converters. For <code>input_type = "field_sheet_ti"</code>, it applies the same direct
 positional remapping used in the package workflow for Indigenous Land /
-Panará-style field sheets.
+Panará-style field sheets. For <code>input_type = "gigaflor"</code>, the GigaFlor
+network field sheet is read from its <code>"Data"</code> worksheet, with
+<code>"Tag Number"</code>, <code>"Species"</code> and <code>"Main Stem Tag"</code> taken as the tag,
+determination and stem grouping (see <code>forplot_balance()</code>).
 </p>
 <p>On the <strong>first execution</strong>, the function reads voucher information from the
 input file, (i) creates a main folder (default: <code>"voucher_imgs"</code>) if it does
@@ -927,7 +1052,8 @@ non-empty voucher code is present after input harmonization, except when
 <pre><code class='language-R'>forplot_vouchers(
   fp_file_path = NULL,
   output_dir = file.path(tempdir(), "voucher_imgs"),
-  input_type = c("field_sheet", "field_sheet_ti", "fp_query_sheet", "monitora"),
+  input_type = c("field_sheet", "field_sheet_ti", "fp_query_sheet", "monitora",
+    "gigaflor"),
   station_name = NULL,
   verbose = TRUE,
   header_row = NULL
@@ -953,7 +1079,7 @@ voucher image folder to organize it in place.</p>
 <tr><td><code id="input_type">input_type</code></td>
 <td>
 <p>Character. Input layout. Must be one of <code>"field_sheet"</code>,
-<code>"field_sheet_ti"</code>, <code>"fp_query_sheet"</code>, or <code>"monitora"</code>.</p>
+<code>"field_sheet_ti"</code>, <code>"fp_query_sheet"</code>, <code>"monitora"</code>, or <code>"gigaflor"</code>.</p>
 </td></tr>
 <tr><td><code id="station_name">station_name</code></td>
 <td>
@@ -1081,7 +1207,7 @@ on the value set in the <code>language</code> argument.
 <pre><code class='language-R'>forplot_sheets(
   fp_file_path = NULL,
   herb_file_path = NULL,
-  input_type = c("forestplots", "monitora"),
+  input_type = c("forestplots", "monitora", "gigaflor"),
   sheet = 1,
   header_row = NULL,
   station_name = NULL,
@@ -1122,9 +1248,15 @@ ForestPlots field sheet or a MONITORA spreadsheet, depending on the value of
 </td></tr>
 <tr><td><code id="input_type">input_type</code></td>
 <td>
-<p>Type of input dataset. Options are &quot;forestplots&quot; (default)
-and &quot;monitora&quot;. For <code>"monitora"</code>, the function converts the input table
-to a forestplots-like structure before filling the herbarium template.</p>
+<p>Type of input dataset. Options are &quot;forestplots&quot; (default),
+&quot;monitora&quot; and &quot;gigaflor&quot;. For <code>"monitora"</code>, the function converts the
+input table to a forestplots-like structure before filling the herbarium
+template. For <code>"gigaflor"</code> (GigaFlor network field sheet, read from
+its <code>"Data"</code> worksheet; see <code>forplot_balance()</code>), each specimen gets
+the latitude/longitude of its own tree (<code>Y</code>/<code>X</code> in decimal
+degrees in the sheet), <code>D</code> is read in cm, and the collector,
+additional collectors and collection date come from the <code>"Team:"</code> and
+<code>"Date:"</code> cells above the header.</p>
 </td></tr>
 <tr><td><code id="sheet">sheet</code></td>
 <td>
@@ -1207,11 +1339,15 @@ from team-related columns when available.</p>
 </td></tr>
 <tr><td><code id="lat">lat</code></td>
 <td>
-<p>Latitude in decimal degrees of the collection site.</p>
+<p>Latitude in decimal degrees of the collection site. For
+<code>input_type = "gigaflor"</code> it is optional: each specimen takes its
+tree's latitude, and <code>lat</code> (or else the plot centre) is used only for
+trees without coordinates, the elevation and the locality check.</p>
 </td></tr>
 <tr><td><code id="long">long</code></td>
 <td>
-<p>Longitude in decimal degrees of the collection site.</p>
+<p>Longitude in decimal degrees of the collection site. Optional
+for <code>input_type = "gigaflor"</code> (see <code>lat</code>).</p>
 </td></tr>
 <tr><td><code id="alt">alt</code></td>
 <td>
