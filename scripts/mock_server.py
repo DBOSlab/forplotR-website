@@ -65,11 +65,11 @@ def job_view(j):
                   elapsed_s=5, message="Concluído", n_files=3, zip="resultados_x.zip")
         if j["fail"]: st["error"] = "Coluna 'T1' não encontrada (simulado)."
         st["files"] = [
-          {"id": "f1", "path": "06Nov2026/relatorio_parcela_full_report.html", "name": "r.html",
+          {"id": "f1", "path": "06Nov2026/parcela_relatorio_completo.html", "name": "r.html",
            "label": "Relatório completo (HTML interativo)", "kind": "html", "size": len(FAKE_HTML)},
-          {"id": "f2", "path": "06Nov2026/relatorio_parcela_general.png", "name": "g.png",
+          {"id": "f2", "path": "06Nov2026/parcela_geral.png", "name": "g.png",
            "label": "Mapa geral da parcela", "kind": "image", "size": len(PNG)},
-          {"id": "f3", "path": "06Nov2026/collection_balance.xlsx", "name": "c.xlsx",
+          {"id": "f3", "path": "06Nov2026/parcela_balanco_coleta.xlsx", "name": "c.xlsx",
            "label": "Balanço de coleta por subparcela (XLSX)", "kind": "xlsx", "size": 20480}]
     return st
 

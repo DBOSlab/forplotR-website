@@ -137,7 +137,7 @@ forplot_balance(
 | `plot_census_no` | `NULL` | Número do censo (padrão `"1"` quando ausente no arquivo) |
 | `render_html`, `render_pdf`, `write_xlsx` | `TRUE` | Ativam ou desativam cada saída |
 | `dir` | `"Results_map_plot"` | Diretório de saída; nele é criado um subdiretório datado |
-| `filename` | `"plot_specimen"` | Prefixo dos arquivos |
+| `filename` | `NULL` | Prefixo dos arquivos; sem ele, `parcela`, `plot` ou `parcelle`, conforme o idioma |
 | `verbose` | `TRUE` | Exibe o andamento no console |
 | `colname_*` | `NULL` | Nomes das colunas, quando diferentes do padrão (ver [Começar]({{LINK:start}}#mapeamento-de-colunas)) |
 
@@ -159,7 +159,7 @@ forplot_balance(
 | `plot_census_no` | `NULL` | Census number (defaults to `"1"` when missing from the file) |
 | `render_html`, `render_pdf`, `write_xlsx` | `TRUE` | Enable or disable each output |
 | `dir` | `"Results_map_plot"` | Output directory; a date-stamped subdirectory is created inside it |
-| `filename` | `"plot_specimen"` | File name prefix |
+| `filename` | `NULL` | File name prefix; without it, `plot`, `parcela` or `parcelle`, by language |
 | `verbose` | `TRUE` | Prints progress to the console |
 | `colname_*` | `NULL` | Column names, when different from the default (see [Get started]({{LINK:start}}#mapeamento-de-colunas)) |
 
@@ -169,35 +169,39 @@ forplot_balance(
 ## [Saídas]{data-lang=pt}[Outputs]{data-lang=en} {#saidas}
 
 ::: {data-lang="pt"}
-Os arquivos são gravados em `dir/<ddMonYYYY>/`. Com `filename = "RUS01"`:
+Os arquivos são gravados em `dir/<ddMonYYYY>/` e o nome segue o idioma (`language`): português com `"pt"` e `"pa"` (Panará), inglês com `"en"` e `"ma"`, espanhol com `"es"` e francês com `"fr"`. O prefixo é `filename`; sem ele, `parcela` (pt, pa, es), `plot` (en, ma) ou `parcelle` (fr). Com `filename = "RUS01"` e `language = "pt"`:
 
 | Arquivo | Conteúdo |
 |---|---|
-| `RUS01_full_report.html` | Relatório interativo: mapas, filtros por situação de coleta e checklist com links para cada indivíduo |
-| `RUS01_full_report.pdf` | Mesmo relatório, para impressão e uso em campo (requer LaTeX) |
-| `RUS01_general.png` | Mapa geral da parcela |
-| `RUS01_collected.png`, `RUS01_uncollected.png` | Apenas coletados / apenas não coletados |
-| `RUS01_uncollected_palms.png` | Palmeiras não coletadas (com `highlight_palms = TRUE`) |
-| `RUS01_priority_uncollected_species.png` | Subparcelas prioritárias |
-| `RUS01_species_plot.png`, `RUS01_family_plot.png` | Espécies e famílias mais abundantes |
-| `collection_balance.xlsx` | Abas `COLLECTION_PERCENTUAL` (percentual por subparcela), `NOT_COLLECTED` e `COLLECTED` |
+| `RUS01_relatorio_completo.html` | Relatório de campo: resumo, mapas com a plaqueta de cada fuste, rota de prioridade, uma página por subparcela, florística e checklist |
+| `RUS01_relatorio_completo.pdf` | Mesmo relatório impresso em A4 (requer Chrome, Chromium ou Edge) |
+| `RUS01_geral.png` | Mapa geral da parcela |
+| `RUS01_coletados.png`, `RUS01_nao_coletados.png` | Apenas coletados / apenas não coletados |
+| `RUS01_palmeiras_nao_coletadas.png` | Palmeiras (com `highlight_palms = TRUE`) |
+| `RUS01_especies_prioritarias_nao_coletadas.png` | Subparcelas prioritárias |
+| `RUS01_especies_abundancia.png` | Espécies com mais indivíduos |
+| `RUS01_especies_ivi.png`, `RUS01_familias_ivi.png` | Espécies e famílias com maior valor de importância (IVI) |
+| `RUS01_classes_dap.png` | Fustes por classe de diâmetro |
+| `RUS01_balanco_coleta.xlsx` | Abas `COLLECTION_PERCENTUAL` (percentual por subparcela), `NOT_COLLECTED` e `COLLECTED` |
 
 : Arquivos gerados por `forplot_balance()`. {.arg-table}
 :::
 
 ::: {data-lang="en"}
-Files are written to `dir/<ddMonYYYY>/`. With `filename = "RUS01"`:
+Files are written to `dir/<ddMonYYYY>/` and named in the report language (`language`): Portuguese for `"pt"` and `"pa"` (Panará), English for `"en"` and `"ma"`, Spanish for `"es"` and French for `"fr"`. The prefix is `filename`; without it, `plot` (en, ma), `parcela` (pt, pa, es) or `parcelle` (fr). With `filename = "RUS01"` and `language = "en"`:
 
 | File | Content |
 |---|---|
-| `RUS01_full_report.html` | Interactive report: maps, filters by collection status and a checklist linking to each individual |
-| `RUS01_full_report.pdf` | Same report, for printing and field use (requires LaTeX) |
+| `RUS01_full_report.html` | Field report: summary, maps with the tag of every stem, priority route, one page per subplot, floristics and checklist |
+| `RUS01_full_report.pdf` | Same report printed on A4 (requires Chrome, Chromium or Edge) |
 | `RUS01_general.png` | Overall plot map |
 | `RUS01_collected.png`, `RUS01_uncollected.png` | Collected only / not collected only |
-| `RUS01_uncollected_palms.png` | Uncollected palms (with `highlight_palms = TRUE`) |
+| `RUS01_uncollected_palms.png` | Palms (with `highlight_palms = TRUE`) |
 | `RUS01_priority_uncollected_species.png` | Priority subplots |
-| `RUS01_species_plot.png`, `RUS01_family_plot.png` | Most abundant species and families |
-| `collection_balance.xlsx` | Sheets `COLLECTION_PERCENTUAL` (percentage per subplot), `NOT_COLLECTED` and `COLLECTED` |
+| `RUS01_species_abundance.png` | Species with the most individuals |
+| `RUS01_species_ivi.png`, `RUS01_families_ivi.png` | Species and families with the highest importance value (IVI) |
+| `RUS01_dbh_classes.png` | Stems per diameter class |
+| `RUS01_collection_balance.xlsx` | Sheets `COLLECTION_PERCENTUAL` (percentage per subplot), `NOT_COLLECTED` and `COLLECTED` |
 
 : Files produced by `forplot_balance()`. {.arg-table}
 :::
@@ -206,10 +210,10 @@ Files are written to `dir/<ddMonYYYY>/`. With `filename = "RUS01"`:
 [[Formatos de entrada]{data-lang=pt}[Input layouts]{data-lang=en}]{.note-title}
 
 ::: {data-lang="pt"}
-A planilha `collection_balance.xlsx` é gerada para os formatos ForestPlots.net (`field_sheet`, `field_sheet_ti`, `fp_query_sheet`). No Monitora, o balanço é apresentado no relatório.
+A planilha de balanço (`*_balanco_coleta.xlsx`, `*_collection_balance.xlsx` em inglês) é gerada para os formatos ForestPlots.net (`field_sheet`, `field_sheet_ti`, `fp_query_sheet`). No Monitora, o balanço é apresentado no relatório.
 :::
 ::: {data-lang="en"}
-The `collection_balance.xlsx` spreadsheet is produced for the ForestPlots.net layouts (`field_sheet`, `field_sheet_ti`, `fp_query_sheet`). For Monitora, the balance is shown in the report.
+The balance spreadsheet (`*_collection_balance.xlsx`; `*_balanco_coleta.xlsx` in Portuguese) is produced for the ForestPlots.net layouts (`field_sheet`, `field_sheet_ti`, `fp_query_sheet`). For Monitora, the balance is shown in the report.
 :::
 :::
 

@@ -48,20 +48,42 @@ file_kind <- function(path) {
 
 file_label <- function(rel) {
   b <- basename(rel)
+  # Nomes do forplot_balance() no idioma da execução (en/ma, pt/pa, es, fr;
+  # dicionário R/i18n_files.R do pacote). A ordem importa: "_nao_coletados"
+  # também termina em "_coletados", então os nomes mais longos vêm antes.
+  sfx <- function(...) paste0("_(", paste(c(...), collapse = "|"), ")")
   rules <- c(
-    "_full_report\\.html$" = "Relatório completo (HTML interativo)",
-    "_full_report\\.pdf$" = "Relatório completo (PDF)",
-    "^collection_balance\\.xlsx$" = "Balanço de coleta por subparcela (XLSX)",
-    "_general\\.png$" = "Mapa geral da parcela",
-    "_collected\\.png$" = "Mapa dos coletados",
-    "_uncollected\\.png$" = "Mapa dos não coletados",
-    "_uncollected_palms\\.png$" = "Mapa das palmeiras não coletadas",
-    "_priority_uncollected_species\\.png$" = "Subparcelas prioritárias",
-    "_species_plot\\.png$" = "Espécies mais abundantes",
-    "_family_plot\\.png$" = "Famílias mais abundantes",
+    "x" = "Relatório completo (HTML interativo)",
+    "x" = "Relatório completo (PDF)",
+    "x" = "Balanço de coleta por subparcela (XLSX)",
+    "x" = "Subparcelas prioritárias",
+    "x" = "Mapa das palmeiras não coletadas",
+    "x" = "Mapa dos não coletados",
+    "x" = "Mapa dos coletados",
+    "x" = "Mapa geral da parcela",
+    "x" = "Espécies com mais indivíduos",
+    "x" = "Espécies por valor de importância (IVI)",
+    "x" = "Famílias por valor de importância (IVI)",
+    "x" = "Fustes por classe de diâmetro",
     "^Results_.*\\.html$" = "Mapa interativo (HTML)",
     "planilha_herbario\\.xlsx$" = "Planilha para o herbário (XLSX)",
     "cruzamento_herbario\\.xlsx$" = "Cruzamento com o herbário (XLSX)"
+  )
+  names(rules)[1:12] <- c(
+    paste0(sfx("full_report", "relatorio_completo", "informe_completo", "rapport_complet"), "\\.html$"),
+    paste0(sfx("full_report", "relatorio_completo", "informe_completo", "rapport_complet"), "\\.pdf$"),
+    paste0(sfx("collection_balance", "balanco_coleta", "balance_colecta", "bilan_collecte"), "\\.xlsx$"),
+    paste0(sfx("priority_uncollected_species", "especies_prioritarias_nao_coletadas",
+               "especies_prioritarias_no_colectadas", "especes_prioritaires_non_collectees"), "\\.png$"),
+    paste0(sfx("uncollected_palms", "palmeiras_nao_coletadas", "palmeras_no_colectadas",
+               "palmiers_non_collectes"), "\\.png$"),
+    paste0(sfx("uncollected", "nao_coletados", "no_colectados", "non_collectes"), "\\.png$"),
+    paste0(sfx("collected", "coletados", "colectados", "collectes"), "\\.png$"),
+    paste0(sfx("general", "geral"), "\\.png$"),
+    paste0(sfx("species_abundance", "especies_abundancia", "especes_abondance"), "\\.png$"),
+    paste0(sfx("species_ivi", "especies_ivi", "especes_ivi"), "\\.png$"),
+    paste0(sfx("families_ivi", "familias_ivi", "familles_ivi"), "\\.png$"),
+    paste0(sfx("dbh_classes", "classes_dap", "clases_dap", "classes_dhp"), "\\.png$")
   )
   for (r in names(rules)) if (grepl(r, b)) return(rules[[r]])
   b
