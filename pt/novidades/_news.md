@@ -3,6 +3,81 @@
 ::: {lang="en"}
 ## forplotR (development version) {#news-1}
 
+- The species chart of `forplot_balance()` is now two charts: the species with
+  the most individuals (the simple ranking used before the IVI chart, now with
+  the first 15 species and the same taxon rule as the IVI: a name within its
+  family) followed by the species with the highest importance value (IVI).
+  Each has its own figure and caption in the field report (Figures 2 and 3;
+  stems per diameter class is now Figure 4) and its own PNG file. Every bar of
+  the species and family charts ends with its value (integer counts, IVI with
+  one decimal), and the x axis is extended so the value is never cut.
+- When the field sheet has a vernacular name (the `Local name` column of the
+  Indigenous Land template, e.g. the Panará name, or a `Vernacular name`
+  column), species are labelled "vernacular | scientific" in both charts, in
+  the PNG files and in the report, with the scientific name in italics.
+  Without a vernacular name, only the scientific name is shown. In Panará,
+  the dictionary's "most abundant species" now titles the ranking; the IVI
+  species chart has no equivalent in the dictionary and stays in Portuguese.
+- Output files of `forplot_balance()` are named in the language of the call,
+  from one dictionary of file names (`R/i18n_files.R`): Portuguese for `"pt"`
+  and `"pa"`, Spanish, French, and English for `"en"` and `"ma"` (Chinese
+  characters cannot be used in file names). Names are snake_case ASCII. Old
+  and new names (English): `_full_report` (unchanged), `_general`,
+  `_collected`, `_uncollected`, `_uncollected_palms`,
+  `_priority_uncollected_species`, `_dbh_classes` (unchanged);
+  `_species_plot` -> `_species_ivi`; `_family_plot` -> `_families_ivi`;
+  new `_species_abundance`. In Portuguese: `_relatorio_completo`, `_geral`,
+  `_coletados`, `_nao_coletados`, `_palmeiras_nao_coletadas`,
+  `_especies_prioritarias_nao_coletadas`, `_especies_abundancia`,
+  `_especies_ivi`, `_familias_ivi`, `_classes_dap`, `_balanco_coleta`.
+- The Excel summary now carries the prefix too
+  (`<filename>_collection_balance.xlsx`, `<filename>_balanco_coleta.xlsx`),
+  so two runs in the same folder no longer overwrite each other.
+- `filename` now defaults to `NULL`, which uses the word for "plot" in the
+  report language (`plot`, `parcela`, `parcelle`) instead of
+  `"plot_specimen"`. Calls that pass `filename` are not affected. With
+  several MONITORA stations, the station suffix follows the language too
+  (`_station_`, `_estacao_`, `_estacion_`).
+- A PDF printed from the HTML report in a browser is offered with the name of
+  the report file (e.g. `RUS01_relatorio_completo.pdf`) instead of the page
+  title ("RUS01 · Balanço de coleta"); the tab keeps the title.
+- `forplot_balance()` reads GigaFlor network field sheets with
+  `input_type = "gigaflor"` (protocol 1: a 1-ha plot of 25 subplots of
+  20 x 20 m in `T1`, each split into four 10 x 10 m quadrants in `T2`).
+  `subplot_size` then defaults to 20 m. The sheet is read from its `"Data"`
+  worksheet; `"Tag Number"` is the tag, `"Species"` the determination and
+  `"Main Stem Tag"` groups the stems of a multi-stemmed tree. `D` is in
+  centimetres (converted to millimetres internally, or taken from
+  `"CAP (cm)"` / pi when empty). `X` and `Y` are the tree's longitude and
+  latitude in decimal degrees: they are projected to metres and fitted onto
+  the subplot grid by a rotation and translation (which recovers the
+  orientation of the plot on the ground), then drawn at that position inside
+  each tree's own subplot. A warning is given when the coordinates fit the
+  grid poorly. In the field report, the "X; Y" column of the subplot tables
+  shows the original longitude; latitude in decimal degrees. A `"No"` in
+  `Collected` (the template's Yes/No list) is not counted as collected.
+- `forplot_map()`, `forplot_sheets()` and `forplot_vouchers()` also accept
+  `input_type = "gigaflor"`. `forplot_map()` draws each tree at its own
+  coordinates; `vertex_coords` becomes optional, the plot corners (and so the
+  subplot grid) being estimated from the trees' coordinates, their `T1`
+  subplots and the plot dimensions (give `vertex_coords` to use the corners
+  marked in the survey). `forplot_sheets()` writes each tree's latitude and
+  longitude on its label (`lat`/`long` become optional), reads `D` in cm,
+  and takes the collector, additional collectors and collection date from
+  the `"Team:"` and `"Date:"` cells; label notes no longer print
+  `x = ...m, y = ...m` when the position within the subplot is unknown.
+  `forplot_sheets()` now stops with a clear message when no specimen is
+  marked as collected.
+
+- The field report in Panará (`language = "pa"`) is no longer all in
+  Portuguese: its labels (title, team, date, individuals, families, with
+  voucher, pending, palms, subplot, tag, DBH, species, checklist and others)
+  now come from the package's Panará dictionary, as do the titles of the
+  figures and tables of the floristics section (reworded to what the
+  dictionary has: the IVI figures are titled "most common families" and "most
+  abundant species"). Explanatory sentences and the labels the dictionary
+  does not have stay in Portuguese.
+
 - `read_plot_header()` lists the columns of a field sheet from its detected
   header row, with the exact name each column has when the sheet is read
   (the name a `colname_*` argument must give). Rows of plot metadata above
