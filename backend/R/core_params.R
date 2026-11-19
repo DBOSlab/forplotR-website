@@ -124,7 +124,9 @@ build_params <- function(spec, parts, job_dir, cfg) {
         if (identical(spec$id, "vouchers")) {
           root <- safe_unzip_images(path, file.path(ctx$inputs, "zip"), cfg$max_zip_mb,
                                     collapse_pattern = "voucher|foto|imag|img")
-          dest <- file.path(ctx$outputs, "voucher_imgs")
+          # mesma pasta que o fixed() da ferramenta passa como output_dir
+          lang <- part_text(parts, "language")
+          dest <- file.path(ctx$outputs, voucher_dir_name(if (nzchar(lang)) lang else "pt"))
           if (!file.rename(root, dest)) {
             dir.create(dest, showWarnings = FALSE)
             file.copy(list.files(root, full.names = TRUE), dest, recursive = TRUE)

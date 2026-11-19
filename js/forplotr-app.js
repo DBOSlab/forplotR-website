@@ -153,6 +153,7 @@
     'Use só se os dados do JABOT mudaram.': 'Use only if the JABOT data have changed.',
     'Pasta de fotos atual (ZIP, opcional)': 'Current photo folder (ZIP, optional)',
     'Sem ZIP, é criada a estrutura vazia para você preencher.': 'Without a ZIP, an empty structure is created for you to fill in.',
+    'Nomes das pastas: imagens_testemunhos e "<Voucher> Arvore#<plaqueta>" em português.': 'Folder names: voucher_imgs and "<Voucher> Tree#<tag>" in English.',
     // status e arquivos
     'Na fila': 'Queued', 'Processando': 'Running', 'Concluído': 'Done', 'Falhou': 'Failed',
     'Concluído, mas nenhum arquivo foi gerado (veja o registro)': 'Done, but no file was produced (see the log)',

@@ -52,6 +52,9 @@ file_label <- function(rel) {
   # dicionário R/i18n_files.R do pacote). A ordem importa: "_nao_coletados"
   # também termina em "_coletados", então os nomes mais longos vêm antes.
   sfx <- function(...) paste0("_(", paste(c(...), collapse = "|"), ")")
+  # forplot_map(): "<results>_<AAAA-MM-DD>_<filename>.html" no idioma do mapa;
+  # forplot_sheets(): "planilha_herbario.xlsx" (pt/pa), "plot_to_herb_sheet" (en)...
+  pfx <- function(...) paste0("^(", paste(c(...), collapse = "|"), ")_")
   rules <- c(
     "x" = "Relatório completo (HTML interativo)",
     "x" = "Relatório completo (PDF)",
@@ -65,11 +68,11 @@ file_label <- function(rel) {
     "x" = "Espécies por valor de importância (IVI)",
     "x" = "Famílias por valor de importância (IVI)",
     "x" = "Fustes por classe de diâmetro",
-    "^Results_.*\\.html$" = "Mapa interativo (HTML)",
-    "planilha_herbario\\.xlsx$" = "Planilha para o herbário (XLSX)",
+    "x" = "Mapa interativo (HTML)",
+    "x" = "Planilha para o herbário (XLSX)",
     "cruzamento_herbario\\.xlsx$" = "Cruzamento com o herbário (XLSX)"
   )
-  names(rules)[1:12] <- c(
+  names(rules)[1:14] <- c(
     paste0(sfx("full_report", "relatorio_completo", "informe_completo", "rapport_complet"), "\\.html$"),
     paste0(sfx("full_report", "relatorio_completo", "informe_completo", "rapport_complet"), "\\.pdf$"),
     paste0(sfx("collection_balance", "balanco_coleta", "balance_colecta", "bilan_collecte"), "\\.xlsx$"),
@@ -83,7 +86,9 @@ file_label <- function(rel) {
     paste0(sfx("species_abundance", "especies_abundancia", "especes_abondance"), "\\.png$"),
     paste0(sfx("species_ivi", "especies_ivi", "especes_ivi"), "\\.png$"),
     paste0(sfx("families_ivi", "familias_ivi", "familles_ivi"), "\\.png$"),
-    paste0(sfx("dbh_classes", "classes_dap", "clases_dap", "classes_dhp"), "\\.png$")
+    paste0(sfx("dbh_classes", "classes_dap", "clases_dap", "classes_dhp"), "\\.png$"),
+    paste0(pfx("results", "resultados", "resultats"), "[0-9]{4}-[0-9]{2}-[0-9]{2}_.*\\.html$"),
+    "^(plot_to_herb_sheet|planilha_herbario|planilla_herbario|feuille_herbier)\\.xlsx$"
   )
   for (r in names(rules)) if (grepl(r, b)) return(rules[[r]])
   b
