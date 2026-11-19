@@ -41,10 +41,10 @@ No. The package organises and cross-references the data. The [determination cros
 ```
 
 ::: {data-lang="pt"}
-Qualquer planilha de parcela dividida em subparcelas, com plaqueta, subparcela, posição x–y, família, determinação e diâmetro. Quatro formatos são reconhecidos diretamente (fichas e exportações do ForestPlots.net, fichas de Terras Indígenas e o protocolo MONITORA); nos demais, os nomes das colunas são indicados pelos argumentos `colname_*` ou, no navegador, escolhidos numa lista. Veja [Dados aceitos]({{LINK:formats}}).
+Qualquer planilha de parcela dividida em subparcelas, com plaqueta, subparcela, posição x–y, família, determinação e diâmetro. Cinco formatos são reconhecidos diretamente (fichas e exportações do ForestPlots.net, fichas de Terras Indígenas, o protocolo MONITORA e a ficha da rede GigaFlor); nos demais, os nomes das colunas são indicados pelos argumentos `colname_*` ou, no navegador, escolhidos numa lista. Veja [Dados aceitos]({{LINK:formats}}).
 :::
 ::: {data-lang="en"}
-Any spreadsheet of a plot divided into subplots, with tag, subplot, x–y position, family, determination and diameter. Four layouts are recognised directly (ForestPlots.net sheets and exports, Indigenous Land field sheets and the MONITORA protocol); for others, column names are given through the `colname_*` arguments or, in the browser, picked from a list. See [Supported data]({{LINK:formats}}).
+Any spreadsheet of a plot divided into subplots, with tag, subplot, x–y position, family, determination and diameter. Five layouts are recognised directly (ForestPlots.net sheets and exports, Indigenous Land field sheets, the MONITORA protocol and the GigaFlor network sheet); for others, column names are given through the `colname_*` arguments or, in the browser, picked from a list. See [Supported data]({{LINK:formats}}).
 :::
 
 ```{=html}

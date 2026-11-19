@@ -16,14 +16,16 @@ A Leaflet map in a single HTML file, with the position of each individual, filte
 1. Envie a planilha e selecione o formato.
 2. Informe as coordenadas em graus decimais, uma linha por ponto (`latitude; longitude`):
     - parcelas retangulares: os **quatro vértices**, na ordem (0, 0), (0, comprimento), (largura, 0), (largura, comprimento), como no desenho do formulário;
-    - estações do MONITORA: **um ponto**, o centro da estação.
+    - estações do MONITORA: **um ponto**, o centro da estação;
+    - GigaFlor: opcional; sem vértices, a parcela é estimada a partir das coordenadas (`X`, `Y`) das árvores.
 3. Opcionalmente, envie um arquivo ZIP com as imagens (um diretório por voucher). A consulta às exsicatas dos herbários usa a internet e está disponível apenas no pacote, no R.
 :::
 ::: {data-lang="en"}
 1. Upload the spreadsheet and select its layout.
 2. Enter the coordinates in decimal degrees, one line per point (`latitude; longitude`):
     - rectangular plots: the **four vertices**, in the order (0, 0), (0, length), (width, 0), (width, length), as in the form diagram;
-    - MONITORA stations: **one point**, the centre of the station.
+    - MONITORA stations: **one point**, the centre of the station;
+    - GigaFlor: optional; without corners, the plot is estimated from the coordinates (`X`, `Y`) of the trees.
 3. Optionally, upload a ZIP file with the images (one directory per voucher). The herbarium specimen lookup uses the internet and is available only in the package, in R.
 :::
 
@@ -34,10 +36,10 @@ A Leaflet map in a single HTML file, with the position of each individual, filte
 ## [Saídas]{data-lang=pt}[Outputs]{data-lang=en} {#saidas}
 
 ::: {data-lang="pt"}
-- **Arquivo HTML autocontido**, que abre em qualquer navegador (apenas as imagens de satélite requerem conexão): camadas de satélite e de ruas, grade de subparcelas, filtros, busca, carrossel de imagens e link para a exsicata no JABOT/REFLORA.
+- **Arquivo HTML autocontido**, que abre em qualquer navegador (apenas as imagens de satélite requerem conexão): camadas de satélite e de ruas, grade de subparcelas, filtros, busca, carrossel de imagens e link para a exsicata no JABOT/REFLORA. O nome segue o idioma dos resultados: `resultados_<AAAA-MM-DD>_mapa_parcela.html` em português, `results_<AAAA-MM-DD>_plot_map.html` em inglês.
 :::
 ::: {data-lang="en"}
-- **Self-contained HTML file** that opens in any browser (only the satellite imagery needs a connection): satellite and street layers, subplot grid, filters, search, image carousel and a link to the specimen in JABOT/REFLORA.
+- **Self-contained HTML file** that opens in any browser (only the satellite imagery needs a connection): satellite and street layers, subplot grid, filters, search, image carousel and a link to the specimen in JABOT/REFLORA. Its name follows the results language: `results_<YYYY-MM-DD>_plot_map.html` in English, `resultados_<YYYY-MM-DD>_mapa_parcela.html` in Portuguese.
 :::
 
 ```{=html}

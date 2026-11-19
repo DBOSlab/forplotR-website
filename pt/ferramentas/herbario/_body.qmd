@@ -14,14 +14,14 @@ Fills the JABOT or BRAHMS input spreadsheet with the collected individuals and t
 
 ::: {data-lang="pt"}
 1. Escolha a planilha da parcela; o app sugere o formato.
-2. Informe estado, município, coordenadas e altitude da parcela. No navegador a altitude é obrigatória; no pacote, no R, ela pode ser estimada a partir de um modelo digital de elevação global de baixa resolução.
+2. Informe estado, município, coordenadas e altitude da parcela (no GigaFlor, as coordenadas podem ficar vazias: vale o centro das árvores da planilha). No navegador a altitude é obrigatória; no pacote, no R, ela pode ser estimada a partir de um modelo digital de elevação global de baixa resolução.
 3. Envie o modelo do herbário ou deixe o campo em branco para usar um modelo com as colunas padrão do formato selecionado.
 
 As notas de etiqueta são redigidas a partir do DAP, dos códigos RAINFOR (ex.: “com casca solta”, “copa exposta à luz”) e da posição do indivíduo na parcela, em português, inglês ou espanhol.
 :::
 ::: {data-lang="en"}
 1. Choose the plot spreadsheet; the app suggests the layout.
-2. Enter the state, municipality, coordinates and elevation of the plot. In the browser the elevation is required; in the package, in R, it can be estimated from a low-resolution global digital elevation model.
+2. Enter the state, municipality, coordinates and elevation of the plot (for GigaFlor, the coordinates may be left empty: the centre of the trees in the spreadsheet is used). In the browser the elevation is required; in the package, in R, it can be estimated from a low-resolution global digital elevation model.
 3. Upload the herbarium template, or leave the field empty to use a template with the default columns of the selected layout.
 
 Label notes are written from the DBH, the RAINFOR codes (e.g. “with loose bark”, “crown exposed to light”) and the position of the individual in the plot, in Portuguese, English or Spanish.
@@ -34,10 +34,10 @@ Label notes are written from the DBH, the RAINFOR codes (e.g. “with loose bark
 ## [Saídas]{data-lang=pt}[Outputs]{data-lang=en} {#saidas}
 
 ::: {data-lang="pt"}
-- **Planilha XLSX** no formato do herbário, com uma linha por indivíduo coletado: família, gênero, epíteto, coletor, número, data, localidade, coordenadas, altitude e notas.
+- **Planilha XLSX** no formato do herbário, com uma linha por indivíduo coletado: família, gênero, epíteto, coletor, número, data, localidade, coordenadas, altitude e notas. O nome segue o idioma: `planilha_herbario.xlsx` em português, `plot_to_herb_sheet.xlsx` em inglês, `planilla_herbario.xlsx` em espanhol.
 :::
 ::: {data-lang="en"}
-- **XLSX spreadsheet** in the herbarium layout, with one row per collected individual: family, genus, epithet, collector, number, date, locality, coordinates, elevation and notes.
+- **XLSX spreadsheet** in the herbarium layout, with one row per collected individual: family, genus, epithet, collector, number, date, locality, coordinates, elevation and notes. Its name follows the language: `plot_to_herb_sheet.xlsx` in English, `planilha_herbario.xlsx` in Portuguese, `planilla_herbario.xlsx` in Spanish.
 :::
 
 ```{=html}

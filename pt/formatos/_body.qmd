@@ -3,10 +3,10 @@
 :::
 
 ::: {data-lang="pt"}
-Não importa de que programa ou projeto vêm os dados: se a planilha tem as colunas abaixo, o pacote trabalha com ela. Quatro formatos de planilha são reconhecidos diretamente; os outros funcionam informando o nome de cada coluna.
+Não importa de que programa ou projeto vêm os dados: se a planilha tem as colunas abaixo, o pacote trabalha com ela. Cinco formatos de planilha são reconhecidos diretamente; os outros funcionam informando o nome de cada coluna.
 :::
 ::: {data-lang="en"}
-It does not matter which programme or project the data come from: if the spreadsheet has the columns below, the package works with it. Four spreadsheet layouts are recognised directly; others work once you name each column.
+It does not matter which programme or project the data come from: if the spreadsheet has the columns below, the package works with it. Five spreadsheet layouts are recognised directly; others work once you name each column.
 :::
 
 ## [O que a planilha precisa ter]{data-lang=pt}[What the spreadsheet needs]{data-lang=en} {#colunas}
@@ -16,10 +16,10 @@ It does not matter which programme or project the data come from: if the spreads
 |---|---|---|---|
 | Plaqueta | `New Tag No` | `colname_tagno` | identifica a árvore |
 | Subparcela | `T1` | `colname_subplot` | número da subparcela |
-| Posição | `X`, `Y` | `colname_x`, `colname_y` | em metros, dentro da subparcela |
+| Posição | `X`, `Y` | `colname_x`, `colname_y` | em metros, dentro da subparcela (no GigaFlor, longitude e latitude em graus decimais) |
 | Família | `Family` | `colname_family` | |
 | Determinação | `Original determination` | `colname_species` | nome de campo |
-| Diâmetro | `D` | `colname_dbh` | em milímetros (no MONITORA, circunferência `CAP` em cm) |
+| Diâmetro | `D` | `colname_dbh` | em milímetros (no MONITORA, circunferência `CAP` em cm; no GigaFlor, `D` em cm) |
 | Voucher | `Voucher` | `colname_voucher` | código da coleta, quando houver |
 | Coletado | `Collected` | `colname_collected` | preenchido quando há material |
 
@@ -30,10 +30,10 @@ Para o mapa, são necessários também os vértices da parcela em graus decimais
 |---|---|---|---|
 | Tag | `New Tag No` | `colname_tagno` | identifies the tree |
 | Subplot | `T1` | `colname_subplot` | subplot number |
-| Position | `X`, `Y` | `colname_x`, `colname_y` | in metres, within the subplot |
+| Position | `X`, `Y` | `colname_x`, `colname_y` | in metres, within the subplot (in GigaFlor, longitude and latitude in decimal degrees) |
 | Family | `Family` | `colname_family` | |
 | Determination | `Original determination` | `colname_species` | field name |
-| Diameter | `D` | `colname_dbh` | in millimetres (in MONITORA, circumference `CAP` in cm) |
+| Diameter | `D` | `colname_dbh` | in millimetres (in MONITORA, circumference `CAP` in cm; in GigaFlor, `D` in cm) |
 | Voucher | `Voucher` | `colname_voucher` | collection code, when there is one |
 | Collected | `Collected` | `colname_collected` | filled in when material exists |
 
@@ -47,29 +47,35 @@ The map also needs the plot corners in decimal degrees; the labels need the loca
 |---|---|---|
 | Ficha de campo no padrão ForestPlots.net | `"field_sheet"` | linha de metadados (`Plotcode:`, `Plot Name:`, `Team:`) e cabeçalho com `New Tag No`, `T1`, `X`, `Y`, `Family`, `D` |
 | Exportação da Query Library do ForestPlots.net | `"fp_query_sheet"` | colunas como `Plot Code`, `Sub Plot T1`, `Standardised X`, `Census No` |
-| Ficha de campo de Terra Indígena | `"field_sheet_ti"` | linha de metadados (`Plotcode \| Kypa kukâri: ABC01`) e, abaixo, cabeçalho bilíngue (`D \| Wy`); a linha do cabeçalho é detectada e as colunas são reconhecidas pelo nome |
+| Ficha de campo de Terra Indígena | `"field_sheet_ti"` | linha de metadados (<code>Plotcode &#124; Kypa kukâri: ABC01</code>) e, abaixo, cabeçalho bilíngue (<code>D &#124; Wy</code>); a linha do cabeçalho é detectada e as colunas são reconhecidas pelo nome |
 | Protocolo MONITORA (ICMBio) | `"monitora"` | uma linha por árvore, com estação, subunidade, parcela e `CAP` |
+| Ficha de campo da rede GigaFlor (protocolo 1) | `"gigaflor"` | aba `Data`, com `Tag Number` (a plaqueta), `Species` (a determinação), `Main Stem Tag` (o fuste principal de árvores com vários fustes) e `T1`; os cabeçalhos podem ser bilíngues (<code>Main Stem Tag &#124; Placa do fuste principal</code>) e `Collected` aceita `Sim`/`Não` |
 
 Na planilha de etiquetas (`forplot_sheets()`), os três primeiros entram como `"forestplots"`.
+
+O GigaFlor segue o protocolo 1 da rede: parcela de 1 ha com 25 subparcelas de 20 × 20 m numeradas em serpentina, como no ForestPlots, cada uma dividida em 4 quadrantes de 10 × 10 m (`T2`). Diferente da ficha do ForestPlots, `X` e `Y` são as coordenadas geográficas de cada árvore (`X` = longitude, `Y` = latitude, em graus decimais) e `D` está em centímetros; o forplotR converte o diâmetro para milímetros e calcula a posição de cada árvore na grade da parcela a partir das coordenadas.
 :::
 ::: {data-lang="en"}
 | Layout | `input_type` | How forplotR recognises it |
 |---|---|---|
 | Field sheet in the ForestPlots.net layout | `"field_sheet"` | a metadata row (`Plotcode:`, `Plot Name:`, `Team:`) and a header with `New Tag No`, `T1`, `X`, `Y`, `Family`, `D` |
 | ForestPlots.net Query Library export | `"fp_query_sheet"` | columns such as `Plot Code`, `Sub Plot T1`, `Standardised X`, `Census No` |
-| Indigenous Land field sheet | `"field_sheet_ti"` | a metadata row (`Plotcode \| Kypa kukâri: ABC01`) and, below it, a bilingual header (`D \| Wy`); the header row is detected and columns are recognised by name |
+| Indigenous Land field sheet | `"field_sheet_ti"` | a metadata row (<code>Plotcode &#124; Kypa kukâri: ABC01</code>) and, below it, a bilingual header (<code>D &#124; Wy</code>); the header row is detected and columns are recognised by name |
 | MONITORA protocol (ICMBio) | `"monitora"` | one row per tree, with station, subunit, plot and `CAP` |
+| GigaFlor network field sheet (protocol 1) | `"gigaflor"` | sheet `Data`, with `Tag Number` (the tag), `Species` (the determination), `Main Stem Tag` (the main stem of multi-stemmed trees) and `T1`; headers may be bilingual (<code>Main Stem Tag &#124; Placa do fuste principal</code>) and `Collected` accepts `Sim`/`Não` (yes/no) |
 
 For the label spreadsheet (`forplot_sheets()`), the first three are given as `"forestplots"`.
+
+GigaFlor follows the network's protocol 1: a 1-ha plot of 25 subplots of 20 × 20 m numbered in serpentine order, as in ForestPlots, each split into 4 quadrants of 10 × 10 m (`T2`). Unlike the ForestPlots sheet, `X` and `Y` are the geographic coordinates of each tree (`X` = longitude, `Y` = latitude, in decimal degrees) and `D` is in centimetres; forplotR converts the diameter to millimetres and computes the position of each tree on the plot grid from the coordinates.
 :::
 
 ## [Detecção automática no navegador]{data-lang=pt}[Automatic detection in the browser]{data-lang=en} {#deteccao}
 
 ::: {data-lang="pt"}
-Nas ferramentas do navegador, ao escolher a planilha, o forplotR lê as primeiras linhas no seu computador e sugere o formato, o nome e o código da parcela, as estações (no MONITORA) e as colunas que não encontrou com o nome padrão. A sugestão pode ser trocada: é uma leitura do cabeçalho, não uma verificação dos dados.
+Nas ferramentas do navegador, ao escolher a planilha, o forplotR lê as primeiras linhas no seu computador e sugere o formato, o nome e o código da parcela, as estações (no MONITORA) e as colunas que não encontrou com o nome padrão. A ficha do GigaFlor é reconhecida pelas colunas `Tag Number`, `Species`/`Main Stem Tag` e `T1`, e lida na aba `Data` mesmo quando ela não é a primeira. A sugestão pode ser trocada: é uma leitura do cabeçalho, não uma verificação dos dados.
 :::
 ::: {data-lang="en"}
-In the browser tools, when you choose the spreadsheet, forplotR reads its first rows on your computer and suggests the layout, the plot name and code, the stations (for MONITORA) and the columns it did not find under their default names. You can change the suggestion: it is a reading of the header, not a check of the data.
+In the browser tools, when you choose the spreadsheet, forplotR reads its first rows on your computer and suggests the layout, the plot name and code, the stations (for MONITORA) and the columns it did not find under their default names. The GigaFlor sheet is recognised by its `Tag Number`, `Species`/`Main Stem Tag` and `T1` columns, and read from the `Data` sheet even when it is not the first one. You can change the suggestion: it is a reading of the header, not a check of the data.
 :::
 
 ## [Colunas com outros nomes]{data-lang=pt}[Columns with other names]{data-lang=en} {#outros-nomes}
@@ -96,10 +102,46 @@ forplot_balance(
 ## [Geometria da parcela]{data-lang=pt}[Plot geometry]{data-lang=en} {#geometria}
 
 ::: {data-lang="pt"}
-Parcelas retangulares são descritas pela área (ha) e pelo lado da subparcela (m), ou pela largura e pelo comprimento. O padrão é 1 ha com subparcelas de 10 × 10 m. No MONITORA, vale o desenho do protocolo. Levantamentos que não se organizam em subparcelas com coordenadas locais (por exemplo, quadrantes centrados em pontos) estão fora do que o forplotR lê hoje.
+Parcelas retangulares são descritas pela área (ha) e pelo lado da subparcela (m), ou pela largura e pelo comprimento. O padrão é 1 ha com subparcelas de 10 × 10 m. No MONITORA, vale o desenho do protocolo. No GigaFlor, o lado da subparcela passa a 20 m, e os vértices da parcela no mapa são opcionais: sem eles, a parcela é estimada a partir das coordenadas das árvores. Levantamentos que não se organizam em subparcelas com coordenadas locais (por exemplo, quadrantes centrados em pontos) estão fora do que o forplotR lê hoje.
 :::
 ::: {data-lang="en"}
-Rectangular plots are described by their area (ha) and subplot side (m), or by width and length. The default is 1 ha with 10 × 10 m subplots. For MONITORA, the protocol's design applies. Surveys that are not organised in subplots with local coordinates (for example, point-centred quarters) are outside what forplotR reads today.
+Rectangular plots are described by their area (ha) and subplot side (m), or by width and length. The default is 1 ha with 10 × 10 m subplots. For MONITORA, the protocol's design applies. For GigaFlor, the subplot side becomes 20 m, and the plot corners are optional in the map: without them, the plot is estimated from the tree coordinates. Surveys that are not organised in subplots with local coordinates (for example, point-centred quarters) are outside what forplotR reads today.
+:::
+
+## [Herbário de cada voucher]{data-lang=pt}[Herbarium of each voucher]{data-lang=en} {#collectioncode}
+
+::: {data-lang="pt"}
+A coluna opcional `collectionCode` (Darwin Core) traz a sigla do herbário onde cada voucher foi depositado, como no Index Herbariorum (ex.: `RB`). Na ficha do GigaFlor ela pode vir com cabeçalho bilíngue (`collectionCode | Sigla do herbário`). O `forplot_crossdet()` usa essa coluna quando nenhum herbário é informado: baixa do JABOT só os herbários citados e procura cada voucher no seu próprio herbário. Vouchers sem `collectionCode` ficam de fora, com um aviso. Informando um herbário (`herbaria = "RB"`), todos os vouchers são procurados nele, como antes.
+:::
+::: {data-lang="en"}
+The optional `collectionCode` column (Darwin Core) holds the acronym of the herbarium where each voucher is deposited, as in Index Herbariorum (e.g. `RB`). In the GigaFlor sheet it may have a bilingual header (`collectionCode | Sigla do herbário`). `forplot_crossdet()` uses this column when no herbarium is given: it downloads from JABOT only the herbaria named there and looks for each voucher in its own herbarium. Vouchers without a `collectionCode` are left out, with a message. When a herbarium is given (`herbaria = "RB"`), every voucher is looked for there, as before.
+:::
+
+## [Nomes dos arquivos de saída]{data-lang=pt}[Output file names]{data-lang=en} {#nomes-saida}
+
+::: {data-lang="pt"}
+Os arquivos e pastas gerados seguem o idioma dos resultados (`language`): português (também para Panará), inglês (também para Mandarim), espanhol ou francês, sem acentos nem espaços. As datas nos nomes são `AAAA-MM-DD`.
+
+| Função | Português | Inglês |
+|---|---|---|
+| `forplot_balance()` | `parcela_relatorio_completo.html`, `parcela_balanco_coleta.xlsx` | `plot_full_report.html`, `plot_collection_balance.xlsx` |
+| `forplot_map()` | `resultados_2026-11-19_mapa_parcela.html` | `results_2026-11-19_plot_map.html` |
+| `forplot_vouchers()` | `imagens_testemunhos/Família/Gênero/<Voucher>_Arvore#<plaqueta>` | `voucher_imgs/Family/Genus/<Voucher>_Tree#<tag>` |
+| `forplot_sheets()` | `planilha_herbario.xlsx` | `plot_to_herb_sheet.xlsx` |
+
+O `forplot_map()` encontra as fotos dos vouchers em pastas de qualquer idioma.
+:::
+::: {data-lang="en"}
+The files and folders produced follow the results language (`language`): Portuguese (also for Panará), English (also for Mandarin), Spanish or French, with no accents or spaces. Dates in names are `YYYY-MM-DD`.
+
+| Function | Portuguese | English |
+|---|---|---|
+| `forplot_balance()` | `parcela_relatorio_completo.html`, `parcela_balanco_coleta.xlsx` | `plot_full_report.html`, `plot_collection_balance.xlsx` |
+| `forplot_map()` | `resultados_2026-11-19_mapa_parcela.html` | `results_2026-11-19_plot_map.html` |
+| `forplot_vouchers()` | `imagens_testemunhos/Família/Gênero/<Voucher>_Arvore#<plaqueta>` | `voucher_imgs/Family/Genus/<Voucher>_Tree#<tag>` |
+| `forplot_sheets()` | `planilha_herbario.xlsx` | `plot_to_herb_sheet.xlsx` |
+
+`forplot_map()` finds the voucher photos in folders of any language.
 :::
 
 ## [Dados de exemplo]{data-lang=pt}[Example data]{data-lang=en} {#exemplos}

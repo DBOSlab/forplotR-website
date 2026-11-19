@@ -14,14 +14,14 @@ A report summarising plot structure, species composition and voucher coverage: m
 
 ::: {data-lang="pt"}
 1. Escolha a planilha da parcela; o app sugere o formato e as colunas.
-2. Verifique a área da parcela e o lado da subparcela. Para o Monitora, informe a estação.
+2. Verifique a área da parcela e o lado da subparcela. Para o Monitora, informe a estação. No GigaFlor, o lado da subparcela passa a 20 m (protocolo 1).
 3. Selecione as saídas. Com os dados de exemplo (RUS01), o processamento no navegador leva cerca de 2 minutos.
 
 Para executar sem planilha própria, marque **Usar os dados de exemplo**.
 :::
 ::: {data-lang="en"}
 1. Choose the plot spreadsheet; the app suggests the layout and the columns.
-2. Check the plot area and the subplot side. For Monitora, give the station.
+2. Check the plot area and the subplot side. For Monitora, give the station. For GigaFlor, the subplot side becomes 20 m (protocol 1).
 3. Select the outputs. With the example data (RUS01), processing in the browser takes about 2 minutes.
 
 To run without your own spreadsheet, tick **Use the example data**.

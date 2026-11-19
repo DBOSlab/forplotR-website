@@ -3,6 +3,27 @@
 ::: {lang="en"}
 ## forplotR (development version) {#news-1}
 
+- `forplot_map()`: the "Herbarium image" link of JABOT vouchers opens the
+  specimen again. JABOT moved its image viewer, so the link now points to
+  `https://jabot.jbrj.gov.br/v2/regua/visualizador.php`, built from the
+  herbarium and the catalogue number (`colbot` and `codtestemunho`).
+- Output names follow the language of the call in every function, not only
+  in `forplot_balance()`, from the same dictionary (`R/i18n_files.R`):
+  Portuguese for `"pt"` and `"pa"`, Spanish, French, and English for `"en"`
+  and `"ma"`, never a mix of Portuguese and English.
+  - `forplot_map()`: `results_<YYYY-MM-DD>_<filename>.html`
+    (`resultados_...` in Portuguese), default `filename` "plot_map" /
+    "mapa_parcela", station maps `<filename>_estacao_<n>` and the voucher
+    image folder `<filename>_testemunhos` in Portuguese.
+  - `forplot_vouchers()` gains `language`: default folder
+    `imagens_testemunhos` and tree folders `"<Voucher> Arvore#<tag>"` in
+    Portuguese (`Arbol`, `Arbre` in Spanish and French). `forplot_map()`
+    finds the images whatever the language of the folders.
+  - `forplot_sheets()`: default folder `etiquetas_herbario` and file
+    `planilha_herbario` in Portuguese.
+  - `forplot_balance()`: default folder `resultados` in Portuguese.
+  - Date-stamped names use `YYYY-MM-DD`; the month abbreviation used before
+    (`19Nov2026`, `19nov2026`) changed with the locale of the computer.
 - The species chart of `forplot_balance()` is now two charts: the species with
   the most individuals (the simple ranking used before the IVI chart, now with
   the first 15 species and the same taxon rule as the IVI: a name within its
@@ -68,6 +89,22 @@
   `x = ...m, y = ...m` when the position within the subplot is unknown.
   `forplot_sheets()` now stops with a clear message when no specimen is
   marked as collected.
+- `forplot_crossdet()`: `herbaria` is now optional. With `herbaria = NULL`
+  (the default) the herbarium of each voucher is read from the inventory
+  column `collectionCode` (Darwin Core; e.g. `"RB"`, as in the GigaFlor
+  sheet), only those herbaria are downloaded, and each voucher is checked
+  only in its own herbarium. Vouchers without a `collectionCode` are left out
+  with a message. Archives are downloaded with
+  `jabotR::jabot_download(herbarium = <codes>)` when jabotR is installed
+  (now in Suggests), falling back on the package's own JABOT downloader
+  (also used with `force_refresh = TRUE` or `resource_map`). An explicit
+  `herbaria` (now one or more codes) keeps the previous behaviour: every
+  voucher is checked there. `input_type = "gigaflor"` is accepted, and the
+  `unmatched_inventory` table gains a `herbarium` column.
+- GigaFlor sheets with bilingual headers (the Portuguese sheet, e.g.
+  `"Main Stem Tag | Placa do fuste principal"`,
+  `"collectionCode | Sigla do herbário"`) are read by their English side, and
+  `"Sim"` / `"Não"` in `Collected` are understood.
 
 - The field report in Panará (`language = "pa"`) is no longer all in
   Portuguese: its labels (title, team, date, individuals, families, with
