@@ -61,8 +61,17 @@ f_input_type <- function(choices = it_all, default = "field_sheet") {
 
 f_language <- function(choices = opts(pt = "Português", en = "English", es = "Español",
                                       fr = "Français", ma = "Mandarim", pa = "Panará"),
-                       default = "pt") {
-  fld("language", "Idioma dos resultados", "select", options = choices, default = default)
+                       default = "pt", help = NULL) {
+  fld("language", "Idioma dos resultados", "select", options = choices, default = default,
+      help = help)
+}
+
+# Pasta de saída do forplot_vouchers() no idioma escolhido (mesmos nomes do
+# dicionário R/i18n_files.R do pacote: pt e Panará em português, Mandarim em inglês).
+voucher_dir_name <- function(language = "pt") {
+  switch(tolower(language %||% "pt"),
+         pt = , pa = "imagens_testemunhos", es = "imagenes_testigos", fr = "images_temoins",
+         "voucher_imgs")
 }
 
 f_station <- function(multiple = FALSE) {
@@ -257,8 +266,10 @@ TOOLS <- list(
       f_header_row(),
       f_colnames()
     ),
-    fixed = function(ctx, params) list(dir = ctx$outputs, filename = "mapa_parcela",
-                                       keep_herbaria_downloads = FALSE, verbose = TRUE),
+    # sem `filename`: o pacote usa "mapa_parcela"/"plot_map"/... no idioma do mapa
+    # e grava "resultados_<AAAA-MM-DD>_mapa_parcela.html" (results_, resultats_)
+    fixed = function(ctx, params) list(dir = ctx$outputs, keep_herbaria_downloads = FALSE,
+                                       verbose = TRUE),
     check = function(params, ctx) {
       if (is.null(params$vertex_coords)) {
         user_error("Informe as coordenadas da parcela (digitadas ou em planilha).")
@@ -312,7 +323,8 @@ TOOLS <- list(
           help = "Baixa os limites administrativos do GADM.", local = FALSE)
     ),
     local_fixed = list(validate_locality = FALSE),
-    fixed = function(ctx, params) list(dir = ctx$outputs, filename = "planilha_herbario"),
+    # sem `filename`: "planilha_herbario" (pt), "plot_to_herb_sheet" (en), "planilla_herbario" (es)
+    fixed = function(ctx, params) list(dir = ctx$outputs),
     check = function(params, ctx) {
       if (is.null(params$herb_file_path)) {
         params$herb_file_path <- write_herb_template(
@@ -379,13 +391,16 @@ TOOLS <- list(
     eta = "segundos",
     example = TRUE,
     fields = flatten_fields(
-      f_fp_file(), f_example(), f_input_type(), f_station(multiple = FALSE), f_header_row(),
+      f_fp_file(), f_example(), f_input_type(),
+      f_language(help = "Nomes das pastas: imagens_testemunhos e \"<Voucher> Arvore#<plaqueta>\" em português."),
+      f_station(multiple = FALSE), f_header_row(),
       fld("voucher_zip", "Pasta de fotos atual (ZIP, opcional)", "file", arg = "",
           accept_ext = c("zip"),
           help = "Sem ZIP, é criada a estrutura vazia para você preencher.")
     ),
-    fixed = function(ctx, params) list(output_dir = file.path(ctx$outputs, "voucher_imgs"),
-                                       verbose = TRUE)
+    fixed = function(ctx, params) {
+      list(output_dir = file.path(ctx$outputs, voucher_dir_name(params$language)), verbose = TRUE)
+    }
   )
 )
 
