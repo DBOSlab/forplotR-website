@@ -14,8 +14,8 @@
       <a class="btn btn-primary" href="{{LINK:start}}"><span data-lang="pt">Começar</span><span data-lang="en">Get started</span></a>
       <a class="btn" href="{{LINK:tools}}"><span data-lang="pt">Abrir o app no navegador</span><span data-lang="en">Open the web app</span></a>
     </div>
-    <p class="works-with" data-lang="pt">Para qualquer parcela dividida em subparcelas: fichas e exportações do ForestPlots.net, fichas de Terras Indígenas, o protocolo MONITORA e outras tabelas cujas colunas possam ser indicadas. <a href="{{LINK:formats}}">Dados aceitos</a></p>
-    <p class="works-with" data-lang="en">For any plot divided into subplots: ForestPlots.net sheets and exports, Indigenous Land field sheets, the MONITORA protocol and other tables whose columns can be mapped. <a href="{{LINK:formats}}">Supported data</a></p>
+    <p class="works-with" data-lang="pt">Para qualquer parcela dividida em subparcelas: fichas e exportações do ForestPlots.net, fichas de Terras Indígenas, o protocolo MONITORA, a ficha da rede GigaFlor e outras tabelas cujas colunas possam ser indicadas. <a href="{{LINK:formats}}">Dados aceitos</a></p>
+    <p class="works-with" data-lang="en">For any plot divided into subplots: ForestPlots.net sheets and exports, Indigenous Land field sheets, the MONITORA protocol, the GigaFlor network sheet and other tables whose columns can be mapped. <a href="{{LINK:formats}}">Supported data</a></p>
   </div>
 </header>
 ```

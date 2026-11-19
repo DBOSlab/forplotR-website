@@ -1,6 +1,6 @@
 ---
 title: "[Dados aceitos]{data-lang=pt}[Supported data]{data-lang=en}"
-description: "[Que planilhas de parcela o forplotR lê: parcelas permanentes divididas em subparcelas, quatro formatos reconhecidos, detecção automática do formato e mapeamento de colunas com outros nomes.]{data-lang=pt}[Which plot spreadsheets forplotR reads: permanent plots divided into subplots, four recognised layouts, automatic layout detection and mapping of columns with other names.]{data-lang=en}"
+description: "[Que planilhas de parcela o forplotR lê: parcelas permanentes divididas em subparcelas, cinco formatos reconhecidos, detecção automática do formato e mapeamento de colunas com outros nomes.]{data-lang=pt}[Which plot spreadsheets forplotR reads: permanent plots divided into subplots, five recognised layouts, automatic layout detection and mapping of columns with other names.]{data-lang=en}"
 page-id: formats
 en-path: "formats"
 schema: TechArticle

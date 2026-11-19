@@ -38,7 +38,7 @@ shareable HTML map to disk.
   plot_width_m = NULL,
   plot_length_m = NULL,
   voucher_imgs = NULL,
-  filename = "plot_map",
+  filename = NULL,
   station_name = NULL,
   collector = NULL,
   collector_map = NULL,
@@ -138,7 +138,9 @@ a folder named <code>"GCO_123"</code>) and contain one or more image files.</p>
 <tr><td><code id="filename">filename</code></td>
 <td>
 <p>Character scalar. Basename for the output HTML file, without
-extension.</p>
+extension. Default <code>NULL</code> uses &quot;plot_map&quot; in the language of the map
+(<code>"mapa_parcela"</code> in Portuguese, Panara and Spanish,
+<code>"carte_parcelle"</code> in French).</p>
 </td></tr>
 <tr><td><code id="station_name">station_name</code></td>
 <td>
@@ -394,9 +396,12 @@ survey instead. <code>subplot_size</code> defaults to 20 m.</p>
 <h4>Side effects</h4>
 
 <p>The function writes an HTML file named
-<code>Results_&lt;ddMonYYYY&gt;_&lt;filename&gt;.html</code> in <code>dir</code> (the working
-directory by default). When voucher images are linked rather than embedded, they are
-copied to a <code>&lt;filename&gt;_vouchers</code> folder next to the HTML file; keep
+<code>&lt;results&gt;_&lt;YYYY-MM-DD&gt;_&lt;filename&gt;.html</code> in <code>dir</code> (the working
+directory by default), where <code>&lt;results&gt;</code> is &quot;results&quot; in the language
+of the map (&quot;resultados&quot; in Portuguese, Panara and Spanish, &quot;resultats&quot; in
+French). When voucher images are linked rather than embedded, they are
+copied to a <code>&lt;filename&gt;_vouchers</code> folder (<code>_testemunhos</code> in
+Portuguese and Panara) next to the HTML file; keep
 both together when sharing the map. When <code>herbaria_lookup = TRUE</code>, it
 may also build or refresh a local herbarium index from DwC-A downloads and
 may remove downloaded archives at the end of the run depending on
@@ -508,7 +513,7 @@ HTML/PDF reports and an Excel summary workbook.
   render_pdf = TRUE,
   write_xlsx = TRUE,
   verbose = TRUE,
-  dir = file.path(tempdir(), "Results_map_plot"),
+  dir = NULL,
   filename = NULL,
   logos = NULL,
   header_row = NULL,
@@ -631,9 +636,11 @@ and report rendering.</p>
 <tr><td><code id="dir">dir</code></td>
 <td>
 <p>Output directory. A date-stamped subfolder in the format
-<code>ddMonYYYY</code> is created inside this directory. The default writes to a
-session temporary directory (<code>tempdir()</code>), which is deleted when the R
-session ends; supply a path to keep the outputs.</p>
+<code>YYYY-MM-DD</code> is created inside this directory. The default <code>NULL</code>
+writes to a folder in the session temporary directory (<code>tempdir()</code>),
+named &quot;results&quot; in the language of the call (&quot;resultados&quot; in Portuguese,
+Panara and Spanish), which is deleted when the R session ends; supply a path
+to keep the outputs.</p>
 </td></tr>
 <tr><td><code id="filename">filename</code></td>
 <td>
@@ -1016,7 +1023,8 @@ network field sheet is read from its <code>"Data"</code> worksheet, with
 determination and stem grouping (see <code>forplot_balance()</code>).
 </p>
 <p>On the <strong>first execution</strong>, the function reads voucher information from the
-input file, (i) creates a main folder (default: <code>"voucher_imgs"</code>) if it does
+input file, (i) creates a main folder (default: <code>"voucher_imgs"</code>, named in
+the language of the call, e.g. <code>"imagens_testemunhos"</code> in Portuguese) if it does
 not already exist, and (ii) for each voucher treated as collected, creates a
 nested directory structure following the format <code>Family/Genus/Voucher</code>, where
 voucher images can be stored.
@@ -1051,12 +1059,13 @@ non-empty voucher code is present after input harmonization, except when
 
 <pre><code class='language-R'>forplot_vouchers(
   fp_file_path = NULL,
-  output_dir = file.path(tempdir(), "voucher_imgs"),
+  output_dir = NULL,
   input_type = c("field_sheet", "field_sheet_ti", "fp_query_sheet", "monitora",
     "gigaflor"),
   station_name = NULL,
   verbose = TRUE,
-  header_row = NULL
+  header_row = NULL,
+  language = c("en", "pt", "es", "fr", "ma", "pa")
 )
 </code></pre>
 
@@ -1072,9 +1081,9 @@ in one of the supported plot-data layouts.</p>
 <tr><td><code id="output_dir">output_dir</code></td>
 <td>
 <p>Character. Root directory in which voucher image folders
-will be organized. The default is a session temporary directory
-(<code>tempdir()</code>), which is deleted when the R session ends; point it to your
-voucher image folder to organize it in place.</p>
+will be organized. The default <code>NULL</code> is a folder in the session temporary
+directory (<code>tempdir()</code>), which is deleted when the R session ends; point it
+to your voucher image folder to organize it in place.</p>
 </td></tr>
 <tr><td><code id="input_type">input_type</code></td>
 <td>
@@ -1098,6 +1107,15 @@ processing.</p>
 default <code>NULL</code> finds it automatically (see <code>detect_header_row()</code>),
 which copes with sheets that start with rows of plot metadata. Give a
 number to force it.</p>
+</td></tr>
+<tr><td><code id="language">language</code></td>
+<td>
+<p>Language of the folder names: <code>"en"</code> (default), <code>"pt"</code>,
+<code>"es"</code>, <code>"fr"</code>, <code>"ma"</code> or <code>"pa"</code>. The folder of a collected tree is
+<code>"&lt;Voucher&gt; Tree#&lt;tag&gt;"</code> in English and <code>"&lt;Voucher&gt; Arvore#&lt;tag&gt;"</code> in
+Portuguese and Panara (<code>"Arbol"</code> in Spanish, <code>"Arbre"</code> in French; Mandarin
+uses the English names). <code>forplot_map()</code> finds the images whatever the
+language of the folders.</p>
 </td></tr>
 </table>
 
@@ -1154,7 +1172,7 @@ forplot_vouchers("my_query_export.xlsx", input_type = "fp_query_sheet",
 
 ### `forplot_sheets()` {#forplot_sheets}
 
-<p class="rd-title">Fill empty herbarium spreadsheet from forestplots-formatted data</p>
+<p class="rd-title">Fill empty herbarium spreadsheet from forest-plots-formatted spreadsheet</p>
 
 [Aplicação: Etiquetas para o herbário]{data-lang=pt}[Application: Herbarium labels]{data-lang=en} · [→]({{LINK:labels}})
 
@@ -1227,8 +1245,8 @@ on the value set in the <code>language</code> argument.
   alt = NULL,
   add_census_notes = TRUE,
   validate_locality = TRUE,
-  dir = file.path(tempdir(), "Results_herb_label"),
-  filename = "plot_to_herb_sheet"
+  dir = NULL,
+  filename = NULL
 )
 </code></pre>
 
@@ -1373,13 +1391,18 @@ the validation is skipped with a warning.</p>
 <tr><td><code id="dir">dir</code></td>
 <td>
 <p>Output directory. The file is saved within a subfolder named
-after the current date. The default writes to a session temporary directory
-(<code>tempdir()</code>), which is deleted when the R session ends; supply a path
-to keep the output.</p>
+after the current date (<code>YYYY-MM-DD</code>). The default <code>NULL</code> writes to
+a folder in the session temporary directory (<code>tempdir()</code>), named in
+the language of the call (<code>"herbarium_labels"</code>, or
+<code>"etiquetas_herbario"</code> in Portuguese, Panara and Spanish), which is
+deleted when the R session ends; supply a path to keep the output.</p>
 </td></tr>
 <tr><td><code id="filename">filename</code></td>
 <td>
-<p>Name of the output file. Default is <strong>plot_to_herb_sheet</strong>.</p>
+<p>Name of the output file. Default <code>NULL</code> uses
+<strong>plot_to_herb_sheet</strong> in English, <code>"planilha_herbario"</code> in Portuguese
+and Panara, <code>"planilla_herbario"</code> in Spanish and
+<code>"feuille_herbier"</code> in French.</p>
 </td></tr>
 </table>
 
@@ -1471,7 +1494,10 @@ These input files are first converted to a common internal schema using the
 package helper functions, and then matched to herbarium records using a
 normalized collector-name + collector-number identity key.
 </p>
-<p>Matching is restricted to the herbarium informed in <code>herbaria</code>.
+<p>Matching is restricted to the herbarium informed in <code>herbaria</code> or, when
+<code>herbaria</code> is <code>NULL</code>, to the herbarium written for each voucher
+in the inventory column <code>collectionCode</code> (see <em>Herbarium of each
+voucher</em>).
 Therefore, unlike broader duplicate-based determination comparison routines,
 this function focuses on checking whether an inventory voucher is already
 present in one selected herbarium and, if so, whether the determination in
@@ -1484,8 +1510,8 @@ that herbarium.
 
 <pre><code class='language-R'>forplot_crossdet(
   fp_file_path,
-  input_type = c("field_sheet", "fp_query_sheet", "monitora"),
-  herbaria,
+  input_type = c("field_sheet", "fp_query_sheet", "monitora", "gigaflor"),
+  herbaria = NULL,
   collector_fallback = NULL,
   collector_codes = NULL,
   station_name = NULL,
@@ -1513,12 +1539,15 @@ that herbarium.
 <tr><td><code id="input_type">input_type</code></td>
 <td>
 <p>Character scalar. One of <code>"field_sheet"</code>,
-<code>"fp_query_sheet"</code>, or <code>"monitora"</code>.</p>
+<code>"fp_query_sheet"</code>, <code>"monitora"</code>, or <code>"gigaflor"</code>
+(GigaFlor field sheet, read from its <code>"Data"</code> worksheet).</p>
 </td></tr>
 <tr><td><code id="herbaria">herbaria</code></td>
 <td>
-<p>Character scalar. One herbarium code to be checked in JABOT,
-for example <code>"RB"</code>.</p>
+<p>Character vector of herbarium codes to be checked in JABOT,
+for example <code>"RB"</code>, or <code>NULL</code> (default) to use the herbarium of
+each voucher given in the inventory column <code>collectionCode</code> (see
+<em>Herbarium of each voucher</em>).</p>
 </td></tr>
 <tr><td><code id="collector_fallback">collector_fallback</code></td>
 <td>
@@ -1609,8 +1638,8 @@ existing package helper <code>.parse_census_identity()</code>.
 </p>
 </li>
 <li><p> Resolve local <code>occurrence.txt</code> files under <code>path</code>, or,
-if needed, automatically discover and download the corresponding JABOT
-DwC-A resource for the selected herbarium into a cache directory.
+if needed, automatically download the JABOT DwC-A resource of the
+selected herbarium(s) only into a cache directory.
 </p>
 </li>
 <li><p> Load the selected herbarium records into DuckDB.
@@ -1693,10 +1722,31 @@ classified as <code>same_determination</code> are omitted from this table.</p>
 interpretations of the diagnostic classes.</p>
 </dd>
 <dt>unmatched_inventory</dt><dd><p>Inventory rows with a usable voucher identity
-that were not found in the selected herbarium.</p>
+that were not found in the selected herbarium; the <code>herbarium</code>
+column gives the herbarium(s) where each was looked for.</p>
 </dd>
 </dl>
 
+
+
+<h4>Herbarium of each voucher</h4>
+
+<p>When <code>herbaria = NULL</code> (the default), the herbarium is read from the
+inventory column <code>collectionCode</code> (Darwin Core; the Index Herbariorum
+acronym of the herbarium where the voucher is deposited, e.g. <code>"RB"</code>),
+as in the GigaFlor field sheet. Only the herbaria named there are
+downloaded, and each voucher is checked against its own herbarium only.
+Vouchers without a <code>collectionCode</code> are left out with a message.
+</p>
+<p>When <code>herbaria</code> is given, every voucher is checked against those
+herbaria, whatever <code>collectionCode</code> says; this also finds duplicates
+of a voucher deposited in another herbarium.
+</p>
+<p>Archives are downloaded with <code>jabotR::jabot_download()</code>
+(<code>herbarium = </code> the selected codes) when the <span class="pkg">jabotR</span> package is
+installed, and otherwise with the package's own JABOT IPT downloader, which
+is also used with <code>force_refresh = TRUE</code> or <code>resource_map</code>.
+</p>
 
 
 <h4>Author(s)</h4>
@@ -1722,6 +1772,10 @@ out1 &lt;- forplot_crossdet(
 
 fm &lt;- file.path(tempdir(), "TUM.xlsx")
 openxlsx::write.xlsx(TUM, fm)
+
+# GigaFlor sheet: each voucher checked in the herbarium of its
+# collectionCode column (only those herbaria are downloaded)
+out3 &lt;- forplot_crossdet("PNMT_01.xlsx", input_type = "gigaflor")
 
 out2 &lt;- forplot_crossdet(
   fp_file_path = fm,

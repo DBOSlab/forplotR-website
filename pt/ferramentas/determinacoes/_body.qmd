@@ -13,13 +13,13 @@ Looks up each inventory voucher in the chosen herbarium (JABOT) and cross-checks
 ## [Procedimento]{data-lang=pt}[Procedure]{data-lang=en} {#procedimento}
 
 ::: {data-lang="pt"}
-1. Envie a planilha e informe a sigla do herbário (ex.: `RB`).
+1. Envie a planilha e informe a sigla do herbário (ex.: `RB`), ou deixe o campo vazio para usar o herbário de cada voucher, lido da coluna `collectionCode` da planilha (como na ficha do GigaFlor). Nesse caso, só os herbários citados são baixados e cada voucher é procurado no seu próprio herbário.
 2. Se os vouchers tiverem apenas o número, informe o coletor (ex.: `G. Ottino`).
 
 No modo servidor, a primeira consulta a um herbário baixa os dados do JABOT, o que leva alguns minutos; as seguintes usam a cópia em cache.
 :::
 ::: {data-lang="en"}
-1. Upload the spreadsheet and enter the herbarium acronym (e.g. `RB`).
+1. Upload the spreadsheet and enter the herbarium acronym (e.g. `RB`), or leave it empty to use the herbarium of each voucher, read from the `collectionCode` column of the spreadsheet (as in the GigaFlor sheet). Then only the herbaria named there are downloaded and each voucher is looked for in its own herbarium.
 2. If the vouchers carry only a number, enter the collector (e.g. `G. Ottino`).
 
 In server mode, the first query to a herbarium downloads its data from JABOT, which takes a few minutes; later queries use the cached copy.
@@ -35,13 +35,13 @@ In server mode, the first query to a herbarium downloads its data from JABOT, wh
 - **Planilha XLSX** com três abas:
     - *Matches*: vouchers encontrados cuja determinação requer revisão (indeterminados no inventário e determinados no herbário, o inverso, e divergências);
     - *Diagnostics*: número de casos em cada classe;
-    - *Unmatched_inventory*: vouchers do inventário não encontrados no herbário.
+    - *Unmatched_inventory*: vouchers do inventário não encontrados no herbário, com o herbário em que cada um foi procurado.
 :::
 ::: {data-lang="en"}
 - **XLSX workbook** with three sheets:
     - *Matches*: matched vouchers whose determination needs review (indeterminate in the inventory and determined in the herbarium, the reverse, and conflicts);
     - *Diagnostics*: number of cases in each class;
-    - *Unmatched_inventory*: inventory vouchers not found in the herbarium.
+    - *Unmatched_inventory*: inventory vouchers not found in the herbarium, with the herbarium where each was looked for.
 :::
 
 ```{=html}

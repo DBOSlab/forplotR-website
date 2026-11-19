@@ -13,13 +13,13 @@ Creates the Family/Genus/Voucher structure for specimen images and reorganises i
 ## [Procedimento]{data-lang=pt}[Procedure]{data-lang=en} {#procedimento}
 
 ::: {data-lang="pt"}
-1. Envie a planilha e selecione o formato.
+1. Envie a planilha, selecione o formato e o idioma dos nomes das pastas.
 2. Opcionalmente, envie o diretório de imagens atual em um arquivo ZIP. As imagens são movidas para a família e o gênero da determinação mais recente; nenhum arquivo é sobrescrito.
 
 Sem ZIP, a ferramenta devolve a estrutura vazia, pronta para receber as imagens. O mesmo ZIP pode depois ser usado na ferramenta de mapa.
 :::
 ::: {data-lang="en"}
-1. Upload the spreadsheet and select its layout.
+1. Upload the spreadsheet and select its layout and the language of the folder names.
 2. Optionally, upload your current image directory as a ZIP file. Images are moved to the family and genus of the most recent determination; no file is overwritten.
 
 Without a ZIP, the tool returns the empty structure, ready to receive the images. The same ZIP can later be used in the map tool.
@@ -32,10 +32,10 @@ Without a ZIP, the tool returns the empty structure, ready to receive the images
 ## [Saídas]{data-lang=pt}[Outputs]{data-lang=en} {#saidas}
 
 ::: {data-lang="pt"}
-- **Arquivo ZIP** com o diretório `voucher_imgs/Família/Gênero/Voucher`, um subdiretório por indivíduo coletado.
+- **Arquivo ZIP** com o diretório `imagens_testemunhos/Família/Gênero/<Voucher>_Arvore#<plaqueta>`, um subdiretório por indivíduo coletado. Os nomes seguem o idioma escolhido: `voucher_imgs/…/<Voucher>_Tree#<plaqueta>` em inglês, `imagenes_testigos/…_Arbol#` em espanhol, `images_temoins/…_Arbre#` em francês.
 :::
 ::: {data-lang="en"}
-- **ZIP file** with the `voucher_imgs/Family/Genus/Voucher` directory, one subdirectory per collected individual.
+- **ZIP file** with the `voucher_imgs/Family/Genus/<Voucher>_Tree#<tag>` directory, one subdirectory per collected individual. Names follow the chosen language: `imagens_testemunhos/…/<Voucher>_Arvore#<tag>` in Portuguese, `imagenes_testigos/…_Arbol#` in Spanish, `images_temoins/…_Arbre#` in French.
 :::
 
 ```{=html}
