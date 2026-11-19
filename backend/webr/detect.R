@@ -50,6 +50,30 @@
 # Campos opcionais: a falta deles não é um problema a avisar
 .fp_optional <- c("colname_stemgroup")
 
+# GigaFlor (rede de florestas gigantes da Amazônia): mesma ficha do ForestPlots,
+# com "Tag Number", "Species" e "Main Stem Tag", D em cm e X/Y em graus
+# decimais. Os cabeçalhos podem ser bilíngues ("Main Stem Tag | Placa do fuste
+# principal"); os nomes chegam aqui já separados em "|" e normalizados.
+.fp_is_gigaflor <- function(hn) {
+  "tag number" %in% hn && any(c("main stem tag", "species") %in% hn) &&
+    "t1" %in% hn && !("new tag no" %in% hn)
+}
+
+# Os dados do GigaFlor ficam na aba "Data" (o pacote lê essa aba sozinho:
+# .gigaflor_sheet()). Devolve o número dessa aba se ela tiver o cabeçalho do
+# GigaFlor, ou NA.
+.fp_gigaflor_data_sheet <- function(path, sheets, fp) {
+  i <- which(tolower(trimws(sheets)) == "data")
+  if (!length(i)) return(NA_integer_)
+  raw <- tryCatch(fp$.read_raw_rows(path, sheet = i[1], n_max = 20L), error = function(e) NULL)
+  if (is.null(raw) || !nrow(raw)) return(NA_integer_)
+  hit <- vapply(seq_len(nrow(raw)), function(r) {
+    v <- as.character(unlist(raw[r, , drop = TRUE]))
+    .fp_is_gigaflor(.fp_norm(unlist(strsplit(v[!is.na(v)], "|", fixed = TRUE))))
+  }, logical(1))
+  if (any(hit)) i[1] else NA_integer_
+}
+
 .fp_has_header_api <- function() {
   ns <- asNamespace("forplotR")
   all(vapply(c("detect_header_row", "read_plot_sheet", ".score_header_rows",
@@ -70,6 +94,11 @@ local_detect <- function(path, header_row = NULL, sheet = 1) {
     fp <- asNamespace("forplotR")
     sheets <- readxl::excel_sheets(path)
     if (sh > length(sheets)) stop("a planilha tem ", length(sheets), " aba(s); a aba ", sh, " não existe")
+    # GigaFlor com a aba "Data" depois de outras (ex.: instruções): lê a "Data"
+    if (sh == 1L) {
+      gf_sh <- .fp_gigaflor_data_sheet(path, sheets, fp)
+      if (!is.na(gf_sh)) sh <- gf_sh
+    }
     raw <- fp$.read_raw_rows(path, sheet = sh, n_max = 20L)
     if (!nrow(raw)) stop("planilha vazia")
 
@@ -93,6 +122,9 @@ local_detect <- function(path, header_row = NULL, sheet = 1) {
               "standardised x", "standardized x", "census no", "recommended voucher family", "voucher code", "tag no")
 
     hdr <- hr %||% (if (!is.na(auto)) auto else NA_integer_)
+    # GigaFlor: o cabeçalho é a linha com Tag Number / Species / Main Stem Tag
+    gf_rows <- filled[vapply(filled, function(i) .fp_is_gigaflor(row_names(i)), logical(1))]
+    if (is.null(hr) && length(gf_rows) && !(hdr %in% gf_rows)) hdr <- gf_rows[1]
     if (is.na(hdr)) {
       # nenhum nome conhecido: a primeira linha com mais texto que números
       txt <- vapply(filled, function(i) {
@@ -132,6 +164,9 @@ local_detect <- function(path, header_row = NULL, sheet = 1) {
     type <- "unknown"; confidence <- "low"
     if (mo_score >= 4) {
       type <- "monitora"; confidence <- if (mo_score >= 7) "high" else "medium"
+    } else if (.fp_is_gigaflor(hn)) {
+      type <- "gigaflor"
+      confidence <- if (all(c("main stem tag", "species", "x", "y") %in% hn)) "high" else "medium"
     } else if (ql_score >= 3) {
       type <- "fp_query_sheet"; confidence <- if (ql_score >= 5) "high" else "medium"
     } else if (n_known >= 4) {
