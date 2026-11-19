@@ -115,8 +115,14 @@
     'Destacar palmeiras (Arecaceae)': 'Highlight palms (Arecaceae)',
     'Número do censo': 'Census number',
     'Coordenadas da parcela (graus decimais)': 'Plot coordinates (decimal degrees)',
-    'Uma linha por ponto: latitude; longitude. Parcelas ForestPlots: 4 cantos na ordem (0,0), (0,comprimento), (largura,0), (largura,comprimento). MONITORA: 1 ponto, o centro da estação.':
-      'One line per point: latitude; longitude. ForestPlots plots: 4 corners in the order (0,0), (0,length), (width,0), (width,length). MONITORA: 1 point, the station centre.',
+    'Uma linha por ponto: latitude; longitude. Parcelas ForestPlots: 4 cantos na ordem (0,0), (0,comprimento), (largura,0), (largura,comprimento). MONITORA: 1 ponto, o centro da estação. GigaFlor: opcional; sem vértices, a parcela é estimada a partir das coordenadas das árvores.':
+      'One line per point: latitude; longitude. ForestPlots plots: 4 corners in the order (0,0), (0,length), (width,0), (width,length). MONITORA: 1 point, the station centre. GigaFlor: optional; without corners, the plot is estimated from the tree coordinates.',
+    'GigaFlor (protocolo 1)': 'GigaFlor (protocol 1)',
+    'GigaFlor: 20 m (protocolo 1), usado quando o campo fica com o valor padrão.': 'GigaFlor: 20 m (protocol 1), used when the field keeps its default value.',
+    'Obrigatória, exceto no GigaFlor: se vazia, o centro das árvores da planilha.': 'Required, except for GigaFlor: if empty, the centre of the trees in the spreadsheet.',
+    'Uma sigla, ex.: RB. Vazio: o herbário de cada voucher vem da coluna collectionCode da planilha (como na ficha GigaFlor).': 'One acronym, e.g. RB. Empty: the herbarium of each voucher comes from the collectionCode column of the spreadsheet (as in the GigaFlor sheet).',
+    'Preencha o campo: Latitude (graus decimais)': 'Fill in the field: Latitude (decimal degrees)',
+    'Preencha o campo: Longitude (graus decimais)': 'Fill in the field: Longitude (decimal degrees)',
     '…ou envie as coordenadas em planilha': '…or upload the coordinates as a spreadsheet',
     'Colunas latitude e longitude.': 'Latitude and longitude columns.',
     'Fotos dos vouchers (ZIP, opcional)': 'Voucher photos (ZIP, optional)',
@@ -397,6 +403,8 @@
                       en: ['Indigenous Land field sheet', 'A metadata row and a bilingual header (e.g. Panará); columns recognised by name.'], icon: 'cols' },
     monitora: { pt: ['Protocolo MONITORA', 'Estações com quatro subunidades em cruz (ICMBio).'],
                 en: ['MONITORA protocol', 'Stations with four subunits in a cross (ICMBio).'], icon: 'cross' },
+    gigaflor: { pt: ['Protocolo GigaFlor', '1 ha, 25 subparcelas de 20 × 20 m com 4 quadrantes; X e Y em graus decimais, D em cm.'],
+                en: ['GigaFlor protocol', '1 ha, 25 subplots of 20 × 20 m with 4 quadrants; X and Y in decimal degrees, D in cm.'], icon: 'giga' },
     forestplots: { pt: ['Planilha no padrão ForestPlots.net', 'Ficha de campo, exportação da Query Library ou ficha de Terra Indígena.'],
                    en: ['ForestPlots.net-style sheet', 'Field sheet, Query Library export or Indigenous Land sheet.'], icon: 'grid' },
     unknown: { pt: ['Formato não reconhecido', ''], en: ['Layout not recognised', ''], icon: 'grid' }
@@ -405,6 +413,7 @@
     grid: '<rect x="3.5" y="6" width="17" height="14.5" rx="1"/><path d="M3.5 10h17M9.2 10v10.5M14.8 10v10.5M3.5 15.2h17M5 3.5h7"/>',
     rows: '<rect x="3.5" y="3.5" width="17" height="17" rx="1"/><path d="M3.5 8h17M3.5 12.5h17M3.5 17h17M8.5 3.5v17"/>',
     cols: '<rect x="3.5" y="6" width="17" height="14.5" rx="1"/><path d="M3.5 10h17M7 10v10.5M10.5 10v10.5M14 10v10.5M17.5 10v10.5M5 3.5h7"/>',
+    giga: '<rect x="3.5" y="3.5" width="17" height="17" rx="1"/><path d="M10.3 3.5v17M13.7 3.5v17M3.5 10.3h17M3.5 13.7h17" opacity=".45"/><path d="M7 3.5v17M17 3.5v17M3.5 7h17M3.5 17h17"/>',
     cross: '<rect x="9.5" y="2.5" width="5" height="5.5"/><rect x="9.5" y="16" width="5" height="5.5"/><rect x="2.5" y="9.5" width="5.5" height="5"/><rect x="16" y="9.5" width="5.5" height="5"/><circle cx="12" cy="12" r="1.2" fill="currentColor"/>'
   };
   var IC_OK = '<path d="M5 12.5l4.5 4.5L19 7.5"/>';
@@ -757,6 +766,18 @@
     return { w: w, l: l, s: s, nx: Math.max(1, Math.round(w / s)), ny: Math.max(1, Math.round(l / s)) };
   }
   function fmtNum(x) { return (Math.round(x * 10) / 10).toLocaleString(isEn() ? 'en' : 'pt-BR'); }
+  // GigaFlor (protocolo 1) usa subparcelas de 20 m: ao escolher o formato, o
+  // lado da subparcela passa de 10 para 20 (e volta), se a pessoa não o mudou.
+  var lastLayout = null;
+  function syncGigaflorSubplot() {
+    var lay = currentValue('input_type');
+    var inp = $('f_subplot_size');
+    if (inp && lay !== lastLayout) {
+      if (lay === 'gigaflor' && (inp.value === '' || inp.value === '10')) inp.value = '20';
+      else if (lastLayout === 'gigaflor' && inp.value === '20') inp.value = '10';
+    }
+    lastLayout = lay;
+  }
   function drawPlot(tool) {
     var fig = $('plot-diagram');
     if (!fig) return;
@@ -793,6 +814,10 @@
       var g2 = plotDims();
       cap.appendChild(bi(fmtNum(g2.w) + ' × ' + fmtNum(g2.l) + ' m · ' + (g2.nx * g2.ny) + ' subparcelas de ' + fmtNum(g2.s) + ' × ' + fmtNum(g2.s) + ' m' + (hasV ? '. Vértices na ordem 1 a 4, como no desenho.' : ''),
                          fmtNum(g2.w) + ' × ' + fmtNum(g2.l) + ' m · ' + (g2.nx * g2.ny) + ' subplots of ' + fmtNum(g2.s) + ' × ' + fmtNum(g2.s) + ' m' + (hasV ? '. Corners in the order 1 to 4, as drawn.' : '')));
+      if (currentValue('input_type') === 'gigaflor') {
+        cap.appendChild(bi(' GigaFlor: X e Y da planilha são longitude e latitude; a posição de cada árvore na grade é calculada a partir delas' + (hasV ? ', e os vértices são opcionais.' : '.'),
+                           ' GigaFlor: X and Y in the spreadsheet are longitude and latitude; the position of each tree on the grid is computed from them' + (hasV ? ', and the corners are optional.' : '.')));
+      }
     }
     fig.appendChild(cap);
   }
@@ -832,6 +857,7 @@
     var useEx = ex && ex.checked;
     var lay = currentValue('input_type');
     var mon = lay === 'monitora';
+    syncGigaflorSubplot();
     tool.fields.forEach(function (f) {
       var node = document.querySelector('[data-field="' + f.name + '"]');
       if (!node) return;
@@ -1022,8 +1048,10 @@
     var missing = arr(d.missing);
     var headers = arr(d.columns).length ? arr(d.columns) : arr(d.headers).map(function (h) { return { value: h, label: h }; });
     var nSug = Object.keys(d.suggest || {}).length;
-    if (!headers.length || d.type === 'monitora') resetColumnSelects();
-    if (headers.length && d.type !== 'monitora' && document.querySelector('[data-field^="colname_"]')) {
+    // MONITORA e GigaFlor: o pacote conhece os nomes das colunas desses formatos
+    var ownCols = d.type === 'monitora' || d.type === 'gigaflor';
+    if (!headers.length || ownCols) resetColumnSelects();
+    if (headers.length && !ownCols && document.querySelector('[data-field^="colname_"]')) {
       // Planilha com nomes diferentes do padrão: todos os campos reconhecidos
       // aparecem já escolhidos. Com os nomes padrão, nada precisa ser indicado.
       columnSelects(headers, nSug ? (d.mapped || d.suggest || {}) : {});

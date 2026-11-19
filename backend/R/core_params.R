@@ -175,6 +175,13 @@ build_params <- function(spec, parts, job_dir, cfg) {
     if (!is.null(val)) params[[arg]] <- val
   }
 
+  # GigaFlor, protocolo 1: subparcelas de 20 m quando a pessoa não mudou o lado
+  # (o formulário manda o padrão 10 do ForestPlots)
+  if (identical(params$input_type, "gigaflor") && !is.null(params$subplot_size) &&
+      !nzchar(part_text(parts, "subplot_size"))) {
+    params$subplot_size <- GIGAFLOR_SUBPLOT_M
+  }
+
   if (use_example) {
     it <- params$input_type %||% ""
     ds <- if (identical(it, "monitora")) "TUM" else if (it %in% c("field_sheet", "forestplots")) "RUS01" else ""

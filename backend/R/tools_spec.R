@@ -36,6 +36,11 @@ opts <- function(...) {
 
 only_monitora <- list(field = "input_type", values = I("monitora"))
 
+# GigaFlor (rede de florestas gigantes da Amazônia), protocolo 1: 1 ha,
+# 25 subparcelas de 20 x 20 m em serpentina, cada uma com 4 quadrantes de
+# 10 x 10 m; X/Y são longitude/latitude (graus decimais) e D em cm.
+GIGAFLOR_SUBPLOT_M <- 20
+
 # Campos reutilizados ---------------------------------------------------------
 
 f_fp_file <- function() {
@@ -53,7 +58,8 @@ f_example <- function() {
 it_all <- opts(field_sheet = "ForestPlots — field sheet",
                field_sheet_ti = "Field sheet de Terra Indígena",
                fp_query_sheet = "ForestPlots — Query Library",
-               monitora = "MONITORA (ICMBio)")
+               monitora = "MONITORA (ICMBio)",
+               gigaflor = "GigaFlor (protocolo 1)")
 
 f_input_type <- function(choices = it_all, default = "field_sheet") {
   fld("input_type", "Formato da planilha", "select", options = choices, default = default)
@@ -85,7 +91,8 @@ f_geometry <- function() {
   list(
     fld("plot_size", "Área da parcela (ha)", "number", default = 1,
         help = "Ignorado para MONITORA."),
-    fld("subplot_size", "Lado da subparcela (m)", "number", default = 10),
+    fld("subplot_size", "Lado da subparcela (m)", "number", default = 10,
+        help = "GigaFlor: 20 m (protocolo 1), usado quando o campo fica com o valor padrão."),
     fld("plot_width_m", "Largura da parcela (m)", "number", group = "avancado",
         help = "Opcional. Se vazio, é calculada a partir da área."),
     fld("plot_length_m", "Comprimento da parcela (m)", "number", group = "avancado",
@@ -240,7 +247,8 @@ TOOLS <- list(
           help = paste(
             "Uma linha por ponto: latitude; longitude. Parcelas ForestPlots: 4 cantos na",
             "ordem (0,0), (0,comprimento), (largura,0), (largura,comprimento).",
-            "MONITORA: 1 ponto, o centro da estação.")),
+            "MONITORA: 1 ponto, o centro da estação. GigaFlor: opcional; sem vértices,",
+            "a parcela é estimada a partir das coordenadas das árvores.")),
       fld("vertex_file", "…ou envie as coordenadas em planilha", "file",
           arg = "vertex_coords", accept_ext = c("csv", "xlsx", "xls"),
           help = "Colunas latitude e longitude."),
@@ -271,7 +279,7 @@ TOOLS <- list(
     fixed = function(ctx, params) list(dir = ctx$outputs, keep_herbaria_downloads = FALSE,
                                        verbose = TRUE),
     check = function(params, ctx) {
-      if (is.null(params$vertex_coords)) {
+      if (is.null(params$vertex_coords) && !identical(params$input_type, "gigaflor")) {
         user_error("Informe as coordenadas da parcela (digitadas ou em planilha).")
       }
       logos_param(params)
@@ -290,7 +298,8 @@ TOOLS <- list(
     extra_libs = c("terra", "stringi"),
     fields = flatten_fields(
       f_fp_file(), f_example(),
-      f_input_type(opts(forestplots = "ForestPlots — field sheet", monitora = "MONITORA (ICMBio)"),
+      f_input_type(opts(forestplots = "ForestPlots — field sheet", monitora = "MONITORA (ICMBio)",
+                        gigaflor = "GigaFlor (protocolo 1)"),
                    default = "forestplots"),
       fld("herbarium_format", "Formato do herbário", "select",
           options = opts(jabot = "JABOT", brahms = "BRAHMS"), default = "jabot"),
@@ -301,8 +310,11 @@ TOOLS <- list(
       fld("country", "País", "text", default = "Brazil"),
       fld("majorarea", "Estado", "text", required = TRUE, help = "Ex.: BA ou Bahia."),
       fld("minorarea", "Município", "text", required = TRUE),
-      fld("lat", "Latitude (graus decimais)", "number", required = TRUE),
-      fld("long", "Longitude (graus decimais)", "number", required = TRUE),
+      # obrigatórias, exceto no GigaFlor (conferido no check)
+      fld("lat", "Latitude (graus decimais)", "number",
+          help = "Obrigatória, exceto no GigaFlor: se vazia, o centro das árvores da planilha."),
+      fld("long", "Longitude (graus decimais)", "number",
+          help = "Obrigatória, exceto no GigaFlor: se vazia, o centro das árvores da planilha."),
       fld("alt", "Altitude (m)", "number",
           help = "Recomendado. Se vazio, o servidor baixa um modelo de elevação global de baixa resolução (~4,5 km).",
           local = list(required = TRUE,
@@ -331,6 +343,10 @@ TOOLS <- list(
           params$herbarium_format %||% "jabot",
           file.path(ctx$inputs, "modelo_herbario.xlsx"))
       }
+      if (!identical(params$input_type, "gigaflor")) {
+        if (is.null(params$lat)) user_error("Preencha o campo: Latitude (graus decimais)")
+        if (is.null(params$long)) user_error("Preencha o campo: Longitude (graus decimais)")
+      }
       if (!is.null(params$lat) && abs(params$lat) > 90) user_error("Latitude fora do intervalo.")
       if (!is.null(params$long) && abs(params$long) > 180) user_error("Longitude fora do intervalo.")
       params
@@ -354,9 +370,11 @@ TOOLS <- list(
       f_fp_file(), f_example(),
       f_input_type(opts(field_sheet = "ForestPlots — field sheet",
                         fp_query_sheet = "ForestPlots — Query Library",
-                        monitora = "MONITORA (ICMBio)")),
-      fld("herbaria", "Herbário", "text", default = "RB", required = TRUE,
-          help = "Uma sigla, ex.: RB."),
+                        monitora = "MONITORA (ICMBio)",
+                        gigaflor = "GigaFlor (protocolo 1)")),
+      fld("herbaria", "Herbário", "text", default = "RB",
+          help = paste("Uma sigla, ex.: RB. Vazio: o herbário de cada voucher vem da coluna",
+                       "collectionCode da planilha (como na ficha GigaFlor).")),
       fld("collector_fallback", "Coletor (quando o voucher só tem número)", "text",
           help = "Ex.: G. Ottino"),
       f_station(multiple = FALSE),
@@ -364,14 +382,21 @@ TOOLS <- list(
       fld("force_refresh", "Baixar de novo os dados do herbário", "bool", default = FALSE,
           group = "avancado", help = "Use só se os dados do JABOT mudaram.")
     ),
+    # herbaria vazio: NULL, e o pacote lê o herbário de cada voucher na coluna
+    # collectionCode (baixa só esses herbários, no cache do próprio pacote)
     fixed = function(ctx, params) {
-      herb <- toupper(gsub("[^A-Za-z0-9]", "", params$herbaria %||% "RB"))
+      if (is.null(params$herbaria)) {
+        return(list(herbaria = NULL, save = TRUE, dir = ctx$outputs,
+                    filename = "cruzamento_herbario", dbdir = ":memory:", verbose = TRUE))
+      }
+      herb <- toupper(gsub("[^A-Za-z0-9]", "", params$herbaria))
       list(save = TRUE, dir = ctx$outputs, filename = "cruzamento_herbario",
            dbdir = ":memory:", verbose = TRUE,
            path = file.path(ctx$cfg$cache, "jabot_dwca", herb))
     },
     check = function(params, ctx) {
-      if (!grepl("^[A-Za-z0-9]+$", params$herbaria %||% "")) {
+      if (is.null(params$herbaria)) return(params)
+      if (!grepl("^[A-Za-z0-9]+$", params$herbaria)) {
         user_error("Informe uma única sigla de herbário, só letras e números.")
       }
       cache <- file.path(ctx$cfg$cache, "jabot_dwca", toupper(params$herbaria))
